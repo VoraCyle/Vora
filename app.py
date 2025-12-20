@@ -39,7 +39,7 @@ name, authentication_status, username = authenticator.login('Login to Wraith Vor
 
 if authentication_status:
     authenticator.logout('Logout', 'sidebar')
-   st.sidebar.success(f"Welcome, {name}!")
+    st.sidebar.success(f"Welcome, {name}!")
 
     st.title("🔮 Wraith VoraCycle")
     st.markdown("**Precycling Powered by Precision**") 
@@ -141,6 +141,7 @@ elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
