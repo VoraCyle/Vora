@@ -8,9 +8,8 @@ import streamlit_authenticator as stauth
 st.set_page_config(page_title="Wraith VoraCycle", layout="centered")
 
 # --- Authentication Logic ---
-# Note: In a production app, move these to st.secrets for better security
-credentials = {
-'credentials': {
+config = {
+    'credentials': {
         'usernames': {
             'wraith': {
                 'email': 'wraith@voracycle.com',
@@ -20,6 +19,14 @@ credentials = {
         }
     },
     'cookie': {
+        'expiry_days': 30,
+        'key': 'vora_signature_key',
+        'name': 'vora_cookie'
+    },
+    'preauthorized': {
+        'emails': []
+    }
+} 
 
 authenticator = stauth.Authenticate(
     credentials,
@@ -133,6 +140,7 @@ elif authentication_status == False:
     [cite_start]st.error('Username/password incorrect') [cite: 3]
 elif authentication_status is None:
     [cite_start]st.warning('Please enter your credentials') [cite: 3]
+
 
 
 
