@@ -23,7 +23,7 @@ authenticator = st_auth.Authenticate(
 )
 
 # 3. RUN THE LOGIN UI
-name, authentication_status, username = authenticator.login('main')
+name, authentication_status, username = authenticator.login(location='main')
 
 if authentication_status:
     authenticator.logout('Logout', 'sidebar')
@@ -129,6 +129,7 @@ elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
