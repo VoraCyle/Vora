@@ -63,7 +63,7 @@ if authentication_status:
     else:
         smiles = st.sidebar.text_input("Enter SMILES string", "CCCC") 
 
-     = Chem.MolFromSmiles(smiles) 
+    mol = Chem.MolFromSmiles(smiles) 
     if mol:
         img = Draw.MolToImage(mol, size=(600, 600)) 
         st.image(img, caption=f"Molecular structure: {material if material != 'Custom SMILES' else 'Custom'}") 
@@ -141,6 +141,7 @@ elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
