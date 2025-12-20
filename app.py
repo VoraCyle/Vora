@@ -28,10 +28,9 @@ authenticator.login(location='main')
 authentication_status = st.session_state.get("authentication_status")
 name = st.session_state.get("name")
 username = st.session_state.get("username")
-
-        st.title("🔮 Wraith VoraCycle")
-        st.markdown("**Precycling Powered by Precision**") 
-        st.markdown("Predict material circularity before it becomes waste. Quantum-inspired AI for proactive regeneration.") 
+    st.title("🔮 Wraith VoraCycle")
+    st.markdown("**Precycling Powered by Precision**") 
+    st.markdown("Predict material circularity before it becomes waste. Quantum-inspired AI for proactive regeneration.") 
     
         # --- Material Selection ---
         st.sidebar.header("Material Selection") 
@@ -148,3 +147,4 @@ username = st.session_state.get("username")
     
     
     
+
