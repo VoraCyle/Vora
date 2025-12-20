@@ -81,7 +81,7 @@ if authentication_status:
     scores = {"Polyethylene (PE)": 48, "Polyethylene Terephthalate (PET)": 72, "Polypropylene (PP)": 55} 
     score = scores.get(material, 65) if material != "Custom SMILES" else 65 
     
-   st.metric(label="**VoraCycle Circularity Score**", value=f"{score}/100", delta=f"{score-50:+} vs average") 
+    st.metric(label="**VoraCycle Circularity Score**", value=f"{score}/100", delta=f"{score-50:+} vs average") 
     # --- Redesign Recommendations ---
     t.markdown("### 🔬 Precision Redesign Recommendation") 
     
@@ -135,12 +135,13 @@ if authentication_status:
         st.write("- Fully mineralizes in months to years.") 
         st.write("- Supports 100% closed-loop recycling.") 
 
-   st.caption("Prototype created by Wraith | Pioneering Precycling with Precision") 
+    st.caption("Prototype created by Wraith | Pioneering Precycling with Precision") 
 
 elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
