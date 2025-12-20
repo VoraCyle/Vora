@@ -1,41 +1,29 @@
 import streamlit as st
+import streamlit_authenticator as st_auth
 from rdkit import Chem
 from rdkit.Chem import Draw
 from pyscf import gto, scf
-import streamlit_authenticator as stauth
 
-# --- Page Config ---
-st.set_page_config(page_title="Wraith VoraCycle", layout="centered")
-
-# --- Authentication Logic ---
-config = {
-    'credentials': {
-        'usernames': {
-            'wraith': {
-                'email': 'wraith@voracycle.com',
-                'name': 'Wraith Admin',
-                'password': '$2b$12$EixZaYVK1fsbw1ZfbX3OXe.WI/.2B8K5wjW6SAff4D8cQ4AtNtg6'
-            }
+# 1. DEFINE THE DATA FIRST
+credentials = {
+    'usernames': {
+        'wraith': {
+            'name': 'Wraith',
+            'password': 'Vora1630' 
         }
-    },
-    'cookie': {
-        'expiry_days': 30,
-        'key': 'vora_signature_key',
-        'name': 'vora_cookie'
-    },
-    'preauthorized': {
-        'emails': []
     }
-} 
+}
 
-authenticator = stauth.Authenticate(
+# 2. USE THE DATA IN THE AUTHENTICATOR
+authenticator = st_auth.Authenticate(
     credentials,
-    "voracycle_cookie",
-    "random_key_123",
+    "vora_cookie",
+    "auth_key",
     cookie_expiry_days=30
 )
 
-name, authentication_status, username = authenticator.login('Login to Wraith VoraCycle', 'main')
+# 3. RUN THE LOGIN UI
+name, authentication_status, username = authenticator.login('main')
 
 if authentication_status:
     authenticator.logout('Logout', 'sidebar')
@@ -141,6 +129,7 @@ elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
