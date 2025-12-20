@@ -29,7 +29,7 @@ authentication_status = st.session_state.get("authentication_status")
 name = st.session_state.get("name")
 username = st.session_state.get("username")
 
-    st.title   ("🔮 Wraith VoraCycle")
+    st.title("🔮 Wraith VoraCycle")
     st.markdown("**Precycling Powered by Precision**") 
     st.markdown("Predict material circularity before it becomes waste. Quantum-inspired AI for proactive regeneration.") 
 
@@ -129,6 +129,7 @@ elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
