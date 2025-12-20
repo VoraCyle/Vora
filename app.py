@@ -73,7 +73,8 @@ if authentication_status:
     
     # We use a proxy molecule for the quantum calculation to ensure performance
     [cite_start]proxy_mol = gto.M(atom='C 0 0 0; C 0 0 1.4; H 0 1 1; H 0 0 2.4', basis='sto-3g') 
-    [cite_start]mf = scf.RHF(proxy_mol) cite_start]energy = mf.kernel() 
+    [cite_start]mf = scf.RHF(proxy_mol) 
+    [cite_start]energy = mf.kernel() 
 
     [cite_start]st.write(f"**Quantum energy stability**: {energy:.2f} Hartree") 
 
@@ -140,6 +141,7 @@ elif authentication_status == False:
     [cite_start]st.error('Username/password incorrect') 
 elif authentication_status is None:
     [cite_start]st.warning('Please enter your credentials') 
+
 
 
 
