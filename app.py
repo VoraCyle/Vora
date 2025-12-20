@@ -91,7 +91,7 @@ if authentication_status:
            "optimized_score": 94, 
             "optimized_stability": -74.20,
             
-            "modifications": "Replace terephthalic acid with bio-derived 2,5-furandicarboxylic acid (FDCA). Incorporate enzyme-recognizable cleavage sites.", [cite: 7, 8]
+            "modifications": "Replace terephthalic acid with bio-derived 2,5-furandicarboxylic acid (FDCA). Incorporate enzyme-recognizable cleavage sites.", 
         },
         "Polyethylene (PE)": {
             "optimized_name": "Bio-PE with Enzymatic Triggers", 
@@ -141,6 +141,7 @@ elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
