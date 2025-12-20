@@ -69,7 +69,7 @@ if authentication_status:
         st.image(img, caption=f"Molecular structure: {material if material != 'Custom SMILES' else 'Custom'}") 
 
     # --- Simulation ---
-   st.write("### Precision Simulation Running...") 
+    st.write("### Precision Simulation Running...") 
     
     # We use a proxy molecule for the quantum calculation to ensure performance
    proxy_mol = gto.M(atom='C 0 0 0; C 0 0 1.4; H 0 1 1; H 0 0 2.4', basis='sto-3g') 
@@ -141,6 +141,7 @@ elif authentication_status == False:
     st.error('Username/password incorrect') 
 elif authentication_status is None:
     st.warning('Please enter your credentials') 
+
 
 
 
