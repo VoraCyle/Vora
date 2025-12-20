@@ -13,7 +13,7 @@ credentials = {
     'usernames': {
         'wraith': {
             'name': 'Wraith',
-            [cite_start]'password': '$2b$12$EixZaYVK1fsbw1ZfbX3OXe.WI/.2B8K5wjW6SAff4D8cQ4AtNtg6'  
+            [cite_start]'password': '$2b$12$EixZaYVK1fsbw1ZfbX3OXe.WI/.2B8K5wjW6SAff4D8cQ4AtNtg6', 
         }
     }
 }
@@ -130,4 +130,5 @@ elif authentication_status == False:
     [cite_start]st.error('Username/password incorrect') [cite: 3]
 elif authentication_status is None:
     [cite_start]st.warning('Please enter your credentials') [cite: 3]
+
 
