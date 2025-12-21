@@ -13,7 +13,6 @@ else:
     st.stop()
 
 # --- 2. GLOBAL MATERIAL INVENTORY ---
-# We map everyday products to their "Legacy" chemical identity
 product_inventory = {
     "Search or select an item...": "",
     "Meat Wrap (PVC)": "C=CCl",
@@ -25,103 +24,112 @@ product_inventory = {
     "Coffee Cup Liner (PE)": "CCCCCCCC",
 }
 
-# --- 3. THE FORENSIC DECISION ENGINE ---
-def run_endgame_audit(item_name, smiles):
+# --- 3. THE ANALYTICAL DECISION ENGINE ---
+def run_synthesis_audit(item_name, smiles):
     try:
         mol = Chem.MolFromSmiles(smiles)
         toxic = any(a.GetSymbol() in ['Cl', 'F', 'Br', 'I'] for a in mol.GetAtoms())
         
         # Path 1: Recycle Logic
-        # PET and HDPE are high value; others are often rejected.
-        r_rating = 94 if "PET" in item_name or "Bottle" in item_name else 42
-        r_path = "HIGH-VALUE CIRCULARITY" if r_rating > 80 else "DOWN-CYCLING RISK"
+        r_rating = 92 if ("PET" in item_name or "Bottle" in item_name) else 38
         
         # Path 2: Landfill Logic
-        l_rating = 18 if toxic else 41
-        l_fate = "Toxic Leaching" if toxic else "Forever Persistence"
+        l_rating = 15 if toxic else 42
         
-        return r_rating, r_path, l_rating, l_fate, toxic
+        # FINAL INTEGRATED RATING (Weighted average of current reality)
+        # Most items are more likely to hit landfill, so we weigh that risk
+        final_before_score = round((r_rating * 0.3) + (l_rating * 0.7), 1)
+        
+        return r_rating, l_rating, final_before_score, toxic
     except:
         return None
 
 # --- 4. THE APEX INTERFACE ---
 st.set_page_config(page_title="VoraCycle Apex OS", layout="wide")
-st.title("🔮 Wraith VoraCycle: Apex OS")
-st.markdown("### *Predicting the Endgame Before the Start-Line*")
+st.title("🔮 Wraith VoraCycle: Synthesis Apex OS")
+st.markdown("### *Integrated Endgame Audit: From Liability to Asset*")
 
-# USER INPUT
-search_query = st.selectbox("Type or select a product to audit:", list(product_inventory.keys()))
-custom_smiles = st.text_input("Or enter custom Molecular Barcode (SMILES):")
+search_query = st.selectbox("🧬 Select Product for Forensic Audit:", list(product_inventory.keys()))
 
-active_smiles = custom_smiles if custom_smiles else product_inventory.get(search_query, "")
-
-if active_smiles:
-    audit = run_endgame_audit(search_query, active_smiles)
+if search_query and search_query != "Search or select an item...":
+    active_smiles = product_inventory[search_query]
+    audit = run_synthesis_audit(search_query, active_smiles)
     
     if audit:
-        r_score, r_path, l_score, l_fate, is_toxic = audit
+        r_score, l_score, before_total, is_toxic = audit
+        after_total = 98.4  # VoraCycle Standard for Grade A Mineralization
         
-        # --- BEFORE & AFTER DASHBOARD ---
+        # --- THE START-LINE RATINGS ---
         st.divider()
-        st.header("📊 Current Forensic Ratings")
-        col_r, col_l = st.columns(2)
+        st.header("📊 Integrated Forensic Scores")
+        col_metrics = st.columns(3)
+        col_metrics[0].metric("Legacy Score (Before)", f"{before_total}%", delta="CRITICAL RISK" if before_total < 50 else "STABLE")
+        col_metrics[1].metric("VoraCycle Score (After)", f"{after_total}%", delta="GRADE A TARGET")
+        col_metrics[2].metric("Best Pathway", "VoraCycle Mineralization", delta="100% Circular")
+
+        # --- THE PATHWAY COMPARISON ---
+        st.divider()
+        path_a, path_b = st.tabs(["🚀 PATH A: RECYCLING LIMITS", "🌋 PATH B: LANDFILL IMPACT"])
         
-        with col_r:
-            st.metric("Recycle Rating", f"{r_score}%", delta=r_path)
-            st.info(f"**Path Outcome:** Material is currently {r_path.lower()}.")
+        with path_a:
+            st.subheader(f"Mechanical Recycling Potential: {r_score}%")
+            st.write("""
+            **Summary:** Most legacy materials lose structural integrity after 2-3 recycling cycles. 
+            For food-grade items (frozen/fresh), 'Downcycling' is common, meaning the product 
+            is turned into low-value items like park benches rather than new packaging.
+            """)
             
-        with col_l:
-            st.metric("Landfill Rating", f"{l_score}%", delta="UNSAFE" if l_score < 40 else "STABLE", delta_color="inverse")
-            st.error(f"**Landfill Reaction:** {l_fate}")
 
+        with path_b:
+            st.subheader(f"Landfill Environmental Impact: {l_score}%")
+            st.write(f"""
+            **Summary:** Currently, this material is a long-term liability. In landfill conditions, 
+            it stays mummified or leaches toxins. For fresh food packaging, this leads to 
+            microplastic shedding that enters the food chain.
+            """)
+
+        # --- THE DEEP SUMMARY (AI REASONING) ---
         st.divider()
-
-        # --- THE VORACYCLE UPGRADE (WHY & HOW) ---
-        st.header("🛠️ VoraCycle Transformation Strategy")
+        st.header("⚖️ Executive Transformation Summary")
         
-        # Detailed AI reasoning for the specific item
         prompt = (
-            f"Audit the product: {search_query}. "
-            f"1. Explain WHY changing this structure helps sustainability. "
-            f"2. List the specific changes made (Before vs After). "
-            f"3. Explain HOW these changes ensure the product stays strong for food (fresh, frozen, dry) "
-            f"but disappears in the soil. "
-            f"4. Provide the final results."
+            f"Provide a deep forensic summary for the product '{search_query}'. "
+            f"1. Why are the current paths (Recycle/Landfill) failing? "
+            f"2. Detail the exact molecular changes needed (Introduction of Metabolic Handles). "
+            f"3. Explain how these changes improve the product without affecting fresh, frozen, or dry food. "
+            f"4. Justify why VoraCycle Mineralization is the superior path for a business like Costco."
         )
         
-        with st.spinner("Calculating molecular surgery..."):
+        with st.spinner("Synthesizing forensic data..."):
             try:
                 response = model.generate_content(prompt)
-                if response.candidates and response.candidates[0].content.parts:
-                    st.info(response.text)
-                else:
-                    st.error("Audit blocked. Please check chemical safety parameters.")
+                st.info(response.text)
             except Exception as e:
-                st.error(f"📡 API Connection Lost: {str(e)}")
+                st.error(f"📡 API Connection Error: {str(e)}")
 
-        # --- THE FINAL RESULTS SUMMARY ---
+        # --- THE "HOW & WHY" VISUALIZATION ---
         st.divider()
-        st.subheader("⚖️ Final Summary: The VoraCycle Endgame")
+        st.subheader("🛠️ The VoraCycle Surgery: How & Why")
+        col_how, col_why = st.columns(2)
         
-        col_a, col_b = st.columns(2)
-        with col_a:
-            st.success("**Final After Rating: 98.2%**")
+        with col_how:
+            st.markdown("**How the changes are made:**")
             st.write("""
-            **What was changed:** We replaced permanent C-C bonds with metabolic 'trigger' sites.
-            **The Benefit:** The product no longer leaches toxins. It is 100% compliant with global plastic taxes.
+            We modify the polymer backbone by inserting 'Latent Scission Bridges.' 
+            These bridges are chemically inactive while holding frozen or fresh food. 
+            They only break when the 'Enzymatic Key' (found in soil bacteria) is applied.
             """)
-        with col_b:
-            st.success("**Outcome: Total Mineralization**")
+            
+            
+        with col_why:
+            st.markdown("**Why this is the superior path:**")
             st.write("""
-            **The Result:** The material stays rigid and safe for frozen or fresh food. 
-            Once it hits the soil, microbes use the 'handles' to eat the material, 
-            turning it into CO2 and Water.
+            Traditional recycling is inconsistent. Landfills are expensive. 
+            By making the material 'Soil-Safe' at the start-line, we ensure 
+            that no matter where the package ends up, it returns to the earth 
+            as water and CO2. This protects the business from future plastic taxes.
             """)
-
-        # Instructively relevant diagrams
-        
-        
-        
+            
 
     else:
-        st.warning("Please select a valid item or enter a chemical barcode.")
+        st.warning("Forensic analysis failed. Please check the material library.")
