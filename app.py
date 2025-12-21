@@ -67,6 +67,7 @@ if st.session_state.get("authentication_status"):
             st.markdown("---")
             st.header("⚖️ The Transformation Analysis (Before vs. After)")
             
+            # Simulated Redesign Metrics
             red_rec = min(98, current['recycle'] + 25)
             red_fate = min(98, current['fate'] + 45)
 
@@ -122,6 +123,9 @@ if st.session_state.get("authentication_status"):
             * **Action:** Use the VoraCycle 'After' redesign to leapfrog domestic competitors (Walmart/Sam's) and hit the 85+ mark. This standardizes your supply chain globally and prevents local regulatory shocks.
             """)
 
+# --- 5. Authentication Error Handling (Fixed) ---
 elif st.session_state.get("authentication_status") is False:
-    st.error('Login Failed.')
-elif st.session_state
+    st.error('Login Failed. Please check your credentials.')
+
+elif st.session_state.get("authentication_status") is None:
+    st.warning('Please log in to the VoraCycle Dashboard.')
