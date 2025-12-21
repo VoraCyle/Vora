@@ -51,7 +51,7 @@ if st.session_state.get("authentication_status"):
 
     tab1, tab2 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Market Benchmarking"])
 
-    # --- TAB 1: DEEP DIVE (STABLE & UNTOUCHED) ---
+    # --- TAB 1: DEEP DIVE AUDIT ---
     with tab1:
         st.sidebar.header("Audit Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods", "Industrial"])
@@ -75,22 +75,27 @@ if st.session_state.get("authentication_status"):
                 st.markdown("### 🟢 AFTER (VoraCycle)")
                 st.metric("Recycle Score", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
                 st.metric("Landfill Fate", f"{red_fate}/100", f"Grade {get_letter_grade(red_fate)}")
+
             st.markdown("---")
             st.header("🎯 Procurement Strategy Verdict")
             if category == "Hot Food" or current['recycle'] < 55:
                 st.warning("🏁 **STRATEGIC CHOICE: LANDFILL SAFETY (BIO-ASSIMILATION)**")
                 st.write("""
-                **Why this Verdict?** Items like greasy chicken bags are rejected by recyclers. 
-                **Benefit:** VoraCycle redesign ensures **Bio-Mineralization**, meaning the plastic turns into soil rather than microplastics.
+                **Depth of Rationale:** Materials in high-fat or high-heat environments (like the Rotisserie Deli) undergo "Organic Fouling." Traditional mechanical recycling relies on high-purity melt-streams; even 1% grease contamination can cause an entire batch of recycled plastic to fail quality standards. By attempting to recycle these, Costco increases its carbon footprint through unnecessary transport of "trash" to recycling centers that will ultimately reject it.
+
+                **Why this is Beneficial:**
+                The VoraCycle redesign shifts the endgame from 'Mechanical' to 'Biological.' By utilizing bio-aromatic linkages, the material is recognized by soil microbes as carbon-food. This **Mineralization** ensures that even if a member throws a greasy bag in the trash, it returns to the earth as biomass/CO2 rather than fragmenting into microplastics. This removes the "Forever Liability" from Costco's balance sheet.
                 """)
             else:
                 st.success("🏁 **STRATEGIC CHOICE: RECYCLE (CIRCULAR RECOVERY)**")
                 st.write("""
-                **Why this Verdict?** High purity detected. 
-                **Benefit:** This material can be sold back into the supply chain, reducing Net Cost of Goods.
+                **Depth of Rationale:** This material possesses high thermodynamic stability and molecular purity. Because it is used in "Dry" or "Cold" applications, it remains uncontaminated by oils. This makes it a "High-Value Asset" for secondary markets. Recycling here is a matter of resource preservation; the energy required to re-melt this polymer is significantly lower than the energy required to refine virgin crude oil.
+
+                **Why this is Beneficial:**
+                Focusing on a 'Closed-Loop' system for high-purity goods allows Costco to negotiate "Buy-Back" agreements with resin suppliers. This turns a waste-cost into a commodity-credit, effectively lowering the Net Cost of Goods (COGS) while satisfying global Circular Economy mandates (like the EU PPWR).
                 """)
 
-    # --- TAB 2: GLOBAL BENCHMARKING & COMPARISONS ---
+    # --- TAB 2: GLOBAL BENCHMARKING & FINAL THOUGHTS ---
     with tab2:
         st.subheader("📊 Global Market Alignment (0-100)")
         if current:
@@ -109,28 +114,33 @@ if st.session_state.get("authentication_status"):
         st.markdown("---")
         st.subheader("📋 Multi-Item Outcome Comparison")
         comparison_list = st.multiselect("Benchmark materials side-by-side", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
-        
         if comparison_list:
             comp_rows = []
             for item_name in comparison_list:
                 res = analyze_material(smiles_dict[item_name], item_name)
-                comp_rows.append({
-                    "Material": item_name,
-                    "Recycle Rating": f"{res['recycle']} ({get_letter_grade(res['recycle'])})",
-                    "Landfill Fate": f"{res['fate']} ({get_letter_grade(res['fate'])})",
-                    "Safety": "PASS" if res['toxic'] == 0 else "FAIL"
-                })
+                comp_rows.append({"Material": item_name, "Recycle": f"{res['recycle']} ({get_letter_grade(res['recycle'])})", "Landfill Fate": f"{res['fate']} ({get_letter_grade(res['fate'])})", "Safety": "PASS" if res['toxic'] == 0 else "FAIL"})
             st.table(pd.DataFrame(comp_rows))
 
         st.markdown("---")
         st.subheader("📝 Final Strategic Thoughts")
-        c1, c2 = st.columns(2)
-        with c1:
-            st.info("**Why Change?** Avoids 'Plastic Taxes' and eliminates toxins (PFAS) leaching into food fats.")
-        with c2:
-            st.warning("**Market Gap:** Costco is currently trailing Grade A standards. Redesigning for 'Honest Endgames' is the only way to lead.")
+        
+        st.write("""
+        ### 🛡️ Why Change is Beneficial in All Aspects
+        Transitioning to a **Grade A (85+)** VoraCycle standard is a move toward **Operational De-Risking**. 
+        
+        1. **Chemical Migration & Food Safety:** Current Grade C/D plastics often contain halogens (Chlorine in PVC) or PFAS coatings. At warehouse rotisserie temperatures (180°F+), these molecules gain enough kinetic energy to migrate into food fats. Upgrading eliminates this toxicity risk, protecting members and reducing litigation exposure.
+        2. **Taxation Hedge:** Many global regions are moving toward a "sliding scale" plastic tax. A material with a 55-point score may be taxed at $500/ton, while an 85-point material may be exempt. The redesign pays for itself through tax avoidance alone.
+        3. **Supply Chain Resilience:** By meeting the **EU 88-point standard**, Costco creates a "Universal Packaging Specification." This allows for global inventory movement without needing to redesign packaging for different regional laws.
+        """)
 
-# --- Authentication Logic (Stable) ---
+        st.write("""
+        ### 🌎 Thoughts on Competitor Benchmarking
+        The 0-100 scale reveals that "Compliance" is not the same as "Leadership." 
+        
+        * **The Market Gap:** While Sam's Club and Walmart are focused on "Incrementalism" (moving from a 58 to a 65), Costco has the volume to enforce a "Quantum Leap." 
+        * **Honest Endgames:** The most significant insight from this benchmarking is the validation of the **Landfill Safety** path. By acknowledging that a certain percentage of wholesale waste *will* end up in a landfill, and ensuring those items are bio-available, Costco moves from "Greenwashing" to "Actual Impact." This honesty is the ultimate beneficial outcome for brand trust in a 2025 retail environment.
+        """)
+
 elif st.session_state.get("authentication_status") is False:
     st.error('Login Failed.')
 elif st.session_state.get("authentication_status") is None:
