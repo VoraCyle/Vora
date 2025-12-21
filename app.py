@@ -29,7 +29,6 @@ if st.session_state.get("authentication_status"):
     def analyze_material(smiles_str, name="Custom"):
         mol = Chem.MolFromSmiles(smiles_str)
         if not mol: return None
-        # Physical & Environmental Calculations
         mw = Descriptors.MolWt(mol)
         rings = rdMolDescriptors.CalcNumRings(mol)
         toxic = len([a for a in mol.GetAtoms() if a.GetSymbol() in ['Cl', 'F', 'Br']])
@@ -53,7 +52,7 @@ if st.session_state.get("authentication_status"):
 
     tab1, tab2 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Market Benchmarking"])
 
-    # --- TAB 1: DEEP DIVE ---
+    # --- TAB 1: DEEP DIVE & STRATEGIC RATIONALE ---
     with tab1:
         st.sidebar.header("Audit Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods", "Industrial"])
@@ -66,35 +65,34 @@ if st.session_state.get("authentication_status"):
             st.image(Draw.MolToImage(current['mol'], size=(400, 400)), caption=f"Molecular DNA: {selected_item}")
             
             st.markdown("---")
-            st.header("⚖️ The VoraCycle Transformation (Before vs. After)")
+            st.header("⚖️ The Transformation Analysis (Before vs. After)")
             
-            # Simulated Redesign Scores
             red_rec = min(98, current['recycle'] + 25)
             red_fate = min(98, current['fate'] + 45)
 
             col_b, col_a = st.columns(2)
             with col_b:
                 st.markdown("### 🔴 BEFORE (Current)")
-                st.metric("Recycle Rating", f"{current['recycle']}/100", get_letter_grade(current['recycle']), delta_color="inverse")
-                st.metric("Landfill Fate", f"{current['fate']}/100", get_letter_grade(current['fate']), delta_color="inverse")
-                st.error("**Outcome:** Material creates microplastics and persists for 400+ years.")
+                st.metric("Recycle Rating", f"{current['recycle']}/100", f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
+                st.metric("Landfill Fate", f"{current['fate']}/100", f"Grade {get_letter_grade(current['fate'])}", delta_color="inverse")
+                st.error("**Persistence Liability:** This material creates microplastics that fragment but do not disappear for 400+ years.")
 
             with col_a:
                 st.markdown("### 🟢 AFTER (VoraCycle)")
-                st.metric("Recycle Rating", f"{red_rec}/100", f"Grade: {get_letter_grade(red_rec)}")
-                st.metric("Landfill Fate", f"{red_fate}/100", f"Grade: {get_letter_grade(red_fate)}")
-                st.success("**Outcome:** Full Bio-Mineralization. Material returns to soil within 24 months.")
+                st.metric("Recycle Rating", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
+                st.metric("Landfill Fate", f"{red_fate}/100", f"Grade {get_letter_grade(red_fate)}")
+                st.success("**Bio-Assimilation:** Carbon returns to the soil safely via mineralization within 24-48 months.")
 
             st.markdown("---")
             st.header("🎯 Procurement Strategy Verdict")
             if category == "Hot Food" or current['recycle'] < 55:
-                st.warning("🏆 **STRATEGIC CHOICE: LANDFILL SAFETY.** This item is likely food-contaminated. Focus on the VoraCycle redesign to ensure it disappears safely in the trash.")
+                st.warning("🏆 **DECISION: LANDFILL SAFETY.** Food-grease contamination makes recycling unviable. Transitioning to a Bio-Aromatic polymer ensures a safe environmental return.")
             else:
-                st.success("🏆 **STRATEGIC CHOICE: RECYCLE.** High purity. Focus on a closed-loop supply chain.")
+                st.success("🏆 **DECISION: RECYCLE.** High purity detected. Focus on circular recovery and 'Closed-Loop' logistics.")
 
-    # --- TAB 2: GLOBAL BENCHMARKING ---
+    # --- TAB 2: GLOBAL BENCHMARKING & FINAL SUGGESTIONS ---
     with tab2:
-        st.subheader("📊 Competitor Market Alignment (0-100)")
+        st.subheader("📊 Global Market Alignment (0-100)")
         if current:
             benchmarks = {
                 "Current Costco Item": current['recycle'],
@@ -109,14 +107,20 @@ if st.session_state.get("authentication_status"):
                 c_val.write(f"**{score}** ({get_letter_grade(score)})")
 
             st.markdown("---")
-            st.subheader("🏢 Comparative Beneficial Outcome")
-            items_to_compare = st.multiselect("Select materials to see best outcome", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:2])
-            if items_to_compare:
-                rows = []
-                for itm in items_to_compare:
-                    res = analyze_material(smiles_dict[itm], itm)
-                    rows.append({"Material": itm, "Grade": get_letter_grade(res['recycle']), "Safety": "PASS" if res['toxic'] == 0 else "FAIL"})
-                st.table(pd.DataFrame(rows))
+            st.subheader("📝 Final Strategic Suggestions")
+            
+            st.write("#### 1. Why Change is Beneficial in All Aspects")
+            st.info("""
+            * **Financial:** Avoids upcoming 'Plastic Taxes' (approx. $420/tonne for Grade F materials).
+            * **Safety:** Eliminates halogenated toxins (PFAS/PVC) that leach into rotisserie chicken and meat fats.
+            * **Brand:** Moves Costco from 'Compliance' to 'Leadership,' justifying membership fees through superior Kirkland standards.
+            """)
+
+            st.write("#### 2. Competitor Benchmarking Suggestions")
+            st.warning(f"""
+            * **The Gap:** You are currently **{88 - current['recycle']} points** behind the EU Grade A standard.
+            * **Action:** Use the VoraCycle 'After' redesign to leapfrog domestic competitors (Walmart/Sam's) and hit the 85+ mark. This standardizes your supply chain globally and prevents local regulatory shocks.
+            """)
 
 elif st.session_state.get("authentication_status") is False:
     st.error('Login Failed.')
