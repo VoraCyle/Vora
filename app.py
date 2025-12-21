@@ -11,67 +11,34 @@ import google.generativeai as genai
 import streamlit as st
 import google.generativeai as genai
 
-# --- 1. SECURE AI CONFIGURATION ---
-# We use the 'latest' stable tag and a safety setting bypass to ensure the 
-# forensic chemistry isn't accidentally flagged as "dangerous content."
-if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    
-    # Use the specifically versioned model name
-    model = genai.GenerativeModel(
-        model_name='gemini-1.5-flash',
-        safety_settings=[
-            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
-            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
-        ]
-    )
-else:
-    st.error("🔑 Please add your GEMINI_API_KEY to the Streamlit Secrets.")
-    st.stop()
-
-# --- 2. THE REAL-TIME REASONER (FIXED) ---
-def ask_gemini_forensics(stats, smiles):
-    """Refined prompt to prevent 'Invalid Argument' errors."""
+def get_molecular_data(smiles):
+    """Safety-First Molecular Extraction"""
     try:
-        # We simplify the prompt to ensure it's a clean string
-        clean_prompt = (
-            f"As a forensic chemist, audit the SMILES string {smiles}. "
-            f"Physical data: {stats}. "
-            "Identify 3 required molecular changes for Costco safety, "
-            "the forensic benefits, and tactical implementation steps."
-        )
+        # 1. Clean the input (remove spaces/quotes)
+        clean_smi = smiles.strip().replace('"', '').replace("'", "")
         
-        response = model.generate_content(clean_prompt)
-        return response.text
-    except Exception as e:
-        return f"AI Connection Error: {str(e)}. Try a different SMILES string or rebooting."
-
-# --- 3. THE REAL-TIME AI REASONER ---
-def ask_gemini_forensics(stats, smiles):
-    """Refined for 2025 Streamlit/Google compatibility."""
-    try:
-        # We build a very simple, clean string to avoid transport errors
-        prompt_text = (
-            f"Forensic Audit Request:\n"
-            f"Molecule SMILES: {smiles}\n"
-            f"Atomic Data: {str(stats)}\n\n"
-            f"Instructions: Provide a 3-part strategic report for Costco on "
-            f"structural changes, forensic benefits, and supply chain implementation."
-        )
+        # 2. Attempt to build the molecule
+        mol = Chem.MolFromSmiles(clean_smi)
         
-        # Call the model
-        response = model.generate_content(prompt_text)
-        
-        # Ensure we get text back
-        if response and response.text:
-            return response.text
-        else:
-            return "AI returned an empty response. Verify SMILES string."
+        # 3. IF RDKit fails, stop here and return None safely
+        if mol is None:
+            return None, None
             
+        # 4. If successful, extract the real data
+        stats = {
+            "formula": Chem.rdMolDescriptors.CalcMolFormula(mol),
+            "mw": round(Descriptors.MolWt(mol), 2),
+            "rings": rdMolDescriptors.CalcNumRings(mol),
+            "atoms": [a.GetSymbol() for a in mol.GetAtoms()],
+            "toxic_elements": [s for s in [a.GetSymbol() for a in mol.GetAtoms()] if s in ['Cl', 'F', 'Br', 'I']],
+            "bonds": mol.GetNumBonds()
+        }
+        return stats, mol
+        
     except Exception as e:
-        # This will tell us exactly what is wrong if it fails again
-        return f"Strategic Audit Offline: {str(e)}"
-
+        # Catches any other weird background errors
+        return None, None
+        
 # --- 4. THE APEX OS INTERFACE ---
 st.title("🔮 Wraith VoraCycle: Apex OS")
 st.markdown("### 🟢 STATUS: LIVE AI REASONING ACTIVE")
@@ -122,6 +89,7 @@ if user_input:
 
 else:
     st.warning("Please enter a molecular barcode to begin the real-time audit.")
+
 
 
 
