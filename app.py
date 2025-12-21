@@ -52,7 +52,7 @@ if st.session_state.get("authentication_status"):
 
     tab1, tab2 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Market Benchmarking"])
 
-    # --- TAB 1: DEEP DIVE & VERDICT LOGIC ---
+    # --- TAB 1: DEEP DIVE (UNTOUCHED PER REQUEST) ---
     with tab1:
         st.sidebar.header("Audit Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods", "Industrial"])
@@ -63,28 +63,21 @@ if st.session_state.get("authentication_status"):
         
         if current:
             st.image(Draw.MolToImage(current['mol'], size=(400, 400)), caption=f"Molecular DNA: {selected_item}")
-            
             st.markdown("---")
             st.header("⚖️ The Transformation Analysis")
-            
             red_rec = min(98, current['recycle'] + 25)
             red_fate = min(98, current['fate'] + 45)
-
             col_b, col_a = st.columns(2)
             with col_b:
                 st.markdown("### 🔴 BEFORE (Current)")
                 st.metric("Recycle Score", f"{current['recycle']}/100", f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
                 st.metric("Landfill Fate", f"{current['fate']}/100", f"Grade {get_letter_grade(current['fate'])}", delta_color="inverse")
-
             with col_a:
                 st.markdown("### 🟢 AFTER (VoraCycle)")
                 st.metric("Recycle Score", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
                 st.metric("Landfill Fate", f"{red_fate}/100", f"Grade {get_letter_grade(red_fate)}")
-
-            # --- DYNAMIC VERDICT DESCRIPTIONS ---
             st.markdown("---")
             st.header("🎯 Procurement Strategy Verdict")
-            
             if category == "Hot Food" or current['recycle'] < 55:
                 st.warning("🏁 **STRATEGIC CHOICE: LANDFILL SAFETY (BIO-ASSIMILATION)**")
                 st.write("""
@@ -102,7 +95,7 @@ if st.session_state.get("authentication_status"):
                 Focusing on a 'Closed-Loop' system for this item allows Costco to sell its waste back into the supply chain. This lowers the Net Cost of Goods (COGS) and achieves the highest possible ESG rating for the warehouse.
                 """)
 
-    # --- TAB 2: GLOBAL BENCHMARKING ---
+    # --- TAB 2: GLOBAL BENCHMARKING & COMPARISONS ---
     with tab2:
         st.subheader("📊 Global Market Alignment (0-100)")
         if current:
@@ -118,9 +111,37 @@ if st.session_state.get("authentication_status"):
                 c_bar.progress(score / 100)
                 c_val.write(f"**{score}** ({get_letter_grade(score)})")
 
-# --- 5. Authentication Error Handling (Fixed) ---
-elif st.session_state.get("authentication_status") is False:
-    st.error('Login Failed. Please check your credentials.')
+        st.markdown("---")
+        st.subheader("📋 Multi-Item Beneficial Outcome Comparison")
+        st.write("Compare different warehouse materials to identify which redesign provides the most significant circular benefit.")
+        
+        comparison_list = st.multiselect("Select materials for side-by-side rating", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
+        
+        if comparison_list:
+            comp_rows = []
+            for item_name in comparison_list:
+                res = analyze_material(smiles_dict[item_name], item_name)
+                comp_rows.append({
+                    "Material": item_name,
+                    "Recycle Rating": f"{res['recycle']} ({get_letter_grade(res['recycle'])})",
+                    "Landfill Fate": f"{res['fate']} ({get_letter_grade(res['fate'])})",
+                    "Food Safety": "PASS" if res['toxic'] == 0 else "FAIL (Leach Risk)"
+                })
+            st.table(pd.DataFrame(comp_rows))
 
-elif st.session_state.get("authentication_status") is None:
-    st.warning('Please log in to the VoraCycle Dashboard.')
+        st.markdown("---")
+        st.subheader("📝 Final Strategic Suggestions & Thoughts")
+        
+        col_suggest1, col_suggest2 = st.columns(2)
+        
+        with col_suggest1:
+            st.info("#### Why Change is Beneficial")
+            st.write("""
+            * **Economic:** Moving to Grade A materials reduces exposure to 'Plastic Taxes' which are increasingly based on 0-100 circularity scores.
+            * **Regulatory:** Standardizing to the EU 88-point mark future-proofs the supply chain against domestic bans.
+            * **Safety:** Removing PVC/PFAS ensures that heat-lamp applications in the deli don't migrate toxins into prepared meals.
+            """)
+            
+        with col_suggest2:
+            st.warning("#### Global Benchmarking Thoughts")
+            st.write
