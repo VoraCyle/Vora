@@ -52,7 +52,7 @@ if st.session_state.get("authentication_status"):
 
     tab1, tab2 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Market Benchmarking"])
 
-    # --- TAB 1: DEEP DIVE & STRATEGIC RATIONALE ---
+    # --- TAB 1: DEEP DIVE & VERDICT LOGIC ---
     with tab1:
         st.sidebar.header("Audit Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods", "Industrial"])
@@ -65,33 +65,44 @@ if st.session_state.get("authentication_status"):
             st.image(Draw.MolToImage(current['mol'], size=(400, 400)), caption=f"Molecular DNA: {selected_item}")
             
             st.markdown("---")
-            st.header("⚖️ The Transformation Analysis (Before vs. After)")
+            st.header("⚖️ The Transformation Analysis")
             
-            # Simulated Redesign Metrics
             red_rec = min(98, current['recycle'] + 25)
             red_fate = min(98, current['fate'] + 45)
 
             col_b, col_a = st.columns(2)
             with col_b:
                 st.markdown("### 🔴 BEFORE (Current)")
-                st.metric("Recycle Rating", f"{current['recycle']}/100", f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
+                st.metric("Recycle Score", f"{current['recycle']}/100", f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
                 st.metric("Landfill Fate", f"{current['fate']}/100", f"Grade {get_letter_grade(current['fate'])}", delta_color="inverse")
-                st.error("**Persistence Liability:** This material creates microplastics that fragment but do not disappear for 400+ years.")
 
             with col_a:
                 st.markdown("### 🟢 AFTER (VoraCycle)")
-                st.metric("Recycle Rating", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
+                st.metric("Recycle Score", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
                 st.metric("Landfill Fate", f"{red_fate}/100", f"Grade {get_letter_grade(red_fate)}")
-                st.success("**Bio-Assimilation:** Carbon returns to the soil safely via mineralization within 24-48 months.")
 
+            # --- DYNAMIC VERDICT DESCRIPTIONS ---
             st.markdown("---")
             st.header("🎯 Procurement Strategy Verdict")
+            
             if category == "Hot Food" or current['recycle'] < 55:
-                st.warning("🏆 **DECISION: LANDFILL SAFETY.** Food-grease contamination makes recycling unviable. Transitioning to a Bio-Aromatic polymer ensures a safe environmental return.")
+                st.warning("🏁 **STRATEGIC CHOICE: LANDFILL SAFETY (BIO-ASSIMILATION)**")
+                st.write("""
+                **Why this Verdict?** Items in this category (like greasy chicken bags or meat trays) are typically rejected by recycling facilities due to organic contamination. Attempting to recycle these is 'Wish-cycling'—it costs more and leads to landfill anyway.
+                
+                **How it's Beneficial:**
+                By choosing a VoraCycle redesigned material, you ensure that even when the item is thrown in the trash, it undergoes **Bio-Mineralization**. This eliminates microplastic liability, avoids 'non-recyclable' taxes, and protects the brand from environmental litigation.
+                """)
             else:
-                st.success("🏆 **DECISION: RECYCLE.** High purity detected. Focus on circular recovery and 'Closed-Loop' logistics.")
+                st.success("🏁 **STRATEGIC CHOICE: RECYCLE (CIRCULAR RECOVERY)**")
+                st.write("""
+                **Why this Verdict?** This material is high-purity and used in a 'dry' application. It has a high secondary market value, meaning recycling facilities will actively pay for this waste stream.
+                
+                **How it's Beneficial:**
+                Focusing on a 'Closed-Loop' system for this item allows Costco to sell its waste back into the supply chain. This lowers the Net Cost of Goods (COGS) and achieves the highest possible ESG rating for the warehouse.
+                """)
 
-    # --- TAB 2: GLOBAL BENCHMARKING & FINAL SUGGESTIONS ---
+    # --- TAB 2: GLOBAL BENCHMARKING ---
     with tab2:
         st.subheader("📊 Global Market Alignment (0-100)")
         if current:
@@ -106,22 +117,6 @@ if st.session_state.get("authentication_status"):
                 c_label.write(f"**{entity}**")
                 c_bar.progress(score / 100)
                 c_val.write(f"**{score}** ({get_letter_grade(score)})")
-
-            st.markdown("---")
-            st.subheader("📝 Final Strategic Suggestions")
-            
-            st.write("#### 1. Why Change is Beneficial in All Aspects")
-            st.info("""
-            * **Financial:** Avoids upcoming 'Plastic Taxes' (approx. $420/tonne for Grade F materials).
-            * **Safety:** Eliminates halogenated toxins (PFAS/PVC) that leach into rotisserie chicken and meat fats.
-            * **Brand:** Moves Costco from 'Compliance' to 'Leadership,' justifying membership fees through superior Kirkland standards.
-            """)
-
-            st.write("#### 2. Competitor Benchmarking Suggestions")
-            st.warning(f"""
-            * **The Gap:** You are currently **{88 - current['recycle']} points** behind the EU Grade A standard.
-            * **Action:** Use the VoraCycle 'After' redesign to leapfrog domestic competitors (Walmart/Sam's) and hit the 85+ mark. This standardizes your supply chain globally and prevents local regulatory shocks.
-            """)
 
 # --- 5. Authentication Error Handling (Fixed) ---
 elif st.session_state.get("authentication_status") is False:
