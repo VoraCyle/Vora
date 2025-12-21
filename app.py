@@ -8,35 +8,43 @@ import numpy as np
 import streamlit as st
 import google.generativeai as genai
 
-# --- AI CONFIGURATION (REAL-TIME ACTIVATION) ---
-# This pulls the key safely from the dashboard secrets you just saved
+import streamlit as st
+import google.generativeai as genai
+
+# --- 1. SECURE AI CONFIGURATION ---
+# We use the 'latest' stable tag and a safety setting bypass to ensure the 
+# forensic chemistry isn't accidentally flagged as "dangerous content."
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    # Use the 'latest' tag for a more stable connection
-    model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+    
+    # Use the specifically versioned model name
+    model = genai.GenerativeModel(
+        model_name='gemini-1.5-flash',
+        safety_settings=[
+            {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_NONE"},
+            {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_NONE"},
+        ]
+    )
 else:
-    st.error("⚠️ API Key missing! Go to Settings > Secrets and add GEMINI_API_KEY.")
+    st.error("🔑 Please add your GEMINI_API_KEY to the Streamlit Secrets.")
     st.stop()
 
-# --- 2. AUTHENTIC CHEMICAL ENGINE ---
-def get_molecular_data(smiles):
-    """Performs real-time chemical extraction from SMILES string."""
+# --- 2. THE REAL-TIME REASONER (FIXED) ---
+def ask_gemini_forensics(stats, smiles):
+    """Refined prompt to prevent 'Invalid Argument' errors."""
     try:
-        mol = Chem.MolFromSmiles(smiles)
-        if not mol: return None
+        # We simplify the prompt to ensure it's a clean string
+        clean_prompt = (
+            f"As a forensic chemist, audit the SMILES string {smiles}. "
+            f"Physical data: {stats}. "
+            "Identify 3 required molecular changes for Costco safety, "
+            "the forensic benefits, and tactical implementation steps."
+        )
         
-        stats = {
-            "formula": Chem.rdMolDescriptors.CalcMolFormula(mol),
-            "mw": round(Descriptors.MolWt(mol), 2),
-            "rings": rdMolDescriptors.CalcNumRings(mol),
-            "atoms": [a.GetSymbol() for a in mol.GetAtoms()],
-            "toxic_elements": [s for s in [a.GetSymbol() for a in mol.GetAtoms()] if s in ['Cl', 'F', 'Br', 'I', 'As', 'Hg']],
-            "bonds": mol.GetNumBonds(),
-            "logp": round(Descriptors.MolLogP(mol), 2)
-        }
-        return stats, mol
-    except:
-        return None
+        response = model.generate_content(clean_prompt)
+        return response.text
+    except Exception as e:
+        return f"AI Connection Error: {str(e)}. Try a different SMILES string or rebooting."
 
 # --- 3. THE REAL-TIME AI REASONER ---
 def ask_gemini_forensics(stats, smiles):
@@ -106,4 +114,5 @@ if user_input:
 
 else:
     st.warning("Please enter a molecular barcode to begin the real-time audit.")
+
 
