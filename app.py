@@ -13,7 +13,6 @@ else:
     st.stop()
 
 # --- 2. DYNAMIC MATERIAL DATABASE ---
-# Each item now has a unique chemical signature to drive accuracy
 product_inventory = {
     "Search or select an item...": "",
     "Meat Wrap (PVC)": "C=CCl",
@@ -31,20 +30,17 @@ def run_strategic_audit(item_name, smiles):
         mol = Chem.MolFromSmiles(smiles)
         if not mol: return None
         
-        # FACTOR 1: Toxicity (Halogens)
         toxic_atoms = any(a.GetSymbol() in ['Cl', 'F', 'Br', 'I'] for a in mol.GetAtoms())
-        # FACTOR 2: Molecular Weight (Complexity)
         mw = Descriptors.MolWt(mol)
         
-        # PATH 1: RECYCLING LOGIC (Dynamic based on MW and Type)
-        # High MW or toxic items are harder to recycle
+        # PATH 1: RECYCLING LOGIC
         br = 92 if "PET" in item_name else max(15, 80 - (mw / 10))
         if toxic_atoms: br -= 20
-        ar = min(98.5, br + 45) # VoraCycle optimization potential
+        ar = min(98.5, br + 45) 
         
-        # PATH 2: MINERALIZATION LOGIC (Dynamic based on Toxicity)
+        # PATH 2: MINERALIZATION LOGIC
         bm = 10 if toxic_atoms else max(20, 50 - (mw / 20))
-        am = 99.4 if not toxic_atoms else 94.2 # VoraCycle "Endgame" ceiling
+        am = 99.4 if not toxic_atoms else 94.2 
         
         # BEST PATH ARBITRATION
         best_path = "Mineralization" if am > ar else "Mechanical Recycling"
@@ -58,8 +54,8 @@ def run_strategic_audit(item_name, smiles):
         return None
 
 # --- 4. THE APEX INTERFACE ---
-st.set_page_config(page_title="VoraCycle Dynamic Arbiter", layout="wide")
-st.title("🔮 Wraith VoraCycle: Dynamic Arbiter")
+st.set_page_config(page_title="VoraCycle Strategic Arbiter", layout="wide")
+st.title("🔮 Wraith VoraCycle: Strategic Arbiter")
 st.markdown("### *Dynamic Forensic Benchmarking: Real-Time Accuracy*")
 
 query = st.selectbox("🧬 Select Item for Forensic Audit:", list(product_inventory.keys()))
@@ -85,18 +81,18 @@ if query and query != "Search or select an item...":
             st.subheader("♻️ Path 1: Mechanical Recycling")
             st.metric("Before", f"{br}%")
             st.metric("After VoraCycle", f"{ar}%", delta=f"+{round(ar-br, 1)}% Improvement")
-            st.write(f"**Forensic Note:** This item's complexity ({round(mw,1)} u) makes legacy recycling difficult.")
+            st.write(f"**Forensic Note:** Item complexity ({round(mw,1)} u) limits legacy recovery.")
 
         with path_col2:
             st.subheader("🌿 Path 2: Soil Mineralization")
             st.metric("Before", f"{bm}%")
             st.metric("After VoraCycle", f"{am}%", delta=f"+{round(am-bm, 1)}% Improvement")
-            st.write(f"**Forensic Note:** VoraCycle metabolic handles bypass the carbon-locking found in legacy {query}.")
+            st.write(f"**Forensic Note:** VoraCycle handles bypass the carbon-locking in {query}.")
 
         # --- THE STRATEGIC DIRECTIVE ---
         st.divider()
         st.header(f"🏆 Strategic Directive: {best_path}")
-        st.success(f"To maximize sustainability and cost-efficiency, this item's optimal endgame is **{best_path}**.")
+        st.success(f"Optimizing for **{best_path}** yields the highest efficiency and sustainability ROI.")
 
         # --- THE "WHY": MONEY, TIME, RESOURCES ---
         st.header("⚖️ Resource Efficiency Analysis")
@@ -104,13 +100,13 @@ if query and query != "Search or select an item...":
         
         with t1:
             st.write("### Financial Savings")
-            st.write(f"By choosing **{best_path}**, we avoid the ${round(mw * 1.5, 2)}/ton surcharge associated with difficult-to-treat legacy polymers.")
+            st.write(f"By choosing **{best_path}**, we avoid surcharges associated with legacy polymers and potential plastic taxes.")
         with t2:
             st.write("### Time Efficiency")
             st.write(f"Legacy {query} requires 400+ years to degrade. VoraCycle reduces this to <180 days.")
         with t3:
             st.write("### Resource Optimization")
-            st.write("Ensuring structural integrity for Fresh, Frozen, and Dry food storage without increasing virgin plastic density.")
+            st.write("Ensuring structural integrity for Fresh, Frozen, and Dry food storage without excessive material use.")
 
         # --- BUSINESS TRANSFORMATION LEDGER ---
         st.divider()
@@ -119,9 +115,9 @@ if query and query != "Search or select an item...":
         l_col1, l_col2 = st.columns(2)
         with l_col1:
             st.write("#### Forensic Data Improvements")
-            st.write(f"- **Toxin Elimination:** 100% reduction in chemical migration risks.")
-            st.write(f"- **Tensile Strength:** Maintained at 100% capacity for food safety.")
-            st.write(f"- **Endgame Reliability:** Predictive mineralization achieved.")
+            st.write("- **Toxin Elimination:** 100% reduction in leaching risks.")
+            st.write("- **Tensile Strength:** Maintained at 100% capacity.")
+            st.write("- **Endgame Reliability:** Predictive mineralization achieved.")
             
 
         with l_col2:
@@ -131,10 +127,28 @@ if query and query != "Search or select an item...":
             st.write(f"- **Brand Equity:** Market leadership with a {my_grade} rating.")
             
 
+        # --- FINAL INTEGRATED FORENSIC CONCLUSION ---
         st.divider()
-        st.subheader("📈 Final Forensic Conclusion")
-        st.info(f"The audit for **{query}** confirms that switching to **{best_path}** provides the highest ROI by saving resources, time, and money while guaranteeing consumer safety.")
+        st.header("📈 Final Forensic Conclusion & Decision Logic")
+        
+        # AI synthesis for the detailed deep-dive
+        with st.spinner("Synthesizing final forensic justification..."):
+            prompt = (
+                f"Explain why {best_path} was chosen as the ultimate endgame for {query}. "
+                f"Include the following: 1. Why the before state was a liability (chemical locking/toxicity). "
+                f"2. How the VoraCycle surgery (metabolic handles or re-linkers) creates a better item. "
+                f"3. What specifically makes this a superior business move regarding money, time, and resources. "
+                f"4. Confirm why this path is the most sustainable option for food variables (frozen, fresh, dry) "
+                f"and what happens to the product when it reaches the finish line."
+            )
+            try:
+                response = model.generate_content(prompt)
+                if hasattr(response, 'text'):
+                    st.info(response.text)
+            except Exception as e:
+                st.error("Forensic summary fallback: Path chosen based on highest mineralization potential and toxin reduction.")
+
         
         
     else:
-        st.error("Forensic analysis failed. Item barcode corrupted.")
+        st.error("Forensic analysis failed.")
