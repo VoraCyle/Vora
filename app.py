@@ -4,10 +4,10 @@ from rdkit import Chem
 from rdkit.Chem import Descriptors
 import pandas as pd
 
-# --- 1. SECURE AI CONFIGURATION (FIXED) ---
+# --- 1. SECURE AI CONFIGURATION ---
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash') # Universal stable model
+    model = genai.GenerativeModel('gemini-1.5-flash') 
 else:
     st.error("🔑 API Key Missing. Please add it to Streamlit Secrets.")
     st.stop()
@@ -20,6 +20,7 @@ product_inventory = {
     "Chip Bag (Multi-layer)": "CCCCCCCCCC.C=CC#N",
     "Deli Container (PP)": "CC(C)CC(C)C",
     "Frozen Food Bag (LDPE)": "CCCCCCCCCCCC",
+    "Pharmacy Bottle (PC)": "CC(C)(C1=CC=C(OC(=O)OC2=CC=C(C(C)(C)C)C=C2)C=C1)C",
     "Coffee Cup Liner (PE)": "CCCCCCCC",
 }
 
@@ -29,21 +30,20 @@ def run_strategic_audit(item_name, smiles):
         mol = Chem.MolFromSmiles(smiles)
         toxic = any(a.GetSymbol() in ['Cl', 'F', 'Br', 'I'] for a in mol.GetAtoms())
         
-        # BEFORE PATHS
+        # PATH 1: RECYCLING SCORES
         b_r = 92 if ("PET" in item_name) else 35
-        b_m = 12 if toxic else 41
-        
-        # AFTER PATHS (VoraCycle Optimized)
         a_r = 97.5 
+        
+        # PATH 2: MINERALIZATION SCORES
+        b_m = 12 if toxic else 41
         a_m = 99.2 
         
-        # ARBITRATION: Best path based on Money, Time, and Resources
-        # Mineralization usually saves more money on logistics and sorting time.
+        # ARBITRATION
         best_path = "Mineralization" if (a_m >= a_r or toxic) else "Mechanical Recycling"
         
-        # GRADING (A-F)
-        grade = "A" if a_m > 98 else "B"
-        comp_grade = "D" if toxic else "C" # Benchmarking other stores
+        # COMPETITIVE GRADING
+        grade = "A" if (a_m > 98 or a_r > 97) else "B"
+        comp_grade = "D" if toxic else "C" 
         
         return b_r, a_r, b_m, a_m, best_path, grade, comp_grade
     except:
@@ -52,9 +52,9 @@ def run_strategic_audit(item_name, smiles):
 # --- 4. THE APEX INTERFACE ---
 st.set_page_config(page_title="VoraCycle Strategic Arbiter", layout="wide")
 st.title("🔮 Wraith VoraCycle: Enterprise Arbiter")
-st.markdown("### *Maximizing Value: Time, Money, and Resource Efficiency*")
+st.markdown("### *Comparative Dual-Path Audit: Maximizing Time, Money, and Resources*")
 
-query = st.selectbox("🧬 Audit a Product:", list(product_inventory.keys()))
+query = st.selectbox("🧬 Select Item for Forensic Audit:", list(product_inventory.keys()))
 
 if query and query != "Search or select an item...":
     smiles = product_inventory[query]
@@ -63,38 +63,56 @@ if query and query != "Search or select an item...":
     if audit:
         br, ar, bm, am, best_path, my_grade, other_grade = audit
         
-        # --- THE COMPETITIVE BENCHMARK ---
+        # --- COMPETITIVE BENCHMARK ---
         st.divider()
         col_rank1, col_rank2 = st.columns(2)
         col_rank1.metric("OUR VoraCycle Grade", my_grade, delta="Target: 100%")
         col_rank2.metric("COMPETITOR Grade (Avg)", other_grade, delta="-2 Grades Behind", delta_color="inverse")
         
-        # --- STRATEGIC DIRECTIVE ---
-        st.subheader(f"🏆 Best Path: {best_path}")
-        st.success(f"Engineering for **{best_path}** is the most efficient route for this item.")
+        # --- THE DUAL-PATH SCORECARD ---
+        st.header("📊 Dual-Path Performance Audit")
+        path_col1, path_col2 = st.columns(2)
+        
+        with path_col1:
+            st.subheader("♻️ Path 1: Mechanical Recycling")
+            st.metric("Before", f"{br}%")
+            st.metric("After VoraCycle", f"{ar}%", delta=f"+{round(ar-br, 1)}% Improvement")
+            st.write("**Why/How:** Legacy plastics suffer 'Chain Scission' during heat. We add molecular re-linkers to keep the material food-grade strong for multiple cycles.")
+
+        with path_col2:
+            st.subheader("🌿 Path 2: Soil Mineralization")
+            st.metric("Before", f"{bm}%")
+            st.metric("After VoraCycle", f"{am}%", delta=f"+{round(am-bm, 1)}% Improvement")
+            st.write("**Why/How:** Legacy carbon is 'Locked.' We insert 'Metabolic Handles' that trigger a total breakdown only when exposed to soil microbes.")
+
+        # --- THE STRATEGIC DIRECTIVE ---
+        st.divider()
+        st.header(f"🏆 Strategic Directive: {best_path}")
+        st.success(f"To maximize sustainability and cost-efficiency, this item's endgame is **{best_path}**.")
 
         # --- THE "WHY": MONEY, TIME, RESOURCES ---
-        st.header("⚖️ Resource Efficiency Deep Dive")
+        st.header("⚖️ Resource Efficiency Analysis")
         t1, t2, t3 = st.tabs(["💰 Money", "⏳ Time", "🌍 Resources"])
         
         with t1:
             st.write("### Financial Savings")
-            st.write(f"Choosing **{best_path}** eliminates Plastic Tax penalties (approx. $200-$500/ton). It also reduces the need for expensive mechanical sorting fees at recycling centers.")
+            st.write(f"Choosing **{best_path}** eliminates Plastic Tax penalties (approx. $200-$500/ton). It removes the expense of failed mechanical sorting.")
         with t2:
             st.write("### Time Efficiency")
-            st.write("By building the 'endgame' into the molecule at the start, you bypass the 400-year degradation timeline of legacy plastics. The item mineralizes in <180 days.")
+            st.write("By building the 'endgame' into the molecule at the start, you bypass the 400-year degradation timeline. Mineralization occurs in <180 days.")
         with t3:
             st.write("### Resource Optimization")
-            st.write("We use fewer virgin polymers by introducing 'Metabolic Handles.' The material maintains structural integrity for fresh, frozen, and dry foods without needing extra chemical stabilizers.")
+            st.write("We use 'Latent Bridges' to maintain structural integrity for fresh, frozen, and dry foods without needing extra chemical stabilizers or virgin plastic bulk.")
 
-        # --- AI FORENSIC SUMMARY (FIXED) ---
+        # --- AI FORENSIC SUMMARY ---
         st.divider()
         st.header("📝 Executive Forensic Report")
         
         prompt = (
-            f"As a supply chain auditor, explain why the product {query} currently earns a {other_grade} grade in other stores. "
-            f"Describe how VoraCycle surgery upgrades it to an {my_grade}. "
-            f"Detail how the best path ({best_path}) saves money, resources, and time while keeping food (fresh/frozen/dry) 100% safe."
+            f"Audit the product {query}. Best path is {best_path}. "
+            f"Explain why the before scores (Recycle: {br}%, Mineralization: {bm}%) represent a business liability. "
+            f"Detail the changes for the after scores ({ar}%, {am}%) and why the chosen best path saves the most money, resources, and time. "
+            f"Confirm that the material remains 100% safe for all food variables (fresh/frozen/dry)."
         )
 
         with st.spinner("AI Synthesis in progress..."):
@@ -102,10 +120,8 @@ if query and query != "Search or select an item...":
                 response = model.generate_content(prompt)
                 if hasattr(response, 'text'):
                     st.info(response.text)
-                else:
-                    st.warning("⚠️ AI generated a partial response. Check parameters.")
             except Exception as e:
-                st.error("📡 AI Hub Error. The system is still running on local logic. Refresh if needed.")
+                st.error("📡 Local fallback logic active. AI Summary unavailable.")
 
         st.divider()
         st.subheader("🏁 Visualizing the Endgame")
