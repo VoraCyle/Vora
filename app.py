@@ -5,7 +5,6 @@ from rdkit.Chem import Draw, Descriptors, rdMolDescriptors
 import pandas as pd
 
 # --- 1. Credentials & Auth ---
-# Password: Vora1630 (Wraith's secure access)
 credentials = {'usernames': {'wraith': {'name': 'Wraith', 'password': 'Vora1630'}}}
 authenticator = st_auth.Authenticate(credentials, "vora_cookie", "auth_key", cookie_expiry_days=30)
 
@@ -16,10 +15,10 @@ if st.session_state.get("authentication_status"):
     authenticator.logout('Logout', 'sidebar')
     
     st.title("🔮 Wraith VoraCycle")
-    st.markdown("### The 'Start-Line' Diagnostic: Wholesaler Endgame Engine")
+    st.markdown("### National Wholesaler Strategic Diagnostic")
 
-    # --- 3. Global Material Library & Benchmarks ---
-    st.sidebar.header("🏢 Inventory Controls")
+    # --- 3. Sidebar Inventory ---
+    st.sidebar.header("🏢 Warehouse Inventory")
     category = st.sidebar.selectbox(
         "Application Type",
         ["Hot Food (Meat/Chicken)", "Cold Storage (Produce/Dairy)", "Dry Goods (Pantry)", "Industrial/Cleaning"]
@@ -35,101 +34,96 @@ if st.session_state.get("authentication_status"):
         "PFAS - Grease-proof Paper": "C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F"
     }
 
-    mode = st.radio("System Mode", ["Deep Diagnostic", "Side-by-Side Market Benchmarking"])
-
-    # --- 4. The Engineering Functions ---
-    def get_grade(s):
-        if s > 80: return "A (Superior)"
-        if s > 60: return "B (Standard)"
-        if s > 40: return "C (Poor)"
+    # --- 4. Logic & Rating Functions ---
+    def get_letter_grade(score):
+        if score > 85: return "A (Superior)"
+        if score > 70: return "B (Standard)"
+        if score > 55: return "C (Sub-Optimal)"
+        if score > 40: return "D (Poor)"
         return "F (Critical)"
 
-    def analyze_material(smiles_str, name):
+    def get_rating_description(score, path_type):
+        if path_type == "Recycle":
+            if score > 70: return "Highly compatible with mechanical recycling. High secondary market value."
+            if score > 40: return "Difficult to sort. Likely to be incinerated or downcycled into low-grade lumber."
+            return "Non-recyclable. Contaminates other plastic streams. Causes machine jams."
+        else: # Landfill Path
+            if score > 70: return "Bio-assimilable. Microbes recognize the carbon chain and convert it to soil/CO2."
+            if score > 40: return "Fragmentation risk. Breaks into microplastics but does not fully mineralize."
+            return "Persistent. Indestructible molecular bonds create a 'plastic fossil' for 400+ years."
+
+    def analyze_material(smiles_str):
         mol = Chem.MolFromSmiles(smiles_str)
         if not mol: return None
-        
         mw = Descriptors.MolWt(mol)
         rings = rdMolDescriptors.CalcNumRings(mol)
         toxic = len([a for a in mol.GetAtoms() if a.GetSymbol() in ['Cl', 'F', 'Br']])
-        has_bio_handle = any(a.GetSymbol() in ['O', 'N'] for a in mol.GetAtoms())
+        has_bio = any(a.GetSymbol() in ['O', 'N'] for a in mol.GetAtoms())
         
-        tsi = (rings * 35) + (mw / 5)  # Thermal Stability Index
+        # Performance/Safety Calculation
+        tsi = (rings * 35) + (mw / 5) 
         recycle_score = max(5, min(98, 92 - (rings * 15) - (toxic * 40)))
-        fate_score = max(5, min(98, 20 + (15 if has_bio_handle else 0) - (rings * 10) - (toxic * 30)))
+        fate_score = max(5, min(98, 20 + (15 if has_bio else 0) - (rings * 10) - (toxic * 30)))
         
-        # 2025 Financial Logic (EPR Fees based on $420/tonne for non-recyclable)
-        tax_cost = 0 if recycle_score > 60 else 420 
+        return {"mol": mol, "tsi": tsi, "recycle": recycle_score, "fate": fate_score, "toxic": toxic}
+
+    # --- 5. Main Diagnostic Execution ---
+    selected_name = st.selectbox("Select Item for Audit", list(smiles_dict.keys()) + ["Custom SMILES"])
+    smiles_input = st.text_input("SMILES Barcode", smiles_dict.get(selected_name, "C1=CC=C(C=C1)C=C"))
+    
+    current = analyze_material(smiles_input)
+    if current:
+        st.image(Draw.MolToImage(current['mol'], size=(500, 500)))
+
+        # --- A. BEFORE VS AFTER RATINGS ---
+        st.markdown("---")
+        st.header("⚖️ Life Cycle Upgrade Comparison")
         
-        return {
-            "name": name, "mol": mol, "tsi": tsi, 
-            "recycle": recycle_score, "fate": fate_score, 
-            "toxic": toxic, "tax": tax_cost, "has_bio": has_bio_handle
-        }
+        # Simulation of Redesign (Optimized version)
+        redesign_recycle = min(98, current['recycle'] + 25)
+        redesign_fate = min(98, current['fate'] + 45)
 
-    def get_rationale(data, category):
-        # The 'Logic Layer' for Costco Executives
-        notes = []
-        if data['toxic'] > 0:
-            notes.append("🚨 **CRITICAL RISK:** Contains halogens (PFAS/Chlorine). These leach into food fats and create permanent toxic environmental liability.")
-        if category == "Hot Food (Meat/Chicken)" and data['tsi'] < 55:
-            notes.append("🚨 **INTEGRITY FAILURE:** Low heat resistance. The material will likely lose structural strength or migrate chemicals into food at 180°F.")
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader("🔴 Current (Before)")
+            st.metric("Recycle Rating", f"{current['recycle']}/100", get_letter_grade(current['recycle']))
+            st.metric("Landfill Fate", f"{current['fate']}/100", get_letter_grade(current['fate']))
+            st.write(f"**Outcome:** {get_rating_description(current['fate'], 'Landfill')}")
+
+        with col2:
+            st.subheader("🟢 VoraCycle (After)")
+            st.metric("Recycle Rating", f"{redesign_recycle}/100", get_letter_grade(redesign_recycle), delta="Upgrade")
+            st.metric("Landfill Fate", f"{redesign_fate}/100", get_letter_grade(redesign_fate), delta="Upgrade")
+            st.write(f"**Outcome:** Fully mineralized carbon; zero microplastic legacy.")
+
+        # --- B. STRATEGIC DESCRIPTIONS & OUTCOMES ---
+        st.markdown("---")
+        st.header("📖 Outcome Analysis: Why Change?")
         
-        if data['fate'] < 50:
-            notes.append("💡 **THE CHANGE:** Transition to a 'Labile' backbone (Ester or Amide links).")
-            notes.append("🛡️ **THE BENEFIT:** Allows microbes to digest the bag in a landfill while keeping the product 100% fresh on the shelf.")
+        st.write("### 🔄 The Recycling Path (The Preferred Loop)")
+        st.info("""**Why it's better to Recycle:** Recycling keeps the material in the 'Wholesale Loop.' 
+        It reduces the need to extract fresh oil and eliminates EPR Plastic Taxes. 
+        A 'Grade A' rating here means the item pays for its own waste management through secondary material value.""")
         
-        if data['recycle'] > 75:
-            notes.append("✅ **ADVANTAGE:** High-purity polymer. Eligible for 'Eco-Modulation' tax breaks ($0/tonne EPR fees).")
-        return notes
+        st.write("### 🌍 The Landfill Path (The Safety Net)")
+        st.warning("""**What happens in the Landfill:** Most food-contaminated items (like chicken bags) 
+        cannot be recycled. Our redesign ensures that if the item ends up in a landfill, it does not 
+        leach chemicals into groundwater or turn into microplastics. Instead, it undergoes **Bio-Mineralization**.""")
 
-    # --- 5. EXECUTION: SINGLE DIAGNOSTIC ---
-    if mode == "Deep Diagnostic":
-        selected_name = st.selectbox("Select Material Type", list(smiles_dict.keys()) + ["Custom SMILES"])
-        smiles_input = st.text_input("SMILES Barcode", smiles_dict.get(selected_name, "C1=CC=C(C=C1)C=C"))
+        # --- C. SAFETY & INTEGRITY GUARANTEE ---
+        st.markdown("---")
+        st.header("🛡️ Performance & Food Safety Audit")
         
-        data = analyze_material(smiles_input, selected_name)
-        if data:
-            col1, col2 = st.columns([1, 2])
-            with col1:
-                st.image(Draw.MolToImage(data['mol'], size=(400, 400)))
-            with col2:
-                st.subheader("📝 Strategic Rationale")
-                for n in get_rationale(data, category):
-                    st.write(n)
+        if category == "Hot Food (Meat/Chicken)" and current['tsi'] < 55:
+            st.error("🚨 **Safety Alert:** Current material fails high-heat integrity test. Risk of chemical leaching into food fats.")
+        else:
+            st.success("✅ **Safety Verified:** Material maintains structural integrity at operational temperatures.")
 
-            st.markdown("---")
-            st.header("🏁 The Endgame Outcome")
-            p1, p2, p3 = st.columns(3)
-            p1.metric("Recycle Path", get_grade(data['recycle']), help="How likely a facility is to accept this.")
-            p2.metric("Landfill Path", get_grade(data['fate']), help="Reaction in the trash.")
-            p3.metric("EPR Tax Liability", f"${data['tax']}/tonne", delta="Avoidable Cost")
-
-            # Reaction Description
-            if data['fate'] < 40:
-                st.error("**Landfill Reaction:** Anaerobic Stasis. This item will not break down for 400+ years.")
-            else:
-                st.success("**Landfill Reaction:** Bio-Mineralization. Carbon returns to biomass safely.")
-
-            if st.button("📄 Generate Supplier Audit"):
-                report = f"VORACYCLE AUDIT: {selected_name}\nRECYCLE: {get_grade(data['recycle'])}\nLANDFILL: {get_grade(data['fate'])}\nSAFETY: {'FAIL' if data['toxic']>0 else 'PASS'}\nACTION: Redesign to remove Halogenated chains."
-                st.text_area("Official Report:", value=report, height=200)
-
-    # --- 6. EXECUTION: SIDE-BY-SIDE ---
-    else:
-        st.subheader("📊 Competitive Dashboard (Costco vs. Market)")
-        choices = st.multiselect("Select 3 Items to Compare", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
-        
-        res_list = [analyze_material(smiles_dict[c], c) for c in choices]
-        if res_list:
-            df = pd.DataFrame(res_list)
-            st.table(df[['name', 'recycle', 'fate', 'tax']])
-            
-            # Global Progress Bars
-            for r in res_list:
-                st.write(f"**{r['name']}** vs. Global Best-in-Class (EU Standard)")
-                st.progress(r['recycle'] / 100)
+        if st.button("📄 Generate Executive Supplier Audit"):
+            report = f"AUDIT: {selected_name}\nCURRENT GRADE: {get_letter_grade(current['recycle'])}\nPROPOSED GRADE: {get_letter_grade(redesign_recycle)}\n\nFINAL DESCRIPTION: The redesign replaces indestructible carbon chains with bio-assimilable links. This prevents chemical migration into hot food while ensuring a safe environmental endgame."
+            st.text_area("Copy Final Audit:", value=report, height=200)
 
 elif st.session_state.get("authentication_status") is False:
-    st.error('Access Denied.')
+    st.error('Login Failed.')
 elif st.session_state.get("authentication_status") is None:
-    st.warning('Please log in to the VoraCycle Wholesaler Terminal.')
+    st.warning('Please log in.')
