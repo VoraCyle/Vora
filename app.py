@@ -124,5 +124,4 @@ if st.session_state.get("authentication_status"):
 
 elif st.session_state.get("authentication_status") is False:
     st.error('Login Failed.')
-elif st.session_state.get("authentication_status") is None:
-    st.warning('Please log in.')
+elif st.session_state
