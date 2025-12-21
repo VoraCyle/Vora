@@ -16,7 +16,7 @@ if st.session_state.get("authentication_status"):
     authenticator.logout('Logout', 'sidebar')
     
     st.title("🔮 Wraith VoraCycle: Apex OS")
-    st.markdown("### Quantum-Enhanced Strategic Intelligence & Procurement Logic")
+    st.markdown("### Quantum-Enhanced Strategic Intelligence & Forensic Audit")
 
     # --- 4. Logic & Grading Engine ---
     def get_letter_grade(score):
@@ -60,7 +60,7 @@ if st.session_state.get("authentication_status"):
 
     tab1, tab2, tab3 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Benchmarking", "⚛️ Quantum Simulation"])
 
-    # --- TAB 1: DEEP DIVE AUDIT (MAINTAINED DEPTH) ---
+    # --- TAB 1: DEEP DIVE AUDIT ---
     with tab1:
         st.sidebar.header("Precision Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods"])
@@ -95,12 +95,11 @@ if st.session_state.get("authentication_status"):
                 **How it's Beneficial:** Creates a revenue stream via "Buy-Back" resin credits, lowering Net Cost of Goods (COGS).
                 """)
 
-    # --- TAB 2: GLOBAL BENCHMARKING (NEW STRATEGIC DEPTH) ---
+    # --- TAB 2: GLOBAL BENCHMARKING & MULTI-PRODUCT DEEP DIVE ---
     with tab2:
         st.header("📊 Market Intelligence & Retailer Comparison")
         if current:
             benchmarks = {"Current Costco Item": current['recycle'], "Sam's Club Baseline": 58, "Walmart Sustainable Goal": 65, "EU Grade A Standard": 88}
-            
             for entity, score in benchmarks.items():
                 c_label, c_bar, c_val = st.columns([2, 5, 1])
                 c_label.write(f"**{entity}**")
@@ -109,32 +108,42 @@ if st.session_state.get("authentication_status"):
 
             st.markdown("---")
             st.subheader("📝 Benchmarking Deep Dive")
-            
             col1, col2 = st.columns(2)
             with col1:
                 st.info("#### 🏪 Retailer Comparison Logic")
                 st.write("""
                 * **The Sam's/Walmart Gap:** Domestic competitors are currently anchored in 'Incrementalism.' By hovering in the 58-65 range, they remain vulnerable to sudden regulatory shifts and plastic taxes.
-                * **The Costco Opportunity:** By targeting the **EU Grade A (88)** standard, Costco bypasses the domestic struggle and adopts a 'Universal Spec.' This allows for global supply chain fluidity that competitors cannot match.
+                * **The Costco Opportunity:** By targeting the **EU Grade A (88)** standard, Costco bypasses the domestic struggle and adopts a 'Universal Spec.'
                 """)
             with col2:
                 st.warning("#### 📈 Strategic Risk Analysis")
                 st.write(f"""
                 * **Circularity Deficit:** Your current selection is **{88 - current['recycle']} points** away from global leadership.
-                * **Outcome:** This gap represents a 'Tax Liability.' In markets like the UK or EU, every point below 80 results in increased 'Extended Producer Responsibility' (EPR) fees.
+                * **Outcome:** This gap represents a 'Tax Liability.' Every point below 80 results in increased 'Producer Responsibility' (EPR) fees.
                 """)
 
             st.markdown("---")
-            st.subheader("📋 Multi-Product Comparison")
+            st.subheader("📋 Multi-Product Forensic Comparison")
             comp_list = st.multiselect("Benchmark multiple warehouse items", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
+            
             if comp_list:
                 comp_data = []
                 for item in comp_list:
                     res = analyze_material(smiles_dict[item], item)
                     comp_data.append({"Product": item, "Score": res['recycle'], "Grade": get_letter_grade(res['recycle']), "Safety": "PASS" if res['toxic'] == 0 else "FAIL"})
                 st.table(pd.DataFrame(comp_data))
+                
+                # --- NEW: MULTI-PRODUCT DEEP DIVE DESCRIPTION ---
+                st.write("""
+                #### 🔬 Forensic Rationale for Multi-Product Variance
+                Why do these scores differ so drastically across the warehouse?
+                
+                1. **Structural Complexity:** Items like **Nylon Vacuum Seals** or **PFAS Paper** score lower because they utilize 'Hetero-atoms' (Nitrogen, Fluorine) to achieve barrier properties. These atoms act as "Molecular Speedbumps" for both recycling machinery and soil microbes.
+                2. **The Halogen Penalty:** Any product failing the 'Safety' check (like **PVC Cling Film**) contains Chlorine. This is the highest level of brand risk; when incinerated or degraded, these produce dioxins. Precision procurement requires phasing these out immediately to avoid 'Toxic Tort' litigation.
+                3. **Circular Divergence:** The variance between **PET Trays (High Score)** and **Polystyrene Foam (Low Score)** illustrates the difference between 'Infinite Assets' and 'Terminal Waste.' PET can be reborn; Foam is a one-way trip to the landfill.
+                """)
 
-    # --- TAB 3: QUANTUM SIMULATION & FINAL STRATEGIC THOUGHTS (MAINTAINED DEPTH) ---
+    # --- TAB 3: QUANTUM SIMULATION & FINAL STRATEGIC THOUGHTS ---
     with tab3:
         st.header("⚛️ Quantum Bond Analysis")
         if st.button("Initialize Quantum Audit"):
@@ -146,15 +155,4 @@ if st.session_state.get("authentication_status"):
                 st.subheader("📝 Final Strategic Thoughts: The Apex Advantage")
                 st.write(f"""
                 #### 🛡️ Why Change is Beneficial in All Aspects
-                * **Precision De-Risking:** Using Quantum Bond Energy ({energy} eV) removes the guesswork of degradation.
-                * **Health & Safety:** Moving to Grade A eliminates toxic leaching (PVC/PFAS) at high warehouse temperatures (180°F+).
-                * **Financial Sovereignty:** High-circularity materials are the only path to 100% tax exemption in a green-tax economy.
-
-                #### 🌎 Global Benchmark Summary
-                Acknowledging that some waste *must* go to landfill and ensuring it is "microplastic-free" (Bio-Assimilation) is the highest level of brand honesty. It transforms Costco from a retailer following rules into a leader defining them.
-                """)
-
-elif st.session_state.get("authentication_status") is False:
-    st.error('Login Failed.')
-elif st.session_state.get("authentication_status") is None:
-    st.warning('Please log in.')
+                * **Precision De-Risking:** Using Quantum Bond Energy ({energy} eV) removes the guesswork of degradation
