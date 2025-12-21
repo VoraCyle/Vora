@@ -85,74 +85,11 @@ if st.session_state.get("authentication_status"):
             if category == "Hot Food" or current['recycle'] < 55:
                 st.warning("🏁 **STRATEGIC CHOICE: LANDFILL SAFETY (BIO-ASSIMILATION)**")
                 st.write(f"""
-                **Depth of Rationale:** The current {selected_item} structure is thermodynamically incompatible with standard sorting sensors once contaminated with lipids. 
-                **How it's Beneficial:** Redesigning for mineralization ensures 0% microplastic legacy and removes "Forever Liability" from the balance sheet.
+                **Depth of Rationale:** The current {selected_item} structure is thermodynamically incompatible with standard sorting sensors once contaminated with lipids. In high-heat environments (180°F+), polymers undergo chain scission and grease absorption, rendering mechanical recycling economically non-viable.
+
+                **How it's Beneficial:** By shifting to VoraCycle, we ensure **Bio-Mineralization**. This protects the brand by guaranteeing the material returns to the earth as nutrients rather than fragmenting into microplastics, effectively neutralizing the "Forever Liability" on the corporate balance sheet.
                 """)
             else:
                 st.success("🏁 **STRATEGIC CHOICE: RECYCLE (CIRCULAR RECOVERY)**")
                 st.write(f"""
-                **Depth of Rationale:** Molecular purity makes this a "High-Value Asset." 
-                **How it's Beneficial:** Creates a revenue stream via "Buy-Back" resin credits, lowering Net Cost of Goods (COGS).
-                """)
-
-    # --- TAB 2: GLOBAL BENCHMARKING & MULTI-PRODUCT DEEP DIVE ---
-    with tab2:
-        st.header("📊 Market Intelligence & Retailer Comparison")
-        if current:
-            benchmarks = {"Current Costco Item": current['recycle'], "Sam's Club Baseline": 58, "Walmart Sustainable Goal": 65, "EU Grade A Standard": 88}
-            for entity, score in benchmarks.items():
-                c_label, c_bar, c_val = st.columns([2, 5, 1])
-                c_label.write(f"**{entity}**")
-                c_bar.progress(score / 100)
-                c_val.write(f"**{score}**")
-
-            st.markdown("---")
-            st.subheader("📝 Benchmarking Deep Dive")
-            col1, col2 = st.columns(2)
-            with col1:
-                st.info("#### 🏪 Retailer Comparison Logic")
-                st.write("""
-                * **The Sam's/Walmart Gap:** Domestic competitors are currently anchored in 'Incrementalism.' By hovering in the 58-65 range, they remain vulnerable to sudden regulatory shifts and plastic taxes.
-                * **The Costco Opportunity:** By targeting the **EU Grade A (88)** standard, Costco bypasses the domestic struggle and adopts a 'Universal Spec.'
-                """)
-            with col2:
-                st.warning("#### 📈 Strategic Risk Analysis")
-                st.write(f"""
-                * **Circularity Deficit:** Your current selection is **{88 - current['recycle']} points** away from global leadership.
-                * **Outcome:** This gap represents a 'Tax Liability.' Every point below 80 results in increased 'Producer Responsibility' (EPR) fees.
-                """)
-
-            st.markdown("---")
-            st.subheader("📋 Multi-Product Forensic Comparison")
-            comp_list = st.multiselect("Benchmark multiple warehouse items", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
-            
-            if comp_list:
-                comp_data = []
-                for item in comp_list:
-                    res = analyze_material(smiles_dict[item], item)
-                    comp_data.append({"Product": item, "Score": res['recycle'], "Grade": get_letter_grade(res['recycle']), "Safety": "PASS" if res['toxic'] == 0 else "FAIL"})
-                st.table(pd.DataFrame(comp_data))
-                
-                # --- NEW: MULTI-PRODUCT DEEP DIVE DESCRIPTION ---
-                st.write("""
-                #### 🔬 Forensic Rationale for Multi-Product Variance
-                Why do these scores differ so drastically across the warehouse?
-                
-                1. **Structural Complexity:** Items like **Nylon Vacuum Seals** or **PFAS Paper** score lower because they utilize 'Hetero-atoms' (Nitrogen, Fluorine) to achieve barrier properties. These atoms act as "Molecular Speedbumps" for both recycling machinery and soil microbes.
-                2. **The Halogen Penalty:** Any product failing the 'Safety' check (like **PVC Cling Film**) contains Chlorine. This is the highest level of brand risk; when incinerated or degraded, these produce dioxins. Precision procurement requires phasing these out immediately to avoid 'Toxic Tort' litigation.
-                3. **Circular Divergence:** The variance between **PET Trays (High Score)** and **Polystyrene Foam (Low Score)** illustrates the difference between 'Infinite Assets' and 'Terminal Waste.' PET can be reborn; Foam is a one-way trip to the landfill.
-                """)
-
-    # --- TAB 3: QUANTUM SIMULATION & FINAL STRATEGIC THOUGHTS ---
-    with tab3:
-        st.header("⚛️ Quantum Bond Analysis")
-        if st.button("Initialize Quantum Audit"):
-            if current:
-                energy = quantum_bond_simulation(current['mol'])
-                st.write(f"**Atomic Bond Dissociation Energy:** {energy} eV")
-                
-                st.markdown("---")
-                st.subheader("📝 Final Strategic Thoughts: The Apex Advantage")
-                st.write(f"""
-                #### 🛡️ Why Change is Beneficial in All Aspects
-                * **Precision De-Risking:** Using Quantum Bond Energy ({energy} eV) removes the guesswork of degradation
+                **Depth of Rationale:** The molecular purity of {selected_item} makes it a "High-Value Asset." In dry/cold applications, it
