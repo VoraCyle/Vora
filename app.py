@@ -88,28 +88,32 @@ if auth_status:
         "Polyethylene Terephthalate (PET)": {
             "optimized_name": "Polyethylene Furanoate (PEF)",
             "optimized_score": 94,
-            "optimized_stability": -74.20,
-            "modifications": "Replace terephthalic acid with bio-derived 2,5-furandicarboxylic acid (FDCA). Incorporate enzyme-recognizable cleavage sites.",
+            "modifications": "Replace terephthalic acid with bio-derived 2,5-furandicarboxylic acid (FDCA).",
+            "impact_desc": "The furan ring is more susceptible to enzymatic hydrolysis than the petroleum-based benzene ring. This allows specialized microbes to break the polymer chains back into harmless monomers in months rather than centuries.",
+            "waste_behavior": "When composted or lost in soil, the material mineralizes into CO2 and water without leaving microplastic residues."
         },
         "Polyethylene (PE)": {
             "optimized_name": "Bio-PE with Enzymatic Triggers",
             "optimized_score": 88,
-            "optimized_stability": -68.50,
             "modifications": "Blend with PHA copolymers and add ester-based degradation triggers.",
+            "impact_desc": "Standard PE is a long carbon chain that microbes can't 'grab.' Adding ester links acts like 'perforations' on a sheet of paper, allowing enzymes to snap the chain into smaller, digestible pieces.",
+            "waste_behavior": "The polymer fragmentation accelerates by 100x, allowing the material to reach a 'biodisposable' state in industrial composting facilities."
         },
         "Polypropylene (PP)": {
             "optimized_name": "Isotactic PP with Bio-additives",
             "optimized_score": 85,
-            "optimized_stability": -72.10,
             "modifications": "Incorporate oxidation-promoting prodegradants and bio-based comonomers.",
+            "impact_desc": "By introducing specific 'weak links' in the methyl-branched backbone, we lower the activation energy required for oxidation. This turns a hydrophobic surface into a hydrophilic one that bacteria can colonize.",
+            "waste_behavior": "Prevents the formation of secondary microplastics by ensuring the polymer fully breaks down into low-molecular-weight waxes that soil bacteria can consume."
         }
     }
 
     suggestion = redesign_suggestions.get(material, {
         "optimized_name": "Custom Optimized Variant",
         "optimized_score": min(95, score + 18),
-        "optimized_stability": energy + 1.5,
-        "modifications": "Functional group optimization using quantum-guided bond lability tuning."
+        "modifications": "Functional group optimization using quantum-guided bond lability tuning.",
+        "impact_desc": "Custom tuning adjusts the bond dissociation energy of the polymer backbone to match environmental stressors.",
+        "waste_behavior": "Engineered for controlled degradation based on the specific end-of-life environment of the custom material."
     })
 
     col1, col2 = st.columns(2)
@@ -120,24 +124,23 @@ if auth_status:
         st.markdown("#### → Optimized Redesign")
         st.success(f"**{suggestion['optimized_name']}** ({suggestion['optimized_score']}/100)")
 
+    # --- NEW: Impact & Waste Behavior Analysis ---
+    with st.expander("🔍 Why this redesign works", expanded=True):
+        st.write(f"**Mechanism:** {suggestion['impact_desc']}")
+        st.write(f"**Waste Transformation:** {suggestion['waste_behavior']}")
+
     st.info(f"**Action Plan:** {suggestion['modifications']}")
 
     # --- Environmental Fate Section ---
     st.markdown("---")
-    st.markdown("### 🌍 Environmental Fate & Redesign Impact")
+    st.markdown("### 🌍 Environmental Fate Comparison")
 
     colA, colB = st.columns(2)
     with colA:
         st.error("**Original Fate**")
-        st.markdown("- Persists for **hundreds of years**.\n- Resist microbial breakdown.\n- Fragments into microplastics.")
+        st.markdown("- **Persistence:** 400+ years\n- **Mechanism:** Mechanical fragmentation only\n- **Result:** Permanent microplastic pollution")
     with colB:
         st.success("**Redesigned Fate**")
-        st.markdown("- Rapid **safe breakdown** (months/years).\n- No persistent microplastics.\n- Supports closed-loop recycling.")
+        st.markdown(f"- **Persistence:** < 2 years\n- **Mechanism:** {suggestion['optimized_name']} uses Bio-assimilation\n- **Result:** Zero-residue mineralization")
 
     st.caption("Prototype created by Wraith | Pioneering Precycling with Precision")
-
-# --- 4. Auth Feedback ---
-elif auth_status == False:
-    st.error('Username/password incorrect')
-elif auth_status is None:
-    st.warning('Please enter your credentials to access the VoraCycle engine.')
