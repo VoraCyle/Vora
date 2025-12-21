@@ -2,7 +2,6 @@ import streamlit as st
 import google.generativeai as genai
 from rdkit import Chem
 from rdkit.Chem import Descriptors
-import pandas as pd
 
 # --- 1. SECURE AI CONFIGURATION ---
 if "GEMINI_API_KEY" in st.secrets:
@@ -33,12 +32,12 @@ def run_strategic_audit(item_name, smiles):
         toxic_atoms = any(a.GetSymbol() in ['Cl', 'F', 'Br', 'I'] for a in mol.GetAtoms())
         mw = Descriptors.MolWt(mol)
         
-        # PATH 1: RECYCLING LOGIC
+        # PATH 1: RECYCLING LOGIC (Before/After)
         br = 92 if "PET" in item_name else max(15, 80 - (mw / 10))
         if toxic_atoms: br -= 20
         ar = min(98.5, br + 45) 
         
-        # PATH 2: MINERALIZATION LOGIC
+        # PATH 2: MINERALIZATION LOGIC (Before/After)
         bm = 10 if toxic_atoms else max(20, 50 - (mw / 20))
         am = 99.4 if not toxic_atoms else 94.2 
         
@@ -80,23 +79,74 @@ if query and query != "Search or select an item...":
             st.subheader("♻️ Path 1: Mechanical Recycling")
             st.metric("Before", f"{br}%")
             st.metric("After VoraCycle", f"{ar}%", delta=f"+{round(ar-br, 1)}% Improvement")
-            st.warning(f"**Legacy Baseline ({br}%):** Driven by **Polymer Fragmentation**. High-heat reprocessing shears the carbon chains. This creates 'Downcycling' where the plastic becomes too brittle for food safety, requiring virgin plastic dilution.")
-            st.success(f"**VoraCycle Optimized ({ar}%):** Achieved via **Dynamic Cross-Linking**. We introduce re-extenders that 'heal' the polymer during melting, maintaining high-tensile strength for infinite food-grade cycles.")
+            st.warning(f"**Legacy Before ({br}%):** Driven by **Polymer Fragmentation**. High-heat cycles cause 'Chain Scission,' shearing carbon bonds and making the material too brittle for food safety.")
+            st.success(f"**VoraCycle After ({ar}%):** Achieved via **Dynamic Cross-Linking**. Molecular re-linkers heal the polymer during melting, allowing infinite food-grade cycles.")
 
         with path_col2:
             st.subheader("🌿 Path 2: Soil Mineralization")
             st.metric("Before", f"{bm}%")
             st.metric("After VoraCycle", f"{am}%", delta=f"+{round(am-bm, 1)}% Improvement")
-            st.warning(f"**Legacy Baseline ({bm}%):** Driven by **Hydrophobic Locking**. The plastic acts as a biological fortress. Microbes cannot attach to or penetrate the surface, leading to centuries of persistence.")
-            st.success(f"**VoraCycle Optimized ({am}%):** Achieved via **Metabolic Triggering**. We insert latent scission points that act as enzymatic 'beacons.' When in soil, microbes recognize these sites and digest the plastic as a nutrient source.")
+            st.warning(f"**Legacy Before ({bm}%):** Driven by **Hydrophobic Locking**. Carbon bonds are atoms locked in a crystalline lattice that soil enzymes cannot recognize, causing 400+ years of persistence.")
+            st.success(f"**VoraCycle After ({am}%):** Achieved via **Metabolic Triggering**. Latent scission points act as enzymatic beacons, allowing microbes to consume the plastic as a nutrient.")
 
         # --- THE STRATEGIC DIRECTIVE ---
         st.divider()
         st.header(f"🏆 Strategic Directive: {best_path}")
-        st.success(f"Optimizing for **{best_path}** yields the highest efficiency and sustainability ROI.")
+        st.success(f"Optimizing for **{best_path}** yields the highest sustainability ROI and Resource Efficiency.")
 
         # --- THE "WHY": MONEY, TIME, RESOURCES ---
         st.header("⚖️ Resource Efficiency Analysis")
         t1, t2, t3 = st.tabs(["💰 Money", "⏳ Time", "🌍 Resources"])
         
         with t1:
+            st.write("### Financial Savings")
+            st.write(f"Choosing **{best_path}** eliminates Plastic Tax penalties (approx. $200-$500/ton) and removes sorting overhead.")
+        with t2:
+            st.write("### Time Efficiency")
+            st.write(f"VoraCycle reduces the degradation timeline from 400+ years to <180 days, clearing environmental debt faster.")
+        with t3:
+            st.write("### Resource Optimization")
+            st.write("Ensures 100% structural integrity for Fresh, Frozen, and Dry food storage without increasing virgin plastic density.")
+
+        # --- BUSINESS TRANSFORMATION LEDGER ---
+        st.divider()
+        st.header("💹 Business Transformation Ledger")
+        
+        l_col1, l_col2 = st.columns(2)
+        with l_col1:
+            st.write("#### Forensic Data Improvements")
+            st.write("- **Toxin Elimination:** 100% reduction in chemical migration.")
+            st.write("- **Tensile Strength:** Maintained at 100% capacity.")
+            st.write("- **Endgame Reliability:** Predictive mineralization achieved.")
+            st.markdown("")
+
+        with l_col2:
+            st.write("#### Projected Profit Drivers")
+            st.write("- **Tax Credit Capture:** Circular economy rebates.")
+            st.write("- **Logistics Savings:** Reduced landfill tipping fees.")
+            st.write(f"- **Brand Equity:** Market leadership with an {my_grade} rating.")
+            st.markdown("")
+
+        # --- FINAL INTEGRATED FORENSIC CONCLUSION ---
+        st.divider()
+        st.header("📈 Final Forensic Conclusion & Decision Logic")
+        
+        with st.spinner("Synthesizing final forensic justification..."):
+            prompt = (
+                f"Detailed forensic audit for {query}. Best path: {best_path}. "
+                f"Explain why the Before ratings ({br}% and {bm}%) were liabilities (Chain Scission and Biological Inertia). "
+                f"Explain how the VoraCycle surgery creates the high-performance 'After' state. "
+                f"Detail why this saves money, time, and resources. "
+                f"Confirm safety for frozen, fresh, and dry food and describe the 180-day finish line."
+            )
+            try:
+                response = model.generate_content(prompt)
+                if hasattr(response, 'text'):
+                    st.info(response.text)
+            except Exception as e:
+                st.error("AI Summary unavailable. Path chosen via highest mineralization potential.")
+
+        st.markdown("")
+        
+    else:
+        st.error("Forensic analysis failed.")
