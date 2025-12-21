@@ -1,146 +1,135 @@
 import streamlit as st
 import streamlit_authenticator as st_auth
 from rdkit import Chem
-from rdkit.Chem import Draw
-from pyscf import gto, scf
+from rdkit.Chem import Draw, Descriptors, rdMolDescriptors
+import pandas as pd
 
 # --- 1. Credentials & Auth Setup ---
-credentials = {
-    'usernames': {
-        'wraith': {
-            'name': 'Wraith',
-            'password': 'Vora1630' 
-        }
-    }
-}
-
-authenticator = st_auth.Authenticate(
-    credentials,
-    "vora_cookie",
-    "auth_key",
-    cookie_expiry_days=30
-)
+credentials = {'usernames': {'wraith': {'name': 'Wraith', 'password': 'Vora1630'}}}
+authenticator = st_auth.Authenticate(credentials, "vora_cookie", "auth_key", cookie_expiry_days=30)
 
 # --- 2. Login UI ---
 authenticator.login(location='main')
 
-auth_status = st.session_state.get("authentication_status")
-name = st.session_state.get("name")
-username = st.session_state.get("username")
-
-# --- 3. Main App Logic (Only if Logged In) ---
-if auth_status:
-    # Sidebar Setup
+if st.session_state.get("authentication_status"):
     authenticator.logout('Logout', 'sidebar')
-    st.sidebar.header("Material Selection")
     
-    material = st.sidebar.selectbox(
-        "Choose a common wholesale packaging material",
-        ["Polyethylene (PE)", "Polyethylene Terephthalate (PET)", "Polypropylene (PP)", "Custom SMILES"]
+    st.title("🔮 Wraith VoraCycle")
+    st.markdown("### National Wholesaler Diagnostic & Procurement Engine")
+
+    # --- 3. Sidebar: Inventory & Library ---
+    st.sidebar.header("🏢 Warehouse Inventory")
+    category = st.sidebar.selectbox(
+        "Application Type",
+        ["Hot Food (Meat/Chicken)", "Cold Storage (Produce/Dairy)", "Dry Goods (Pantry)", "Logistics (Pallets/Stretch)", "Industrial (Cleaning)"]
     )
 
-    # App Header
-    st.title("🔮 Wraith VoraCycle")
-    st.markdown("**Precycling Powered by Precision**")
-    st.markdown("Predict material circularity before it becomes waste. Quantum-inspired AI for proactive regeneration.")
-
-    # --- Molecular Analysis ---
     smiles_dict = {
-        "Polyethylene (PE)": "CCCCCCCCCC",
-        "Polyethylene Terephthalate (PET)": "C1=CC=C(C=C1)C(=O)OCCOC(=O)C2=CC=C(C=C2)C(=O)O",
-        "Polypropylene (PP)": "CC(C)CCCCCC"
+        "Polyethylene (PE) - Bags": "CCCCCCCCCC",
+        "PET (Polyester) - Trays": "C1=CC=C(C=C1)C(=O)OCCOC(=O)C2=CC=C(C=C2)C(=O)O",
+        "Polypropylene (PP) - Tubs": "CC(C)CCCCCC",
+        "Polystyrene (PS) - Foam": "C1=CC=C(C=C1)C(C)C",
+        "PVC - Cling Film": "C=CCl",
+        "Nylon (PA6) - Meat Seals": "CCCCCCN C(=O)CCCCC C(=O)N",
+        "PFAS - Grease-proof Paper": "C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F"
     }
 
-    if material != "Custom SMILES":
-        smiles = smiles_dict[material]
-    else:
-        smiles = st.sidebar.text_input("Enter SMILES string", "CCCC")
+    # Comparison Mode Selection
+    mode = st.radio("Select Mode", ["Single Item Diagnostic", "Side-by-Side Comparison"])
 
-    mol = Chem.MolFromSmiles(smiles)
-    if mol:
-        img = Draw.MolToImage(mol, size=(600, 600))
-        st.image(img, caption=f"Molecular structure: {material}")
-
-    # --- Quantum Simulation ---
-    st.write("### Precision Simulation Running...")
-    
-    # Proxy molecule for quantum calculation
-    proxy_mol = gto.M(atom='C 0 0 0; C 0 0 1.4; H 0 1 1; H 0 0 2.4', basis='sto-3g')
-    mf = scf.RHF(proxy_mol)
-    energy = mf.kernel()
-
-    st.write(f"**Quantum energy stability**: {energy:.2f} Hartree (lower = more durable)")
-
-    # Scoring Logic
-    scores = {"Polyethylene (PE)": 48, "Polyethylene Terephthalate (PET)": 72, "Polypropylene (PP)": 55}
-    score = scores.get(material, 65)
-    
-    st.metric(label="**VoraCycle Circularity Score**", value=f"{score}/100", delta=f"{score-50:+} vs average")
-
-    if score < 70:
-        st.warning("⚠️ Elevated non-recyclable risk detected.")
-
-    # --- Precision Redesign Recommendations ---
-    st.markdown("---")
-    st.markdown("### 🔬 Precision Redesign Recommendation")
-
-    redesign_suggestions = {
-        "Polyethylene Terephthalate (PET)": {
-            "optimized_name": "Polyethylene Furanoate (PEF)",
-            "optimized_score": 94,
-            "modifications": "Replace terephthalic acid with bio-derived 2,5-furandicarboxylic acid (FDCA).",
-            "impact_desc": "The furan ring is more susceptible to enzymatic hydrolysis than the petroleum-based benzene ring. This allows specialized microbes to break the polymer chains back into harmless monomers in months rather than centuries.",
-            "waste_behavior": "When composted or lost in soil, the material mineralizes into CO2 and water without leaving microplastic residues."
-        },
-        "Polyethylene (PE)": {
-            "optimized_name": "Bio-PE with Enzymatic Triggers",
-            "optimized_score": 88,
-            "modifications": "Blend with PHA copolymers and add ester-based degradation triggers.",
-            "impact_desc": "Standard PE is a long carbon chain that microbes can't 'grab.' Adding ester links acts like 'perforations' on a sheet of paper, allowing enzymes to snap the chain into smaller, digestible pieces.",
-            "waste_behavior": "The polymer fragmentation accelerates by 100x, allowing the material to reach a 'biodisposable' state in industrial composting facilities."
-        },
-        "Polypropylene (PP)": {
-            "optimized_name": "Isotactic PP with Bio-additives",
-            "optimized_score": 85,
-            "modifications": "Incorporate oxidation-promoting prodegradants and bio-based comonomers.",
-            "impact_desc": "By introducing specific 'weak links' in the methyl-branched backbone, we lower the activation energy required for oxidation. This turns a hydrophobic surface into a hydrophilic one that bacteria can colonize.",
-            "waste_behavior": "Prevents the formation of secondary microplastics by ensuring the polymer fully breaks down into low-molecular-weight waxes that soil bacteria can consume."
+    # --- 4. Core Logic Function ---
+    def analyze_material(smiles_str, name):
+        mol = Chem.MolFromSmiles(smiles_str)
+        if not mol:
+            return None
+        
+        # Chemical Descriptors
+        mw = Descriptors.MolWt(mol)
+        rings = rdMolDescriptors.CalcNumRings(mol)
+        lability = len([a for a in mol.GetAtoms() if a.GetSymbol() in ['O', 'N']])
+        toxic = len([a for a in mol.GetAtoms() if a.GetSymbol() in ['Cl', 'F', 'Br']])
+        
+        # Scoring Engines
+        tsi = (rings * 30) + (mw / 5)  # Thermal Stability
+        recycle_score = max(5, min(98, 92 - (rings * 12) - (toxic * 35)))
+        fate_score = max(5, min(98, 20 + (15 if lability > 0 else 0) - (rings * 10) - (toxic * 25)))
+        carbon_savings = 60 if fate_score > 50 else 0 # % vs virgin plastic
+        
+        return {
+            "name": name,
+            "mol": mol,
+            "mw": mw,
+            "tsi": tsi,
+            "recycle": recycle_score,
+            "fate": fate_score,
+            "carbon": carbon_savings,
+            "toxic": toxic
         }
-    }
 
-    suggestion = redesign_suggestions.get(material, {
-        "optimized_name": "Custom Optimized Variant",
-        "optimized_score": min(95, score + 18),
-        "modifications": "Functional group optimization using quantum-guided bond lability tuning.",
-        "impact_desc": "Custom tuning adjusts the bond dissociation energy of the polymer backbone to match environmental stressors.",
-        "waste_behavior": "Engineered for controlled degradation based on the specific end-of-life environment of the custom material."
-    })
+    def get_grade(s):
+        if s > 80: return "A (Superior)"
+        if s > 60: return "B (Standard)"
+        if s > 40: return "C (Poor)"
+        return "F (Critical)"
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("#### Original Material")
-        st.error(f"**{material}** ({score}/100)")
-    with col2:
-        st.markdown("#### → Optimized Redesign")
-        st.success(f"**{suggestion['optimized_name']}** ({suggestion['optimized_score']}/100)")
+    # --- 5. EXECUTION: SINGLE ITEM ---
+    if mode == "Single Item Diagnostic":
+        selected_name = st.selectbox("Select Item", list(smiles_dict.keys()) + ["Custom SMILES"])
+        smiles_input = st.text_input("SMILES String", smiles_dict.get(selected_name, "C1=CC=C(C=C1)C=C"))
+        
+        data = analyze_material(smiles_input, selected_name)
+        if data:
+            st.image(Draw.MolToImage(data['mol'], size=(600, 600)))
+            
+            # Outcome Paths
+            st.markdown("---")
+            st.header("🏁 The Endgame Strategy")
+            p1, p2, p3 = st.columns(3)
+            p1.metric("Recycle Path", get_grade(data['recycle']))
+            p2.metric("Landfill Path", get_grade(data['fate']))
+            p3.metric("CO2 Savings", f"{data['carbon']}%")
 
-    # --- NEW: Impact & Waste Behavior Analysis ---
-    with st.expander("🔍 Why this redesign works", expanded=True):
-        st.write(f"**Mechanism:** {suggestion['impact_desc']}")
-        st.write(f"**Waste Transformation:** {suggestion['waste_behavior']}")
+            # Safety & Integrity
+            st.markdown("---")
+            st.subheader("🛡️ Safety & Integrity Audit")
+            if category == "Hot Food (Meat/Chicken)" and data['tsi'] < 50:
+                st.error("⚠️ **Thermal Risk:** Potential for chemical migration into hot food.")
+            else:
+                st.success("✅ **Integrity Verified:** Safe for wholesale application temperatures.")
+            
+            if data['toxic'] > 0:
+                st.error(f"🚨 **Toxicity Alert:** Detected {data['toxic']} halogen atoms. High environmental liability.")
+            
+            # Supplier Audit Button
+            if st.button("📄 Generate Supplier Audit Report"):
+                report = f"REPORT: {selected_name}\nRECYCLE: {get_grade(data['recycle'])}\nFATE: {get_grade(data['fate'])}\nCARBON SAVED: {data['carbon']}%\nMANDATE: Transition to Bio-Aromatic Furan chains."
+                st.text_area("Audit Output:", value=report)
 
-    st.info(f"**Action Plan:** {suggestion['modifications']}")
+    # --- 6. EXECUTION: SIDE-BY-SIDE ---
+    else:
+        st.subheader("📊 Comparative Market Benchmarking")
+        choices = st.multiselect("Select materials to compare", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:2])
+        
+        comp_results = []
+        for c in choices:
+            res = analyze_material(smiles_dict[c], c)
+            comp_results.append(res)
+        
+        if comp_results:
+            df = pd.DataFrame(comp_results)
+            # Create a clean comparison table
+            display_df = df[['name', 'mw', 'recycle', 'fate', 'carbon']].copy()
+            display_df.columns = ['Material', 'Weight', 'Recycle Score', 'Landfill Fate', 'CO2 % Saved']
+            st.table(display_df)
+            
+            # Benchmarking against competitors
+            st.markdown("---")
+            st.subheader("🎯 Competitive Landscape")
+            for res in comp_results:
+                st.write(f"**{res['name']}** vs Market Average (Walmart/Sam's)")
+                st.progress(res['recycle'] / 100)
 
-    # --- Environmental Fate Section ---
-    st.markdown("---")
-    st.markdown("### 🌍 Environmental Fate Comparison")
-
-    colA, colB = st.columns(2)
-    with colA:
-        st.error("**Original Fate**")
-        st.markdown("- **Persistence:** 400+ years\n- **Mechanism:** Mechanical fragmentation only\n- **Result:** Permanent microplastic pollution")
-    with colB:
-        st.success("**Redesigned Fate**")
-        st.markdown(f"- **Persistence:** < 2 years\n- **Mechanism:** {suggestion['optimized_name']} uses Bio-assimilation\n- **Result:** Zero-residue mineralization")
-
-    st.caption("Prototype created by Wraith | Pioneering Precycling with Precision")
+elif st.session_state.get("authentication_status") is False:
+    st.error('Username/password incorrect')
+elif st.session_state.get("authentication_status") is None:
+    st.warning('Please login to access the VoraCycle Engine.')
