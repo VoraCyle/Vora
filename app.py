@@ -48,21 +48,29 @@ def ask_gemini_forensics(stats, smiles):
 
 # --- 3. THE REAL-TIME AI REASONER ---
 def ask_gemini_forensics(stats, smiles):
-    """Executes a live Strategic Audit using Gemini AI."""
-    prompt = f"""
-    You are the Wraith VoraCycle AI, a forensic procurement expert for Costco Wholesale.
-    Analyze this specific molecule: SMILES {smiles}.
-    Physical Molecular Data: {stats}
-    
-    Provide a professional Deep Dive Report including:
-    1. CHANGES MADE: Specifically describe what molecular/structural changes are required to improve this score to a VoraCycle Grade A (88+).
-    2. WHY (BENEFIT): Detail the exact forensic benefits regarding food safety, microplastic prevention, and global plastic tax (EPR) savings.
-    3. HOW TO IMPLEMENT: Tactical implementation steps for the Costco supply chain team.
-    
-    Be specific to the chemistry detected (e.g., if you see Chlorine, address de-chlorination).
-    """
-    response = model.generate_content(prompt)
-    return response.text
+    """Refined for 2025 Streamlit/Google compatibility."""
+    try:
+        # We build a very simple, clean string to avoid transport errors
+        prompt_text = (
+            f"Forensic Audit Request:\n"
+            f"Molecule SMILES: {smiles}\n"
+            f"Atomic Data: {str(stats)}\n\n"
+            f"Instructions: Provide a 3-part strategic report for Costco on "
+            f"structural changes, forensic benefits, and supply chain implementation."
+        )
+        
+        # Call the model
+        response = model.generate_content(prompt_text)
+        
+        # Ensure we get text back
+        if response and response.text:
+            return response.text
+        else:
+            return "AI returned an empty response. Verify SMILES string."
+            
+    except Exception as e:
+        # This will tell us exactly what is wrong if it fails again
+        return f"Strategic Audit Offline: {str(e)}"
 
 # --- 4. THE APEX OS INTERFACE ---
 st.title("🔮 Wraith VoraCycle: Apex OS")
@@ -114,5 +122,6 @@ if user_input:
 
 else:
     st.warning("Please enter a molecular barcode to begin the real-time audit.")
+
 
 
