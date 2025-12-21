@@ -1,3 +1,7 @@
 rdkit
 pyscf
 streamlit-authenticator
+google-generativeai
+pandas
+numpy
+streamlit-authenticator==0.3.2
