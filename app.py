@@ -5,20 +5,21 @@ from rdkit.Chem import Draw, Descriptors, rdMolDescriptors
 import pandas as pd
 
 # --- 1. Credentials & Auth ---
-# Password: Vora1630
+# Note: Use 'vora_cookie' for state persistence
 credentials = {'usernames': {'wraith': {'name': 'Wraith', 'password': 'Vora1630'}}}
 authenticator = st_auth.Authenticate(credentials, "vora_cookie", "auth_key", cookie_expiry_days=30)
 
 # --- 2. Login UI ---
 authenticator.login(location='main')
 
+# --- 3. Main Application Logic ---
 if st.session_state.get("authentication_status"):
     authenticator.logout('Logout', 'sidebar')
     
     st.title("🔮 Wraith VoraCycle")
-    st.markdown("### National Wholesaler Strategic Intelligence Dashboard")
+    st.markdown("### Wholesaler Strategic Intelligence Dashboard")
 
-    # --- 3. Logic & Grading Engine ---
+    # --- 4. Logic & Grading Engine ---
     def get_letter_grade(score):
         if score > 85: return "A"
         if score > 70: return "B"
@@ -39,7 +40,7 @@ if st.session_state.get("authentication_status"):
         fate = max(5, min(98, 20 + (15 if has_bio else 0) - (rings * 10) - (toxic * 30)))
         tsi = (rings * 35) + (mw / 5) 
         
-        return {"name": name, "mol": mol, "recycle": recycle, "fate": fate, "tsi": tsi, "toxic": toxic}
+        return {"name": name, "mol": mol, "recycle": int(recycle), "fate": int(fate), "tsi": tsi, "toxic": toxic}
 
     smiles_dict = {
         "Polyethylene (PE) - Bags": "CCCCCCCCCC",
@@ -51,10 +52,9 @@ if st.session_state.get("authentication_status"):
         "PFAS - Grease-proof Paper": "C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F"
     }
 
-    # --- 4. Navigation ---
     tab1, tab2 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Competitor Benchmarking"])
 
-    # --- TAB 1: DEEP DIVE (BEFORE/AFTER & DESCRIPTIONS) ---
+    # --- TAB 1: DEEP DIVE (BEFORE/AFTER) ---
     with tab1:
         st.sidebar.header("Audit Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods", "Industrial"])
@@ -76,28 +76,26 @@ if st.session_state.get("authentication_status"):
             col1, col2 = st.columns(2)
             with col1:
                 st.markdown("### 🔴 BEFORE (Current)")
-                st.metric("Recycle Score", f"{current['recycle']}/100", f"Grade {get_letter_grade(current['recycle'])}")
-                st.metric("Landfill Fate", f"{current['fate']}/100", f"Grade {get_letter_grade(current['fate'])}")
-                st.error("**Outcome:** Material creates persistent microplastics. Zero bio-availability in landfill.")
+                st.metric(label="Recycle Score", value=f"{current['recycle']}/100", delta=f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
+                st.metric(label="Landfill Fate", value=f"{current['fate']}/100", delta=f"Grade {get_letter_grade(current['fate'])}", delta_color="inverse")
+                st.error("**Outcome:** High microplastic risk. Persistent for 400+ years.")
 
             with col2:
                 st.markdown("### 🟢 AFTER (VoraCycle)")
-                st.metric("Recycle Score", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
-                st.metric("Landfill Fate", f"{red_fate}/100", f"Grade {get_letter_grade(red_fate)}")
-                st.success("**Outcome:** Full Bio-Mineralization. Material returns to biomass within 24 months.")
+                st.metric(label="Recycle Score", value=f"{red_rec}/100", delta=f"Grade {get_letter_grade(red_rec)}")
+                st.metric(label="Landfill Fate", value=f"{red_fate}/100", delta=f"Grade {get_letter_grade(red_fate)}")
+                st.success("**Outcome:** Bio-Mineralization. Returns to soil within 24 months.")
 
             st.markdown("---")
             st.header("🎯 Final Procurement Decision")
             if category == "Hot Food" or current['recycle'] < 55:
-                st.warning("🏁 **PATH: LANDFILL SAFETY.** Food-contamination makes recycling high-risk. Focus on VoraCycle 'After' redesign to ensure environmental safety.")
+                st.warning("🏁 **PATH: LANDFILL SAFETY.** Food-contamination risk is high. Redesign for bio-assimilation.")
             else:
-                st.success("🏁 **PATH: RECYCLE.** Material is high-purity. Focus on circular recovery loops.")
+                st.success("🏁 **PATH: RECYCLE.** High purity. Prioritize circular collection.")
 
-    # --- TAB 2: GLOBAL BENCHMARKING (COMPETITION) ---
+    # --- TAB 2: GLOBAL BENCHMARKING ---
     with tab2:
         st.subheader("📊 Global Market Alignment (0-100)")
-        st.write("Comparing Costco's current position to global leaders and standards:")
-
         if current:
             benchmarks = {
                 "Current Costco Item": current['recycle'],
@@ -114,19 +112,22 @@ if st.session_state.get("authentication_status"):
                 c_val.write(f"**{score}** ({grade})")
 
             st.markdown("---")
-            gap = 88 - current['recycle']
-            if gap > 0:
-                st.warning(f"💡 **Market Gap:** You are currently **{gap} points** behind the EU Grade A standard. The VoraCycle redesign closes this gap immediately.")
-
-        st.subheader("📋 Comparative Item Analysis")
-        comparison_list = st.multiselect("Select materials to compare outcome benefits", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
-        if comparison_list:
-            comp_data = []
-            for item in comparison_list:
-                res = analyze_material(smiles_dict[item], item)
-                comp_data.append({"Material": item, "Recycle": f"{res['recycle']} ({get_letter_grade(res['recycle'])})", "Fate": f"{res['fate']} ({get_letter_grade(res['fate'])})", "Safety": "PASS" if res['toxic'] == 0 else "FAIL"})
-            st.table(pd.DataFrame(comp_data))
+            st.subheader("📋 Comparative Item Results")
+            comparison_list = st.multiselect("Benchmark Warehouse Items", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
+            if comparison_list:
+                comp_data = []
+                for item in comparison_list:
+                    res = analyze_material(smiles_dict[item], item)
+                    comp_data.append({
+                        "Material": item, 
+                        "Recycle Grade": get_letter_grade(res['recycle']),
+                        "Landfill Fate": get_letter_grade(res['fate']),
+                        "Safety": "PASS" if res['toxic'] == 0 else "FAIL"
+                    })
+                st.table(pd.DataFrame(comp_data))
 
 elif st.session_state.get("authentication_status") is False:
-    st.error('Login Failed.')
-elif
+    st.error('Login Failed. Please check your credentials.')
+
+elif st.session_state.get("authentication_status") is None:
+    st.warning('Please log in.')
