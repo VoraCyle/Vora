@@ -5,9 +5,18 @@ from rdkit.Chem import Draw, Descriptors, rdMolDescriptors
 import pandas as pd
 import numpy as np
 
-# --- 1. AI CONFIGURATION (LIVE KEY ACTIVATED) ---
-genai.configure(api_key="AIzaSyDRJyAVtMKTolhE6vpYjPiA9eSr7Ko9_Og")
-model = genai.GenerativeModel('gemini-1.5-flash')
+import streamlit as st
+import google.generativeai as genai
+
+# --- AI CONFIGURATION (REAL-TIME ACTIVATION) ---
+# This pulls the key safely from the dashboard secrets you just saved
+if "GEMINI_API_KEY" in st.secrets:
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+    # Use the 'latest' tag for a more stable connection
+    model = genai.GenerativeModel('models/gemini-1.5-flash-latest')
+else:
+    st.error("⚠️ API Key missing! Go to Settings > Secrets and add GEMINI_API_KEY.")
+    st.stop()
 
 # --- 2. AUTHENTIC CHEMICAL ENGINE ---
 def get_molecular_data(smiles):
@@ -97,3 +106,4 @@ if user_input:
 
 else:
     st.warning("Please enter a molecular barcode to begin the real-time audit.")
+
