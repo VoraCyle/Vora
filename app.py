@@ -107,4 +107,14 @@ if query and query != "Select a problematic item...":
         with st.spinner("Synthesizing Business & Environmental Impact..."):
             prompt = (
                 f"Perform a deep forensic audit for {query}. The Arbiter chose {best_path} for {priority}. "
-                f"1. Explain why the 'Before' state (Recycle: {br}%, Mineralize: {bm
+                f"1. Explain why the 'Before' state (Recycle: {br}%, Mineralize: {bm}%) is an environmental threat and a business liability. "
+                f"2. Describe the VoraCycle 'Molecular Surgery' (handles/linkers) performed to reach the 'After' state. "
+                f"3. THOROUGHLY EXPLAIN WHY THIS PATH HELPS THE ENVIRONMENT THE MOST. "
+                f"4. EXPLAIN THE BUSINESS CASE: How this saves money, resources, and time while keeping food (frozen/fresh/dry) 100% safe. "
+                f"5. Describe the finish line 180 days after disposal."
+            )
+            response = model.generate_content(prompt)
+            st.info(response.text)
+        
+    else:
+        st.error("Audit failed. Material signature not recognized.")
