@@ -1,6 +1,7 @@
-google-generativeai
+google-generativeai==0.8.3
 rdkit
 pandas
 numpy
 streamlit-authenticator==0.3.2
-pyscf
+protobuf==5.28.2
+grpcio==1.66.2
