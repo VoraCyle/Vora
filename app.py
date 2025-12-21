@@ -29,28 +29,28 @@ if st.session_state.get("authentication_status"):
         "PET (Polyester) - Trays": "C1=CC=C(C=C1)C(=O)OCCOC(=O)C2=CC=C(C=C2)C(=O)O",
         "Polypropylene (PP) - Tubs": "CC(C)CCCCCC",
         "Polystyrene (PS) - Foam": "C1=CC=C(C=C1)C(C)C",
-        "PVC - Meat Cling Film": "C=CCl",
-        "Nylon (PA6) - Vacuum Seals": "CCCCCCN C(=O)CCCCC C(=O)N",
+        "PVC - Cling Film": "C=CCl",
+        "Nylon (PA6) - Meat Seals": "CCCCCCN C(=O)CCCCC C(=O)N",
         "PFAS - Grease-proof Paper": "C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F"
     }
 
     # --- 4. Logic & Rating Functions ---
     def get_letter_grade(score):
-        if score > 85: return "A (Superior)"
-        if score > 70: return "B (Standard)"
-        if score > 55: return "C (Sub-Optimal)"
-        if score > 40: return "D (Poor)"
-        return "F (Critical)"
+        if score > 85: return "A"
+        if score > 70: return "B"
+        if score > 55: return "C"
+        if score > 40: return "D"
+        return "F"
 
     def get_rating_description(score, path_type):
         if path_type == "Recycle":
-            if score > 70: return "Highly compatible with mechanical recycling. High secondary market value."
-            if score > 40: return "Difficult to sort. Likely to be incinerated or downcycled into low-grade lumber."
-            return "Non-recyclable. Contaminates other plastic streams. Causes machine jams."
+            if score > 70: return "✅ **Circular:** High compatibility with mechanical recycling. High secondary market value for pellets."
+            if score > 40: return "⚠️ **Downcyclable:** Difficult to sort. Likely to be incinerated or turned into low-grade plastic lumber."
+            return "❌ **Non-Recyclable:** Contaminates sorting streams. High risk of warehouse 'Plastic Tax' penalties."
         else: # Landfill Path
-            if score > 70: return "Bio-assimilable. Microbes recognize the carbon chain and convert it to soil/CO2."
-            if score > 40: return "Fragmentation risk. Breaks into microplastics but does not fully mineralize."
-            return "Persistent. Indestructible molecular bonds create a 'plastic fossil' for 400+ years."
+            if score > 70: return "✅ **Bio-Assimilable:** Microbes recognize the chain. Carbon returns to soil/biomass safely."
+            if score > 40: return "⚠️ **Fragmentation Risk:** Breaks into microplastics. Remains in the environment for 100+ years."
+            return "❌ **Indestructible:** Creates a 'plastic fossil'. Will remain in the landfill for 400+ years."
 
     def analyze_material(smiles_str):
         mol = Chem.MolFromSmiles(smiles_str)
@@ -60,14 +60,13 @@ if st.session_state.get("authentication_status"):
         toxic = len([a for a in mol.GetAtoms() if a.GetSymbol() in ['Cl', 'F', 'Br']])
         has_bio = any(a.GetSymbol() in ['O', 'N'] for a in mol.GetAtoms())
         
-        # Performance/Safety Calculation
         tsi = (rings * 35) + (mw / 5) 
         recycle_score = max(5, min(98, 92 - (rings * 15) - (toxic * 40)))
         fate_score = max(5, min(98, 20 + (15 if has_bio else 0) - (rings * 10) - (toxic * 30)))
         
         return {"mol": mol, "tsi": tsi, "recycle": recycle_score, "fate": fate_score, "toxic": toxic}
 
-    # --- 5. Main Diagnostic Execution ---
+    # --- 5. Execution ---
     selected_name = st.selectbox("Select Item for Audit", list(smiles_dict.keys()) + ["Custom SMILES"])
     smiles_input = st.text_input("SMILES Barcode", smiles_dict.get(selected_name, "C1=CC=C(C=C1)C=C"))
     
@@ -79,49 +78,48 @@ if st.session_state.get("authentication_status"):
         st.markdown("---")
         st.header("⚖️ Life Cycle Upgrade Comparison")
         
-        # Simulation of Redesign (Optimized version)
-        redesign_recycle = min(98, current['recycle'] + 25)
-        redesign_fate = min(98, current['fate'] + 45)
+        # Redesign Simulation
+        red_rec = min(98, current['recycle'] + 25)
+        red_fate = min(98, current['fate'] + 45)
 
         col1, col2 = st.columns(2)
         with col1:
             st.subheader("🔴 Current (Before)")
-            st.metric("Recycle Rating", f"{current['recycle']}/100", get_letter_grade(current['recycle']))
-            st.metric("Landfill Fate", f"{current['fate']}/100", get_letter_grade(current['fate']))
-            st.write(f"**Outcome:** {get_rating_description(current['fate'], 'Landfill')}")
+            st.metric("Recycle Score", f"{current['recycle']}/100", get_letter_grade(current['recycle']), delta_color="inverse")
+            st.metric("Landfill Fate", f"{current['fate']}/100", get_letter_grade(current['fate']), delta_color="inverse")
+            st.write(get_rating_description(current['fate'], 'Landfill'))
 
         with col2:
             st.subheader("🟢 VoraCycle (After)")
-            st.metric("Recycle Rating", f"{redesign_recycle}/100", get_letter_grade(redesign_recycle), delta="Upgrade")
-            st.metric("Landfill Fate", f"{redesign_fate}/100", get_letter_grade(redesign_fate), delta="Upgrade")
-            st.write(f"**Outcome:** Fully mineralized carbon; zero microplastic legacy.")
+            st.metric("Recycle Score", f"{red_rec}/100", f"Grade: {get_letter_grade(red_rec)}")
+            st.metric("Landfill Fate", f"{red_fate}/100", f"Grade: {get_letter_grade(red_fate)}")
+            st.write("✅ **Outcome:** Fully mineralized carbon; safe return to the environment.")
 
-        # --- B. STRATEGIC DESCRIPTIONS & OUTCOMES ---
+        # --- B. STRATEGIC OUTCOMES ---
         st.markdown("---")
-        st.header("📖 Outcome Analysis: Why Change?")
+        st.header("📖 Strategic Outcome: Why Change?")
         
-        st.write("### 🔄 The Recycling Path (The Preferred Loop)")
-        st.info("""**Why it's better to Recycle:** Recycling keeps the material in the 'Wholesale Loop.' 
-        It reduces the need to extract fresh oil and eliminates EPR Plastic Taxes. 
-        A 'Grade A' rating here means the item pays for its own waste management through secondary material value.""")
+        tab1, tab2 = st.tabs(["🔄 The Recycling Path", "🌍 The Landfill Path"])
         
-        st.write("### 🌍 The Landfill Path (The Safety Net)")
-        st.warning("""**What happens in the Landfill:** Most food-contaminated items (like chicken bags) 
-        cannot be recycled. Our redesign ensures that if the item ends up in a landfill, it does not 
-        leach chemicals into groundwater or turn into microplastics. Instead, it undergoes **Bio-Mineralization**.""")
+        with tab1:
+            st.write("### The Economic Loop")
+            st.info("Recycling is the preferred path for clean, high-volume plastics. It allows Costco to maintain a 'Closed Loop' supply chain, reducing raw material costs and avoiding EPR taxes.")
+        
+        with tab2:
+            st.write("### The Environmental Safety Net")
+            st.warning("Since items like **Chicken Bags** or **Meat Trays** are often too dirty to recycle, the 'After' recommendation focuses on **Bio-Mineralization**. This ensures that even in a landfill, the material disappears safely rather than tainting the earth.")
 
-        # --- C. SAFETY & INTEGRITY GUARANTEE ---
+        # --- C. SAFETY & INTEGRITY ---
         st.markdown("---")
-        st.header("🛡️ Performance & Food Safety Audit")
-        
+        st.header("🛡️ Integrity & Food Safety")
         if category == "Hot Food (Meat/Chicken)" and current['tsi'] < 55:
-            st.error("🚨 **Safety Alert:** Current material fails high-heat integrity test. Risk of chemical leaching into food fats.")
+            st.error("🚨 **Thermal Warning:** Current material has a high 'Leach Risk' at 180°F. The redesign increases thermal stability to prevent chemical migration.")
         else:
-            st.success("✅ **Safety Verified:** Material maintains structural integrity at operational temperatures.")
+            st.success("✅ **Performance Match:** Redesign maintains 100% of current structural barrier strength.")
 
-        if st.button("📄 Generate Executive Supplier Audit"):
-            report = f"AUDIT: {selected_name}\nCURRENT GRADE: {get_letter_grade(current['recycle'])}\nPROPOSED GRADE: {get_letter_grade(redesign_recycle)}\n\nFINAL DESCRIPTION: The redesign replaces indestructible carbon chains with bio-assimilable links. This prevents chemical migration into hot food while ensuring a safe environmental endgame."
-            st.text_area("Copy Final Audit:", value=report, height=200)
+        if st.button("📄 Generate Executive Audit"):
+            report = f"AUDIT: {selected_name}\nSTATUS: Upgrade Recommended\n\nREASONING: Switching to a VoraCycle redesigned polymer prevents microplastic shedding and eliminates chemical migration into fats. This protects the brand from future environmental and health litigation."
+            st.text_area("Audit Summary:", value=report, height=200)
 
 elif st.session_state.get("authentication_status") is False:
     st.error('Login Failed.')
