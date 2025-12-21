@@ -56,7 +56,7 @@ def run_strategic_audit(item_name, smiles):
 # --- 4. THE APEX INTERFACE ---
 st.set_page_config(page_title="VoraCycle Strategic Arbiter", layout="wide")
 st.title("🔮 Wraith VoraCycle: Strategic Arbiter")
-st.markdown("### *Dynamic Forensic Benchmarking: Real-Time Accuracy*")
+st.markdown("### *Dynamic Forensic Benchmarking: Legacy Baseline vs. VoraCycle Future*")
 
 query = st.selectbox("🧬 Select Item for Forensic Audit:", list(product_inventory.keys()))
 
@@ -81,13 +81,13 @@ if query and query != "Search or select an item...":
             st.subheader("♻️ Path 1: Mechanical Recycling")
             st.metric("Before", f"{br}%")
             st.metric("After VoraCycle", f"{ar}%", delta=f"+{round(ar-br, 1)}% Improvement")
-            st.write(f"**Forensic Note:** Item complexity ({round(mw,1)} u) limits legacy recovery.")
+            st.warning(f"**Legacy Baseline ({br}%):** This rating is suppressed by 'Chain Scission.' Legacy heat-cycles break molecular bonds, causing yellowing and loss of food-grade safety.")
 
         with path_col2:
             st.subheader("🌿 Path 2: Soil Mineralization")
             st.metric("Before", f"{bm}%")
             st.metric("After VoraCycle", f"{am}%", delta=f"+{round(am-bm, 1)}% Improvement")
-            st.write(f"**Forensic Note:** VoraCycle handles bypass the carbon-locking in {query}.")
+            st.warning(f"**Legacy Baseline ({bm}%):** This rating reflects 'Biological Inertia.' Legacy carbon bonds are atoms locked in a crystalline lattice that soil enzymes cannot recognize or digest.")
 
         # --- THE STRATEGIC DIRECTIVE ---
         st.divider()
@@ -100,7 +100,7 @@ if query and query != "Search or select an item...":
         
         with t1:
             st.write("### Financial Savings")
-            st.write(f"By choosing **{best_path}**, we avoid surcharges associated with legacy polymers and potential plastic taxes.")
+            st.write(f"By choosing **{best_path}**, we avoid surcharges and potential plastic taxes while reducing expensive sorting overhead.")
         with t2:
             st.write("### Time Efficiency")
             st.write(f"Legacy {query} requires 400+ years to degrade. VoraCycle reduces this to <180 days.")
@@ -131,15 +131,13 @@ if query and query != "Search or select an item...":
         st.divider()
         st.header("📈 Final Forensic Conclusion & Decision Logic")
         
-        # AI synthesis for the detailed deep-dive
         with st.spinner("Synthesizing final forensic justification..."):
             prompt = (
                 f"Explain why {best_path} was chosen as the ultimate endgame for {query}. "
-                f"Include the following: 1. Why the before state was a liability (chemical locking/toxicity). "
-                f"2. How the VoraCycle surgery (metabolic handles or re-linkers) creates a better item. "
-                f"3. What specifically makes this a superior business move regarding money, time, and resources. "
-                f"4. Confirm why this path is the most sustainable option for food variables (frozen, fresh, dry) "
-                f"and what happens to the product when it reaches the finish line."
+                f"Specifically detail why the BEFORE ratings (Recycle: {br}%, Mineralization: {bm}%) were so low—explain the chemical 'Chain Scission' and 'Biological Inertia' that makes them liabilities. "
+                f"Explain how the VoraCycle surgery (metabolic handles or re-linkers) creates a better item. "
+                f"Explain how this move saves money, time, and resources while being 100% safe for frozen, fresh, and dry food variables. "
+                f"Describe the finish line result: 180 days after disposal."
             )
             try:
                 response = model.generate_content(prompt)
