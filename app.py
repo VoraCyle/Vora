@@ -16,7 +16,7 @@ if st.session_state.get("authentication_status"):
     authenticator.logout('Logout', 'sidebar')
     
     st.title("🔮 Wraith VoraCycle: Apex OS")
-    st.markdown("### Quantum-Enhanced Forensic Intelligence Dashboard")
+    st.markdown("### Quantum-Enhanced Forensic Intelligence & Implementation Strategy")
 
     # --- 4. Logic & Grading Engine ---
     def get_letter_grade(score):
@@ -60,7 +60,7 @@ if st.session_state.get("authentication_status"):
 
     tab1, tab2, tab3 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Benchmarking", "⚛️ Quantum Simulation"])
 
-    # --- TAB 1: DEEP DIVE AUDIT (ENHANCED TRANSFORMATION ANALYTICS) ---
+    # --- TAB 1: DEEP DIVE AUDIT (FULL FORENSIC ROADMAP) ---
     with tab1:
         st.sidebar.header("Precision Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods"])
@@ -77,55 +77,54 @@ if st.session_state.get("authentication_status"):
             
             col_b, col_a = st.columns(2)
             with col_b:
-                st.metric("BEFORE (Current)", f"{current['recycle']}/100", f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
+                st.metric("BEFORE (Current Status)", f"{current['recycle']}/100", f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
             with col_a:
-                st.metric("AFTER (VoraCycle)", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
+                st.metric("AFTER (VoraCycle Specs)", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
 
-            # --- DETAILED FORENSIC CHANGE DESCRIPTION ---
-            st.subheader("🛠️ Forensic Engineering Report: The 'Why' Behind the Upgrade")
+            st.markdown("### 🛠️ Forensic Transformation Roadmap")
             
-            # Logic to generate specific "Changes Made" text based on molecular properties
-            changes = []
-            reasons = []
+            # Logic for Implementation Columns
+            col_what, col_why, col_how = st.columns(3)
             
-            if current['toxic'] > 0:
-                changes.append("**Halogen Substitution:** Removed Chlorine/Fluorine atoms from the molecular backbone.")
-                reasons.append("Halogens act as toxic contaminants during incineration and prevent microbial enzyme recognition.")
-            if current['rings'] > 0:
-                changes.append("**Aromatic Ring Reduction:** Decoupled benzene ring structures to reduce steric hindrance.")
-                reasons.append("High ring counts create 'stiff' polymers that resist both mechanical melting and biological breakdown.")
-            
-            changes.append("**Bio-Linkage Integration:** Swapped inert Carbon-Carbon bonds for oxygenated ester/ether linkages.")
-            reasons.append("This creates 'Metabolic Handles' for soil bacteria to latch onto, accelerating mineralization from centuries to months.")
+            with col_what:
+                st.markdown("**1. Changes Made**")
+                if current['toxic'] > 0:
+                    st.write("✅ **Halogen Removal:** Eliminated Cl/F atoms.")
+                if current['rings'] > 0:
+                    st.write("✅ **Aromatic Decoupling:** Replaced benzene rings.")
+                st.write("✅ **Bond Functionalization:** Inserted ester linkages.")
 
-            col_change, col_impact = st.columns(2)
-            with col_change:
-                st.markdown("**Changes Made to Molecular DNA:**")
-                for c in changes: st.write(f"✅ {c}")
-            with col_impact:
-                st.markdown("**Why it was Done (Beneficial Outcome):**")
-                for r in reasons: st.write(f"💡 {r}")
+            with col_why:
+                st.markdown("**2. Why (Beneficial Outcome)**")
+                if current['toxic'] > 0:
+                    st.write("💡 Prevents dioxin formation and toxic chemical migration.")
+                if current['rings'] > 0:
+                    st.write("💡 Lowers the energy barrier for mechanical recycling.")
+                st.write("💡 Allows soil microbes to metabolize the carbon chain.")
+
+            with col_how:
+                st.markdown("**3. How to Implement**")
+                st.write("🚀 **Supplier RFQ:** Mandate 'Halogen-Free' certification.")
+                st.write("🚀 **Extrusion Update:** Shift to aliphatic resin feedstocks.")
+                st.write("🚀 **VoraCycle Coating:** Apply bio-aromatic surface spray.")
 
             st.markdown("---")
             st.header("🎯 Forensic Procurement Verdict")
             if category == "Hot Food" or current['recycle'] < 55:
                 st.warning("🏁 **STRATEGIC CHOICE: LANDFILL SAFETY (BIO-ASSIMILATION)**")
                 st.write(f"""
-                **Detailed Change Rationale:** The transition is driven by the 'Lipid Contamination Barrier.' Since greasy materials cannot be recycled, the molecular changes (Bio-Linkage Integration) focus on the landfill endgame.
-                
-                **Benefit:** We move from fragmentation (microplastics) to **Mineralization**. This removes the 'Forever Liability' from Costco's balance sheet.
+                **Implementation Depth:** Because {selected_item} will be contaminated by oils, we prioritize 'Mineralization.' 
+                By replacing Carbon-Carbon bonds with Bio-Linkages, we ensure the bag disappears in 24 months rather than 400 years.
                 """)
             else:
                 st.success("🏁 **STRATEGIC CHOICE: RECYCLE (CIRCULAR RECOVERY)**")
                 st.write(f"""
-                **Detailed Change Rationale:** The change involves 'Polymer Purity Optimization.' By removing halogens, we ensure the material meets 'Food-Grade' standards for infinite reuse.
-                
-                **Benefit:** High-purity resin is a **Commodity Asset**. This lowers the Net Cost of Goods (COGS) through buy-back programs.
+                **Implementation Depth:** We focus on 'Purity Optimization.' By removing aromatic rings, the resin maintains its viscosity through 10+ recycling loops, turning waste into a high-value commodity.
                 """)
 
-    # --- TAB 2: GLOBAL BENCHMARKING ---
+    # --- TAB 2: GLOBAL BENCHMARKING (FORENSIC COMPARISON) ---
     with tab2:
-        st.header("📊 Market Intelligence & Forensic Comparisons")
+        st.header("📊 Market Intelligence & Forensic Comparison")
         if current:
             benchmarks = {"Costco (Current)": current['recycle'], "Sam's Club": 58, "Walmart": 65, "EU Grade A Standard": 88}
             for entity, score in benchmarks.items():
@@ -136,20 +135,20 @@ if st.session_state.get("authentication_status"):
 
             st.markdown("---")
             st.subheader("📋 Multi-Product Forensic Comparative Audit")
-            comp_list = st.multiselect("Select materials for side-by-side Forensic Audit", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
+            comp_list = st.multiselect("Benchmark materials side-by-side", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
             
             if comp_list:
                 comp_data = []
                 for item in comp_list:
                     res = analyze_material(smiles_dict[item], item)
-                    comp_data.append({"Product": item, "Circularity": res['recycle'], "Grade": get_letter_grade(res['recycle']), "Safety Status": "PASS" if res['toxic'] == 0 else "FAIL"})
+                    comp_data.append({"Product": item, "Circularity": res['recycle'], "Grade": get_letter_grade(res['recycle']), "Safety": "PASS" if res['toxic'] == 0 else "FAIL"})
                 st.table(pd.DataFrame(comp_data))
                 
-                st.markdown("#### 🔬 Forensic Rationale for Comparative Changes")
+                st.markdown("#### 🔬 Detailed Forensic Comparison Description")
                 st.write("""
-                **1. The Toxicity Gap:** Changing from PVC to a halogen-free alternative prevents chemical migration into fats.
-                **2. The Recyclability Gap:** Moving away from Polystyrene Foam reduces 'Logistics Friction' and transport costs.
-                **3. The Global Benchmark Gap:** Moving to the **EU 88 Standard** creates a 'Universal Spec' for global bulk purchasing power.
+                **Why the Variance Matters:** The difference between a 'Pass' and 'Fail' in safety (Toxic atoms) is the difference between a secure supply chain and a future recall. 
+                * **The PVC Risk:** Failing the safety check means Chlorine is present. This requires a 'Material Substitution' plan. 
+                * **The Circularity Gap:** Products scoring below 60 are 'Linear Liabilities.' Upgrading them to the **88 EU Standard** is a beneficial move that hedges against global plastic taxes.
                 """)
 
     # --- TAB 3: QUANTUM SIMULATION ---
@@ -161,11 +160,12 @@ if st.session_state.get("authentication_status"):
                 st.write(f"**Bond Dissociation Energy ($BDE$):** {energy} eV")
                 
                 st.markdown("---")
-                st.subheader("📝 Final Strategic Thoughts: Why Precision Matters")
+                st.subheader("📝 Final Strategic Thoughts: The Apex Advantage")
                 st.write(f"""
-                * **Atomic Reliability:** {energy} eV represents the exact energy barrier for degradation. Lowering this through redesign is the fundamental beneficial outcome.
-                * **Health Sovereignty:** Eliminating leachable atoms protects member loyalty.
-                * **The Benchmark Shield:** Every point closer to **88** is a dollar saved in future environmental taxes.
+                #### 🛡️ Why the Transition is Beneficial
+                * **Atomic De-Risking:** Lowering $BDE$ ({energy} eV) through redesign is the only way to guarantee biodegradation.
+                * **Health Sovereignty:** Removing halogens ensures zero chemical leaching at 180°F.
+                * **Financial Hedge:** Meeting the **88 Benchmark** ensures 100% tax immunity in a circular economy.
                 """)
 
 elif st.session_state.get("authentication_status") is False:
