@@ -5,19 +5,18 @@ from rdkit.Chem import Draw, Descriptors, rdMolDescriptors
 import pandas as pd
 
 # --- 1. Credentials & Auth ---
-# Note: Use 'vora_cookie' for state persistence
 credentials = {'usernames': {'wraith': {'name': 'Wraith', 'password': 'Vora1630'}}}
 authenticator = st_auth.Authenticate(credentials, "vora_cookie", "auth_key", cookie_expiry_days=30)
 
 # --- 2. Login UI ---
 authenticator.login(location='main')
 
-# --- 3. Main Application Logic ---
+# --- 3. Main Application ---
 if st.session_state.get("authentication_status"):
     authenticator.logout('Logout', 'sidebar')
     
     st.title("🔮 Wraith VoraCycle")
-    st.markdown("### Wholesaler Strategic Intelligence Dashboard")
+    st.markdown("### National Wholesaler Strategic Intelligence Dashboard")
 
     # --- 4. Logic & Grading Engine ---
     def get_letter_grade(score):
@@ -30,12 +29,12 @@ if st.session_state.get("authentication_status"):
     def analyze_material(smiles_str, name="Custom"):
         mol = Chem.MolFromSmiles(smiles_str)
         if not mol: return None
+        # Physical & Environmental Calculations
         mw = Descriptors.MolWt(mol)
         rings = rdMolDescriptors.CalcNumRings(mol)
         toxic = len([a for a in mol.GetAtoms() if a.GetSymbol() in ['Cl', 'F', 'Br']])
         has_bio = any(a.GetSymbol() in ['O', 'N'] for a in mol.GetAtoms())
         
-        # Scoring Metrics (0-100)
         recycle = max(5, min(98, 92 - (rings * 15) - (toxic * 40)))
         fate = max(5, min(98, 20 + (15 if has_bio else 0) - (rings * 10) - (toxic * 30)))
         tsi = (rings * 35) + (mw / 5) 
@@ -52,82 +51,74 @@ if st.session_state.get("authentication_status"):
         "PFAS - Grease-proof Paper": "C(C(C(C(C(C(C(F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F)(F)F"
     }
 
-    tab1, tab2 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Competitor Benchmarking"])
+    tab1, tab2 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Market Benchmarking"])
 
-    # --- TAB 1: DEEP DIVE (BEFORE/AFTER) ---
+    # --- TAB 1: DEEP DIVE ---
     with tab1:
         st.sidebar.header("Audit Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods", "Industrial"])
         selected_item = st.selectbox("Select Target Material", list(smiles_dict.keys()) + ["Custom SMILES"])
         
-        smiles_input = st.text_input("SMILES Code", smiles_dict.get(selected_item, "C1=CC=C(C=C1)C=C"))
+        smiles_input = st.text_input("SMILES Barcode", smiles_dict.get(selected_item, "C1=CC=C(C=C1)C=C"))
         current = analyze_material(smiles_input, selected_item)
         
         if current:
-            st.image(Draw.MolToImage(current['mol'], size=(400, 400)))
+            st.image(Draw.MolToImage(current['mol'], size=(400, 400)), caption=f"Molecular DNA: {selected_item}")
             
             st.markdown("---")
-            st.header("⚖️ Transformation Analysis (Before vs. After)")
+            st.header("⚖️ The VoraCycle Transformation (Before vs. After)")
             
-            # Simulated Redesign
-            red_rec = min(98, current['recycle'] + 22)
-            red_fate = min(98, current['fate'] + 48)
+            # Simulated Redesign Scores
+            red_rec = min(98, current['recycle'] + 25)
+            red_fate = min(98, current['fate'] + 45)
 
-            col1, col2 = st.columns(2)
-            with col1:
+            col_b, col_a = st.columns(2)
+            with col_b:
                 st.markdown("### 🔴 BEFORE (Current)")
-                st.metric(label="Recycle Score", value=f"{current['recycle']}/100", delta=f"Grade {get_letter_grade(current['recycle'])}", delta_color="inverse")
-                st.metric(label="Landfill Fate", value=f"{current['fate']}/100", delta=f"Grade {get_letter_grade(current['fate'])}", delta_color="inverse")
-                st.error("**Outcome:** High microplastic risk. Persistent for 400+ years.")
+                st.metric("Recycle Rating", f"{current['recycle']}/100", get_letter_grade(current['recycle']), delta_color="inverse")
+                st.metric("Landfill Fate", f"{current['fate']}/100", get_letter_grade(current['fate']), delta_color="inverse")
+                st.error("**Outcome:** Material creates microplastics and persists for 400+ years.")
 
-            with col2:
+            with col_a:
                 st.markdown("### 🟢 AFTER (VoraCycle)")
-                st.metric(label="Recycle Score", value=f"{red_rec}/100", delta=f"Grade {get_letter_grade(red_rec)}")
-                st.metric(label="Landfill Fate", value=f"{red_fate}/100", delta=f"Grade {get_letter_grade(red_fate)}")
-                st.success("**Outcome:** Bio-Mineralization. Returns to soil within 24 months.")
+                st.metric("Recycle Rating", f"{red_rec}/100", f"Grade: {get_letter_grade(red_rec)}")
+                st.metric("Landfill Fate", f"{red_fate}/100", f"Grade: {get_letter_grade(red_fate)}")
+                st.success("**Outcome:** Full Bio-Mineralization. Material returns to soil within 24 months.")
 
             st.markdown("---")
-            st.header("🎯 Final Procurement Decision")
+            st.header("🎯 Procurement Strategy Verdict")
             if category == "Hot Food" or current['recycle'] < 55:
-                st.warning("🏁 **PATH: LANDFILL SAFETY.** Food-contamination risk is high. Redesign for bio-assimilation.")
+                st.warning("🏆 **STRATEGIC CHOICE: LANDFILL SAFETY.** This item is likely food-contaminated. Focus on the VoraCycle redesign to ensure it disappears safely in the trash.")
             else:
-                st.success("🏁 **PATH: RECYCLE.** High purity. Prioritize circular collection.")
+                st.success("🏆 **STRATEGIC CHOICE: RECYCLE.** High purity. Focus on a closed-loop supply chain.")
 
     # --- TAB 2: GLOBAL BENCHMARKING ---
     with tab2:
-        st.subheader("📊 Global Market Alignment (0-100)")
+        st.subheader("📊 Competitor Market Alignment (0-100)")
         if current:
             benchmarks = {
                 "Current Costco Item": current['recycle'],
-                "Sam's Club Average": 58,
-                "Walmart Sustainable Standard": 65,
-                "EU Grade A Standard": 88
+                "Sam's Club Baseline": 58,
+                "Walmart Sustainable Goal": 65,
+                "EU Grade A standard": 88
             }
-
             for entity, score in benchmarks.items():
-                grade = get_letter_grade(score)
                 c_label, c_bar, c_val = st.columns([2, 5, 1])
                 c_label.write(f"**{entity}**")
                 c_bar.progress(score / 100)
-                c_val.write(f"**{score}** ({grade})")
+                c_val.write(f"**{score}** ({get_letter_grade(score)})")
 
             st.markdown("---")
-            st.subheader("📋 Comparative Item Results")
-            comparison_list = st.multiselect("Benchmark Warehouse Items", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:3])
-            if comparison_list:
-                comp_data = []
-                for item in comparison_list:
-                    res = analyze_material(smiles_dict[item], item)
-                    comp_data.append({
-                        "Material": item, 
-                        "Recycle Grade": get_letter_grade(res['recycle']),
-                        "Landfill Fate": get_letter_grade(res['fate']),
-                        "Safety": "PASS" if res['toxic'] == 0 else "FAIL"
-                    })
-                st.table(pd.DataFrame(comp_data))
+            st.subheader("🏢 Comparative Beneficial Outcome")
+            items_to_compare = st.multiselect("Select materials to see best outcome", list(smiles_dict.keys()), default=list(smiles_dict.keys())[:2])
+            if items_to_compare:
+                rows = []
+                for itm in items_to_compare:
+                    res = analyze_material(smiles_dict[itm], itm)
+                    rows.append({"Material": itm, "Grade": get_letter_grade(res['recycle']), "Safety": "PASS" if res['toxic'] == 0 else "FAIL"})
+                st.table(pd.DataFrame(rows))
 
 elif st.session_state.get("authentication_status") is False:
-    st.error('Login Failed. Please check your credentials.')
-
+    st.error('Login Failed.')
 elif st.session_state.get("authentication_status") is None:
     st.warning('Please log in.')
