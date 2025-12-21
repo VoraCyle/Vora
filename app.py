@@ -44,7 +44,7 @@ if st.session_state.get("authentication_status"):
             recycle = max(5, min(99, 94.2 - (rings * 12.5) - (toxic * 42.1)))
             fate = max(5, min(99, 18.4 + (rings * 8.2) - (toxic * 35.8)))
             
-            return {"name": name, "mol": mol, "recycle": int(recycle), "fate": int(fate), "toxic": toxic}
+            return {"name": name, "mol": mol, "recycle": int(recycle), "fate": int(fate), "toxic": toxic, "rings": rings}
         except:
             return None
 
@@ -60,7 +60,7 @@ if st.session_state.get("authentication_status"):
 
     tab1, tab2, tab3 = st.tabs(["🔍 Deep Dive Audit", "🌎 Global Benchmarking", "⚛️ Quantum Simulation"])
 
-    # --- TAB 1: DEEP DIVE AUDIT (FORENSIC CHANGE ANALYSIS) ---
+    # --- TAB 1: DEEP DIVE AUDIT (ENHANCED TRANSFORMATION ANALYTICS) ---
     with tab1:
         st.sidebar.header("Precision Controls")
         category = st.sidebar.selectbox("Application", ["Hot Food", "Cold Storage", "Dry Goods"])
@@ -71,6 +71,7 @@ if st.session_state.get("authentication_status"):
             st.image(Draw.MolToImage(current['mol'], size=(500, 500)), use_container_width=True)
             st.markdown("---")
             st.header("⚖️ Transformation & Beneficial Outcome Analysis")
+            
             red_rec = min(99, current['recycle'] + 28)
             red_fate = min(99, current['fate'] + 47)
             
@@ -80,28 +81,49 @@ if st.session_state.get("authentication_status"):
             with col_a:
                 st.metric("AFTER (VoraCycle)", f"{red_rec}/100", f"Grade {get_letter_grade(red_rec)}")
 
+            # --- DETAILED FORENSIC CHANGE DESCRIPTION ---
+            st.subheader("🛠️ Forensic Engineering Report: The 'Why' Behind the Upgrade")
+            
+            # Logic to generate specific "Changes Made" text based on molecular properties
+            changes = []
+            reasons = []
+            
+            if current['toxic'] > 0:
+                changes.append("**Halogen Substitution:** Removed Chlorine/Fluorine atoms from the molecular backbone.")
+                reasons.append("Halogens act as toxic contaminants during incineration and prevent microbial enzyme recognition.")
+            if current['rings'] > 0:
+                changes.append("**Aromatic Ring Reduction:** Decoupled benzene ring structures to reduce steric hindrance.")
+                reasons.append("High ring counts create 'stiff' polymers that resist both mechanical melting and biological breakdown.")
+            
+            changes.append("**Bio-Linkage Integration:** Swapped inert Carbon-Carbon bonds for oxygenated ester/ether linkages.")
+            reasons.append("This creates 'Metabolic Handles' for soil bacteria to latch onto, accelerating mineralization from centuries to months.")
+
+            col_change, col_impact = st.columns(2)
+            with col_change:
+                st.markdown("**Changes Made to Molecular DNA:**")
+                for c in changes: st.write(f"✅ {c}")
+            with col_impact:
+                st.markdown("**Why it was Done (Beneficial Outcome):**")
+                for r in reasons: st.write(f"💡 {r}")
+
             st.markdown("---")
             st.header("🎯 Forensic Procurement Verdict")
             if category == "Hot Food" or current['recycle'] < 55:
                 st.warning("🏁 **STRATEGIC CHOICE: LANDFILL SAFETY (BIO-ASSIMILATION)**")
                 st.write(f"""
-                **Detailed Change Rationale:** The transition from current {selected_item} to VoraCycle is driven by the 'Lipid Contamination Barrier.' In Deli/Hot Food apps, grease alters the polymer's density. 
+                **Detailed Change Rationale:** The transition is driven by the 'Lipid Contamination Barrier.' Since greasy materials cannot be recycled, the molecular changes (Bio-Linkage Integration) focus on the landfill endgame.
                 
-                **Why this is Beneficial:**
-                1. **Microplastic Elimination:** Traditional plastics fragment; VoraCycle redesigns the backbone to allow **Bio-Mineralization** (Mineralization into CO2/H2O).
-                2. **Liability Hedging:** Removing the need for recycling "greasy trash" stops Costco from being fined for contaminated waste streams.
+                **Benefit:** We move from fragmentation (microplastics) to **Mineralization**. This removes the 'Forever Liability' from Costco's balance sheet.
                 """)
             else:
                 st.success("🏁 **STRATEGIC CHOICE: RECYCLE (CIRCULAR RECOVERY)**")
                 st.write(f"""
-                **Detailed Change Rationale:** For dry goods, the change involves 'Polymer Purity Optimization.' The VoraCycle spec ensures the chain length is maximized for infinite re-processing.
+                **Detailed Change Rationale:** The change involves 'Polymer Purity Optimization.' By removing halogens, we ensure the material meets 'Food-Grade' standards for infinite reuse.
                 
-                **Why this is Beneficial:**
-                1. **Net Cost Reduction:** High-purity resin has a market value. The change allows Costco to treat its packaging as a **Commodity Asset** rather than a waste expense.
-                2. **Tax Immunity:** Achieving Grade A (85+) provides a shield against the 'Virgin Plastic Tax' scaling across the UK and EU.
+                **Benefit:** High-purity resin is a **Commodity Asset**. This lowers the Net Cost of Goods (COGS) through buy-back programs.
                 """)
 
-    # --- TAB 2: GLOBAL BENCHMARKING (FORENSIC COMPARISON) ---
+    # --- TAB 2: GLOBAL BENCHMARKING ---
     with tab2:
         st.header("📊 Market Intelligence & Forensic Comparisons")
         if current:
@@ -125,14 +147,12 @@ if st.session_state.get("authentication_status"):
                 
                 st.markdown("#### 🔬 Forensic Rationale for Comparative Changes")
                 st.write("""
-                Comparing these products side-by-side reveals the 'Forensic Variance' in the warehouse. 
-
-                **1. The Toxicity Gap (PVC/PFAS vs. PET):** The change from PVC (Meat Film) to a VoraCycle alternative is non-negotiable. PVC contains Chlorine; at warehouse storage temps, these atoms can migrate into animal fats. PET, by contrast, is halogen-free. The benefit of this change is **Litigation Prevention**.
-                **2. The Recyclability Gap (Foam vs. Tubs):** Polystyrene (PS) Foam has a high 'Void Fraction,' making it expensive to transport for recycling. Polypropylene (PP) Tubs are dense assets. The change from Foam to VoraCycle-PET is beneficial because it reduces 'Logistics Friction.'
-                **3. The Global Benchmark Gap:** By identifying that the current selection is below the **EU 88-point mark**, the change creates **Global Universal Spec**. This is beneficial because it allows Costco to buy packaging in bulk globally without worrying about regional bans.
+                **1. The Toxicity Gap:** Changing from PVC to a halogen-free alternative prevents chemical migration into fats.
+                **2. The Recyclability Gap:** Moving away from Polystyrene Foam reduces 'Logistics Friction' and transport costs.
+                **3. The Global Benchmark Gap:** Moving to the **EU 88 Standard** creates a 'Universal Spec' for global bulk purchasing power.
                 """)
 
-    # --- TAB 3: QUANTUM SIMULATION (ATOMIC WHY) ---
+    # --- TAB 3: QUANTUM SIMULATION ---
     with tab3:
         st.header("⚛️ Atomic Bond Simulation")
         if st.button("Initialize Quantum Audit"):
@@ -143,10 +163,9 @@ if st.session_state.get("authentication_status"):
                 st.markdown("---")
                 st.subheader("📝 Final Strategic Thoughts: Why Precision Matters")
                 st.write(f"""
-                #### 🛡️ The 'Highest Level' Beneficial Outcome
-                * **Atomic Reliability:** Using Bond Energy ({energy} eV) means we are no longer guessing. The change is beneficial because we can mathematically predict the day a package will disappear in a landfill.
-                * **Health Sovereignty:** By eliminating 'Leachable Halogens,' we guarantee food purity. This is a beneficial change for **Member Loyalty**—Costco becomes the safest place to buy prepared foods.
-                * **The Benchmark Shield:** Every point closer to the **88 EU Standard** is a dollar saved in future taxes. This change is beneficial because it **Future-Proofs** the balance sheet against a green-tax economy.
+                * **Atomic Reliability:** {energy} eV represents the exact energy barrier for degradation. Lowering this through redesign is the fundamental beneficial outcome.
+                * **Health Sovereignty:** Eliminating leachable atoms protects member loyalty.
+                * **The Benchmark Shield:** Every point closer to **88** is a dollar saved in future environmental taxes.
                 """)
 
 elif st.session_state.get("authentication_status") is False:
