@@ -32,11 +32,11 @@ st.title("🔮 Wraith VoraCycle")
 st.markdown("**Precycling Powered by Precision**") 
 st.markdown("Predict material circularity before it becomes waste. Quantum-inspired AI for proactive regeneration.") 
     
-        # --- Material Selection ---
-        st.sidebar.header("Material Selection") 
-        material = st.sidebar.selectbox(
-            "Choose a common wholesale packaging material",
-            ["Polyethylene (PE)", "Polyethylene Terephthalate (PET)", "Polypropylene (PP)", "Custom SMILES"]
+# --- Material Selection ---
+st.sidebar.header("Material Selection") 
+material = st.sidebar.selectbox(
+"Choose a common wholesale packaging material",
+["Polyethylene (PE)", "Polyethylene Terephthalate (PET)", "Polypropylene (PP)", "Custom SMILES"]
         ) 
     
         smiles_dict = {
@@ -147,5 +147,6 @@ st.markdown("Predict material circularity before it becomes waste. Quantum-inspi
     
     
     
+
 
 
