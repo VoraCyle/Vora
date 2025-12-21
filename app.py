@@ -45,7 +45,6 @@ def run_strategic_audit(item_name, smiles):
         # BEST PATH ARBITRATION
         best_path = "Mineralization" if am > ar else "Mechanical Recycling"
         
-        # DYNAMIC GRADING
         grade = "A" if am > 95 else "B+"
         comp_grade = "F" if toxic_atoms else ("D" if mw > 200 else "C")
         
@@ -56,7 +55,7 @@ def run_strategic_audit(item_name, smiles):
 # --- 4. THE APEX INTERFACE ---
 st.set_page_config(page_title="VoraCycle Strategic Arbiter", layout="wide")
 st.title("🔮 Wraith VoraCycle: Strategic Arbiter")
-st.markdown("### *Dynamic Forensic Benchmarking: Legacy Baseline vs. VoraCycle Future*")
+st.markdown("### *Forensic Deep-Dive: Material Evolution from Start-Line to Endgame*")
 
 query = st.selectbox("🧬 Select Item for Forensic Audit:", list(product_inventory.keys()))
 
@@ -81,13 +80,15 @@ if query and query != "Search or select an item...":
             st.subheader("♻️ Path 1: Mechanical Recycling")
             st.metric("Before", f"{br}%")
             st.metric("After VoraCycle", f"{ar}%", delta=f"+{round(ar-br, 1)}% Improvement")
-            st.warning(f"**Legacy Baseline ({br}%):** This rating is suppressed by 'Chain Scission.' Legacy heat-cycles break molecular bonds, causing yellowing and loss of food-grade safety.")
+            st.warning(f"**Legacy Baseline ({br}%):** Driven by **Polymer Fragmentation**. High-heat reprocessing shears the carbon chains. This creates 'Downcycling' where the plastic becomes too brittle for food safety, requiring virgin plastic dilution.")
+            st.success(f"**VoraCycle Optimized ({ar}%):** Achieved via **Dynamic Cross-Linking**. We introduce re-extenders that 'heal' the polymer during melting, maintaining high-tensile strength for infinite food-grade cycles.")
 
         with path_col2:
             st.subheader("🌿 Path 2: Soil Mineralization")
             st.metric("Before", f"{bm}%")
             st.metric("After VoraCycle", f"{am}%", delta=f"+{round(am-bm, 1)}% Improvement")
-            st.warning(f"**Legacy Baseline ({bm}%):** This rating reflects 'Biological Inertia.' Legacy carbon bonds are atoms locked in a crystalline lattice that soil enzymes cannot recognize or digest.")
+            st.warning(f"**Legacy Baseline ({bm}%):** Driven by **Hydrophobic Locking**. The plastic acts as a biological fortress. Microbes cannot attach to or penetrate the surface, leading to centuries of persistence.")
+            st.success(f"**VoraCycle Optimized ({am}%):** Achieved via **Metabolic Triggering**. We insert latent scission points that act as enzymatic 'beacons.' When in soil, microbes recognize these sites and digest the plastic as a nutrient source.")
 
         # --- THE STRATEGIC DIRECTIVE ---
         st.divider()
@@ -99,54 +100,3 @@ if query and query != "Search or select an item...":
         t1, t2, t3 = st.tabs(["💰 Money", "⏳ Time", "🌍 Resources"])
         
         with t1:
-            st.write("### Financial Savings")
-            st.write(f"By choosing **{best_path}**, we avoid surcharges and potential plastic taxes while reducing expensive sorting overhead.")
-        with t2:
-            st.write("### Time Efficiency")
-            st.write(f"Legacy {query} requires 400+ years to degrade. VoraCycle reduces this to <180 days.")
-        with t3:
-            st.write("### Resource Optimization")
-            st.write("Ensuring structural integrity for Fresh, Frozen, and Dry food storage without excessive material use.")
-
-        # --- BUSINESS TRANSFORMATION LEDGER ---
-        st.divider()
-        st.header("💹 Business Transformation Ledger")
-        
-        l_col1, l_col2 = st.columns(2)
-        with l_col1:
-            st.write("#### Forensic Data Improvements")
-            st.write("- **Toxin Elimination:** 100% reduction in leaching risks.")
-            st.write("- **Tensile Strength:** Maintained at 100% capacity.")
-            st.write("- **Endgame Reliability:** Predictive mineralization achieved.")
-            
-
-        with l_col2:
-            st.write("#### Projected Profit Drivers")
-            st.write("- **Tax Credit Capture:** Optimized for circular economy rebates.")
-            st.write("- **Logistics Savings:** Reduced landfill tipping fees.")
-            st.write(f"- **Brand Equity:** Market leadership with a {my_grade} rating.")
-            
-
-        # --- FINAL INTEGRATED FORENSIC CONCLUSION ---
-        st.divider()
-        st.header("📈 Final Forensic Conclusion & Decision Logic")
-        
-        with st.spinner("Synthesizing final forensic justification..."):
-            prompt = (
-                f"Explain why {best_path} was chosen as the ultimate endgame for {query}. "
-                f"Specifically detail why the BEFORE ratings (Recycle: {br}%, Mineralization: {bm}%) were so low—explain the chemical 'Chain Scission' and 'Biological Inertia' that makes them liabilities. "
-                f"Explain how the VoraCycle surgery (metabolic handles or re-linkers) creates a better item. "
-                f"Explain how this move saves money, time, and resources while being 100% safe for frozen, fresh, and dry food variables. "
-                f"Describe the finish line result: 180 days after disposal."
-            )
-            try:
-                response = model.generate_content(prompt)
-                if hasattr(response, 'text'):
-                    st.info(response.text)
-            except Exception as e:
-                st.error("Forensic summary fallback: Path chosen based on highest mineralization potential and toxin reduction.")
-
-        
-        
-    else:
-        st.error("Forensic analysis failed.")
