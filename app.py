@@ -5,7 +5,7 @@ from rdkit.Chem import Descriptors
 
 # --- 1. SECURE CONFIGURATION ---
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["AIzaSyDgQcX3wzpFaMnSZAKVj3O1B3izPuUpU2k"])
+    genai.configure(api_key=st.secrets["AIzaSyBEmthiZ4aKWUONVhvM4XAU9dCofarQ6EQ"])
     model = genai.GenerativeModel('gemini-1.5-flash') 
 else:
     st.error("🔑 API Key Missing. Please add GEMINI_API_KEY to your Streamlit Secrets.")
@@ -130,6 +130,7 @@ if query and query != "Select a problematic item...":
             
     else:
         st.error("Audit failed. Material signature not recognized.")
+
 
 
 
