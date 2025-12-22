@@ -8,8 +8,6 @@ if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["AIzaSyBEmthiZ4aKWUONVhvM4XAU9dCofarQ6EQ"])
     model = genai.GenerativeModel('gemini-1.5-flash') 
 else:
-    st.error("🔑 API Key Missing. Please add GEMINI_API_KEY to your Streamlit Secrets.")
-    st.stop()  # <--- This MUST be indented with 4 spaces
 
 # --- 2. THE STRATEGIC INVENTORY ---
 # This line MUST be at the very edge of the left margin (no spaces)
@@ -130,6 +128,7 @@ if query and query != "Select a problematic item...":
             
     else:
         st.error("Audit failed. Material signature not recognized.")
+
 
 
 
