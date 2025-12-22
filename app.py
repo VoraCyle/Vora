@@ -7,6 +7,7 @@ from google import genai  # Use the 2025 SDK
 
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
+<<<<<<< HEAD
     
     # Initialize the model directly
     model = genai.GenerativeModel('gemini-1.5-flash')
@@ -18,6 +19,9 @@ if "GEMINI_API_KEY" in st.secrets:
             return response.text
         except Exception as e:
             return f"Forensic Analysis Error: {str(e)}"
+=======
+    model = genai.GenerativeModel('models/gemini-1.5-flash'
+>>>>>>> 9318fb0f502d2afe364b9972407828ee242e8869
 else:
     st.error("🔑 API Key Missing in Streamlit Secrets.")
     st.stop()
