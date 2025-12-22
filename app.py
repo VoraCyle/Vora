@@ -122,16 +122,19 @@ st.header("📈 Strategic Forensic Deep-Dive")
 with st.spinner("Synthesizing Final Conclusion..."):
     # We combine ALL instructions into one master prompt
     master_prompt = (
-        f"You are the VoraCycle Arbiter, a senior forensic analyst. "
-        f"Analyze this forensic audit for {query}. Best path: {best_path} for {priority}. "
-        f"1. Explain why Before ratings ({br}% and {bm}%) were liabilities (Chain Scission/Biological Dead-Lock). "
-        f"2. Describe how VoraCycle surgery creates the high-performance 'After' state. "
-        f"3. Confirm safety for Frozen, Fresh, Dry food and the 180-day finish line. "
-        f"\n\nIMPORTANT: Include a 'Resource Efficiency Analysis' with three DETAILED paragraphs for: "
-        f"\n- 💰 MONEY: Specific financial capital resilience based on these numbers. "
-        f"\n- ⏳ TIME: Operational velocity and throughput improvements. "
-        f"\n- 🌍 RESOURCES: Asset optimization and risk mitigation. "
-        f"Reference specific inventory items and quantities provided."
+    f"You are the VoraCycle Arbiter, a senior forensic analyst. "
+    f"Analyze this forensic audit for {query}. "
+    f"\n\nCRITICAL INSTRUCTION: You must provide a 'Resource Efficiency Analysis' with "
+    f"THREE SUBSTANTIAL PARAGRAPHS (at least 100 words each). "
+    f"\n- For 💰 MONEY: Detail the specific capital resilience and cost-saving trajectory. "
+    f"\n- For ⏳ TIME: Detail the operational velocity and throughput improvements. "
+    f"\n- For 🌍 RESOURCES: Detail the asset optimization and risk mitigation. "
+    f"\n\nUse professional, technical language and reference the specific data provided."
+)
+
+# Display the AI's full, detailed unique response
+st.subheader("⚖️ Strategic Forensic Deep-Dive")
+st.info(conclusion_text) # This will show everything the AI wrote
     )
 
     # Use the function we fixed earlier
