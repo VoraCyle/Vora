@@ -1,6 +1,4 @@
-
-     
-        import streamlit as st
+import streamlit as st
 import google.generativeai as genai
 from rdkit import Chem
 from rdkit.Chem import Descriptors
@@ -87,3 +85,4 @@ if query and query != "Select a problematic item...":
         with p1:
             st.subheader("♻️ Path 1: Mechanical Recycling")
             st.metric("After VoraCycle", f"{ar}%", delta=f"Baseline: {br
+
