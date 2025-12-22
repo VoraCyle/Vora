@@ -11,7 +11,7 @@ def initialize_ai():
     """
     try:
         # Pulling from your Secrets dashboard
-        k1 = st.secrets["GEMINI_KEY_1"]
+        k1 = GEMINI_KEY_1 = "AIzaSyDRJyAVtMKTolhE6vpYjPiA9eSr7Ko9_Og"
         genai.configure(api_key=k1)
         return genai.GenerativeModel('gemini-1.5-flash')
     except Exception as e:
@@ -89,3 +89,4 @@ if query and query != "Select a problematic item...":
         st.divider()
         st.header(f"🏆 Best Strategic Path: {best_path}")
         st.info(f"**Primary Objective:** {priority} | **Logic:** {reason}")
+
