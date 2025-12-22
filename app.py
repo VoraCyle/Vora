@@ -6,7 +6,7 @@ from rdkit.Chem import Descriptors
 # --- 1. SECURE CONFIGURATION ---
 # The logic gate: If the key is found, configure the AI. If not, stop.
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets "AIzaSyBEmthiZ4aKWUONVhvM4XAU9dCofarQ6EQ")
+    genai.configure(api_key=st.secrets ["AIzaSyBEmthiZ4aKWUONVhvM4XAU9dCofarQ6EQ"])
     model = genai.GenerativeModel('gemini-1.5-flash') 
 else:
 
@@ -85,4 +85,5 @@ if query and query != "Select a problematic item...":
         with p1:
             st.subheader("♻️ Path 1: Mechanical Recycling")
             st.metric("After VoraCycle", f"{ar}%", delta=f"Baseline: {br
+
 
