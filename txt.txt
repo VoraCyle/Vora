@@ -1,4 +1,10 @@
 streamlit
 rdkit
 pyscf
+
 streamlit-authenticator
+
+
+google-generativeai
+
+pandas
