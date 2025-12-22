@@ -2,26 +2,23 @@ import streamlit as st
 # Keep existing rdkit imports
 from rdkit import Chem
 from rdkit.Chem import Descriptors
-from google import genai  # Use the 2025 SDK
-# --- 1. SECURE CONFIGURATION ---
+from google import genai  # Use the new unified import
 
+# --- 1. SECURE CONFIGURATION ---
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-<<<<<<< HEAD
-    
-    # Initialize the model directly
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # In the 2025 SDK, we use Client instead of .configure()
+    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
     
     def generate_conclusion(prompt):
         try:
-            # Simple, direct generation call
-            response = model.generate_content(prompt)
+            # Notice the new path: client.models.generate_content
+            response = client.models.generate_content(
+                model='gemini-1.5-flash', 
+                contents=prompt
+            )
             return response.text
         except Exception as e:
             return f"Forensic Analysis Error: {str(e)}"
-=======
-    model = genai.GenerativeModel('models/gemini-1.5-flash'
->>>>>>> 9318fb0f502d2afe364b9972407828ee242e8869
 else:
     st.error("🔑 API Key Missing in Streamlit Secrets.")
     st.stop()
@@ -118,19 +115,27 @@ if query and query != "Select a problematic item...":
         with t2: st.write("VoraCycle reduces environmental debt from 400+ years to <180 days.")
         with t3: st.write("Ensuring structural integrity without increasing virgin plastic density.")
 
-        # --- FINAL FORENSIC CONCLUSION ---
-        st.divider()
-        st.header("📈 Strategic Forensic Deep-Dive")
-        with st.spinner("Synthesizing Final Conclusion..."):
-            prompt = (
-                f"Detailed forensic audit for {query}. Best path: {best_path} for {priority}. "
-                f"Explain why the Before ratings ({br}% and {bm}%) were liabilities (Chain Scission and Biological Dead-Lock). "
-                f"How VoraCycle surgery creates the high-performance 'After' state. "
-                f"Confirm safety for Frozen, Fresh, Dry food and describe the 180-day finish line."
-            )
-            # FIXED: Call the function that uses the 2025 client
-            conclusion_text = generate_conclusion(prompt)
-            st.info(conclusion_text)
-            
-    else:
-        st.error("Audit failed. Material signature not recognized.")
+  # --- FINAL FORENSIC CONCLUSION ---
+st.divider()
+st.header("📈 Strategic Forensic Deep-Dive")
+
+with st.spinner("Synthesizing Final Conclusion..."):
+    # We combine ALL instructions into one master prompt
+    master_prompt = (
+        f"You are the VoraCycle Arbiter, a senior forensic analyst. "
+        f"Analyze this forensic audit for {query}. Best path: {best_path} for {priority}. "
+        f"1. Explain why Before ratings ({br}% and {bm}%) were liabilities (Chain Scission/Biological Dead-Lock). "
+        f"2. Describe how VoraCycle surgery creates the high-performance 'After' state. "
+        f"3. Confirm safety for Frozen, Fresh, Dry food and the 180-day finish line. "
+        f"\n\nIMPORTANT: Include a 'Resource Efficiency Analysis' with three DETAILED paragraphs for: "
+        f"\n- 💰 MONEY: Specific financial capital resilience based on these numbers. "
+        f"\n- ⏳ TIME: Operational velocity and throughput improvements. "
+        f"\n- 🌍 RESOURCES: Asset optimization and risk mitigation. "
+        f"Reference specific inventory items and quantities provided."
+    )
+
+    # Use the function we fixed earlier
+    conclusion_text = generate_conclusion(master_prompt)
+    
+    # Display the final unique result
+    st.info(conclusion_text)
