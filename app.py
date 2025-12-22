@@ -115,30 +115,25 @@ if query and query != "Select a problematic item...":
         with t2: st.write("VoraCycle reduces environmental debt from 400+ years to <180 days.")
         with t3: st.write("Ensuring structural integrity without increasing virgin plastic density.")
 
-  # --- FINAL FORENSIC CONCLUSION ---
+# --- FINAL FORENSIC CONCLUSION ---
 st.divider()
 st.header("📈 Strategic Forensic Deep-Dive")
 
 with st.spinner("Synthesizing Final Conclusion..."):
-    # We combine ALL instructions into one master prompt
+    # 1. Define the Master Instructions
     master_prompt = (
-    f"You are the VoraCycle Arbiter, a senior forensic analyst. "
-    f"Analyze this forensic audit for {query}. "
-    f"\n\nCRITICAL INSTRUCTION: You must provide a 'Resource Efficiency Analysis' with "
-    f"THREE SUBSTANTIAL PARAGRAPHS (at least 100 words each). "
-    f"\n- For 💰 MONEY: Detail the specific capital resilience and cost-saving trajectory. "
-    f"\n- For ⏳ TIME: Detail the operational velocity and throughput improvements. "
-    f"\n- For 🌍 RESOURCES: Detail the asset optimization and risk mitigation. "
-    f"\n\nUse professional, technical language and reference the specific data provided."
-)
-
-# Display the AI's full, detailed unique response
-st.subheader("⚖️ Strategic Forensic Deep-Dive")
-st.info(conclusion_text) # This will show everything the AI wrote
+        f"You are the VoraCycle Arbiter, a senior forensic analyst. "
+        f"Analyze this forensic audit for {query}. "
+        f"\n\nCRITICAL INSTRUCTION: You must provide a 'Resource Efficiency Analysis' with "
+        f"THREE SUBSTANTIAL PARAGRAPHS (at least 150 words each). "
+        f"\n- For 💰 MONEY: Detail the specific capital resilience and cost-saving trajectory. "
+        f"\n- For ⏳ TIME: Detail the operational velocity and throughput improvements. "
+        f"\n- For 🌍 RESOURCES: Detail the asset optimization and risk mitigation. "
+        f"\n\nUse professional, technical language and reference the specific inventory data provided."
     )
 
-    # Use the function we fixed earlier
+    # 2. Call the AI function (This creates the 'conclusion_text' variable)
     conclusion_text = generate_conclusion(master_prompt)
     
-    # Display the final unique result
+    # 3. Display the final unique result inside the spinner block
     st.info(conclusion_text)
