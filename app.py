@@ -129,3 +129,5 @@ if query and query != "Select a problematic item...":
         
     else:
         st.error("Audit failed. Material signature not recognized.")
+    
+
