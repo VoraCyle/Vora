@@ -1,15 +1,11 @@
 import streamlit as st
 import google.generativeai as genai
-from rdkit import Chem
-from rdkit.Chem import Descriptors
 
-# --- 1. SECURE CONFIGURATION ---
-if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash') 
-else:
-    st.error("🔑 API Key Missing.")
-    st.stop()
+# DO NOT put the keys here anymore. 
+# Pull them from the secure "vault" instead:
+GEMINI_KEYS = [st.secrets["GEMINI_KEY_1"], st.secrets["GEMINI_KEY_2"]]
+GROQ_KEY = st.secrets["GROQ_API_KEY"]
+HF_TOKEN = st.secrets["HF_API_TOKEN"]
 
 # --- 2. THE STRATEGIC INVENTORY ---
 product_inventory = {
@@ -130,4 +126,5 @@ if query and query != "Select a problematic item...":
     else:
         st.error("Audit failed. Material signature not recognized.")
     
+
 
