@@ -117,7 +117,6 @@ if query and query != "Select a problematic item...":
 
 # --- FINAL FORENSIC CONCLUSION ---
 st.divider()
-st.header("📈 Strategic Forensic Deep-Dive")
 
 with st.spinner("Synthesizing Final Conclusion..."):
     # 1. Define the Master Instructions
