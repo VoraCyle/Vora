@@ -5,13 +5,14 @@ from rdkit.Chem import Descriptors
 
 # --- 1. SECURE CONFIGURATION ---
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets["AIzaSyBEmthiZ4aKWUONVhvM4XAU9dCofarQ6EQ"])
+    genai.configure(api_key=st.secrets["AIzaSyDgQcX3wzpFaMnSZAKVj3O1B3izPuUpU2k"])
     model = genai.GenerativeModel('gemini-1.5-flash') 
 else:
-   
+    st.error("🔑 API Key Missing. Please add GEMINI_API_KEY to your Streamlit Secrets.")
+    st.stop()  # <--- This MUST be indented with 4 spaces
 
 # --- 2. THE STRATEGIC INVENTORY ---
-# This line must be all the way to the left (no spaces)
+# This line MUST be at the very edge of the left margin (no spaces)
 product_inventory = {
     "Select a problematic item...": "",
     "Milk Jug (HDPE)": "CCCCCCCC",
@@ -129,6 +130,7 @@ if query and query != "Select a problematic item...":
             
     else:
         st.error("Audit failed. Material signature not recognized.")
+
 
 
 
