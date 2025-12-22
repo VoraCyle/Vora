@@ -6,9 +6,13 @@ from rdkit.Chem import Descriptors
 # --- 1. SECURE CONFIGURATION ---
 # The logic gate: If the key is found, configure the AI. If not, stop.
 if "GEMINI_API_KEY" in st.secrets:
-    genai.configure(api_key=st.secrets ["AIzaSyBEmthiZ4aKWUONVhvM4XAU9dCofarQ6EQ"])
+    # Use the VARIABLE NAME here, not the actual key
+    genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
     model = genai.GenerativeModel('gemini-1.5-flash') 
 else:
+    # You MUST have these two lines indented under 'else'
+    st.error("🔑 API Key Missing. Please add GEMINI_API_KEY to your Streamlit Secrets.")
+    st.stop()
 
 # --- 2. THE STRATEGIC INVENTORY ---
 # This dictionary must be at the ROOT level (zero spaces at the start)
@@ -85,5 +89,6 @@ if query and query != "Select a problematic item...":
         with p1:
             st.subheader("♻️ Path 1: Mechanical Recycling")
             st.metric("After VoraCycle", f"{ar}%", delta=f"Baseline: {br
+
 
 
