@@ -88,7 +88,8 @@ if query and query != "Select a problematic item...":
         p1, p2 = st.columns(2)
         with p1:
             st.subheader("♻️ Path 1: Mechanical Recycling")
-            st.metric("After VoraCycle", f"{ar}%", delta=f"Baseline: {br
+            st.metric("After VoraCycle", f"{ar}%", delta=f"Baseline: {br}%")
+
 
 
 
