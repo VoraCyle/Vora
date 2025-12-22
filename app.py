@@ -6,7 +6,7 @@ from rdkit.Chem import Descriptors
 # --- 1. SECURE CONFIGURATION ---
 if "GEMINI_API_KEY" in st.secrets:
     genai.configure(api_key=st.secrets["GEMINI_API_KEY"])
-    model = genai.GenerativeModel('gemini-1.5-flash') 
+    model = genai.GenerativeModel('models/gemini-1.5-flash'
 else:
     st.error("🔑 API Key Missing.")
     st.stop()
