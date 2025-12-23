@@ -1,27 +1,25 @@
 import streamlit as st
-# Keep existing rdkit imports
+import pandas as pd
 from rdkit import Chem
 from rdkit.Chem import Descriptors
-from google import genai  # Use the new unified import
+from openai import OpenAI  # We only need OpenAI now!
 
-# --- 1. SECURE CONFIGURATION ---
-if "GEMINI_API_KEY" in st.secrets:
-    # In the 2025 SDK, we use Client instead of .configure()
-    client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-    
-    def generate_conclusion(prompt):
-        try:
-            # Notice the new path: client.models.generate_content
-            response = client.models.generate_content(
-                model='gemini-1.5-flash', 
-                contents=prompt
-            )
-            return response.text
-        except Exception as e:
-            return f"Forensic Analysis Error: {str(e)}"
-else:
-    st.error("🔑 API Key Missing in Streamlit Secrets.")
-    st.stop()
+# This connects your app to OpenAI using the secret key you'll put in Streamlit
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+def generate_vora_analysis(prompt):
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": "You are the VoraCycle Arbiter, a senior forensic analyst. You provide technical, highly detailed executive reports."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.7
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Analysis Error: {str(e)}"
 
 # --- 2. THE STRATEGIC INVENTORY --- (Unchanged)
 product_inventory = {
@@ -117,22 +115,22 @@ if query and query != "Select a problematic item...":
 
 # --- FINAL FORENSIC CONCLUSION ---
 st.divider()
+st.header("📈 Resource Efficiency & Benefit Outcomes")
 
-with st.spinner("Synthesizing Final Conclusion..."):
-    # 1. Define the Master Instructions
-    master_prompt = (
-        f"You are the VoraCycle Arbiter, a senior forensic analyst. "
-        f"Analyze this forensic audit for {query}. "
-        f"\n\nCRITICAL INSTRUCTION: You must provide a 'Resource Efficiency Analysis' with "
-        f"THREE SUBSTANTIAL PARAGRAPHS (at least 150 words each). "
-        f"\n- For 💰 MONEY: Detail the specific capital resilience and cost-saving trajectory. "
-        f"\n- For ⏳ TIME: Detail the operational velocity and throughput improvements. "
-        f"\n- For 🌍 RESOURCES: Detail the asset optimization and risk mitigation. "
-        f"\n\nUse professional, technical language and reference the specific inventory data provided."
-    )
+if query: 
+    with st.spinner("VoraCycle Arbiter (GPT-4o) is generating your forensic summary..."):
+        # We tell the AI it is a senior consultant to get better length
+        master_prompt = (
+            f"As a Senior Forensic Consultant at VoraCycle, analyze the audit for {query}. "
+            f"You MUST provide three distinct, high-level technical sections. "
+            f"EACH section must be a full, 150-word paragraph of technical analysis: "
+            f"\n\n1. 💰 FINANCIAL RESILIENCE: Detail cost-saving trajectories and ROI logic."
+            f"\n2. ⏳ OPERATIONAL VELOCITY: Detail throughput gains and efficiency metrics."
+            f"\n3. 🌍 ASSET OPTIMIZATION: Detail risk mitigation and strategic resource use."
+            f"\n\nFormat with ### Headers and use a professional, executive tone."
+        )
 
-    # 2. Call the AI function (This creates the 'conclusion_text' variable)
-    conclusion_text = generate_conclusion(master_prompt)
-    
-    # 3. Display the final unique result inside the spinner block
-    st.info(conclusion_text)
+        full_analysis = generate_vora_analysis(master_prompt)
+        
+        # This displays the result in a clean box
+        st.markdown(full_analysis)
