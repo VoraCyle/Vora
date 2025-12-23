@@ -5,7 +5,7 @@ from rdkit.Chem import Descriptors
 from openai import OpenAI  # We only need OpenAI now!
 
 # This connects your app to OpenAI using the secret key you'll put in Streamlit
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+client = OpenAI(api_key=st.secrets["openai"]["OPENAI_API_KEY"])
 
 def generate_vora_analysis(prompt):
     try:
@@ -113,24 +113,29 @@ if query and query != "Select a problematic item...":
         with t2: st.write("VoraCycle reduces environmental debt from 400+ years to <180 days.")
         with t3: st.write("Ensuring structural integrity without increasing virgin plastic density.")
 
-# --- FINAL FORENSIC CONCLUSION ---
+# --- FINAL FORENSIC CONCLUSION (HIGH-DENSITY VERSION) ---
 st.divider()
-st.header("📈 Resource Efficiency & Benefit Outcomes")
+st.header("📈 Deep Forensic & Strategic Analysis")
 
 if query: 
-    with st.spinner("VoraCycle Arbiter (GPT-4o) is generating your forensic summary..."):
-        # We tell the AI it is a senior consultant to get better length
+    with st.spinner("VoraCycle Arbiter (GPT-4o) is conducting a deep strategic audit..."):
+        # The Secret Sauce: We give it a 'Persona' and 'Word Count' requirements
         master_prompt = (
-            f"As a Senior Forensic Consultant at VoraCycle, analyze the audit for {query}. "
-            f"You MUST provide three distinct, high-level technical sections. "
-            f"EACH section must be a full, 150-word paragraph of technical analysis: "
-            f"\n\n1. 💰 FINANCIAL RESILIENCE: Detail cost-saving trajectories and ROI logic."
-            f"\n2. ⏳ OPERATIONAL VELOCITY: Detail throughput gains and efficiency metrics."
-            f"\n3. 🌍 ASSET OPTIMIZATION: Detail risk mitigation and strategic resource use."
-            f"\n\nFormat with ### Headers and use a professional, executive tone."
+            f"Role: Senior Forensic Resource Strategist.\n"
+            f"Task: Conduct a high-level strategic audit for: {query}.\n\n"
+            f"INSTRUCTIONS FOR DEPTH:\n"
+            f"1. 💰 RESOURCE EFFICIENCY (DEEP DIVE): Provide a 200-word forensic analysis of "
+            f"WHY this path is beneficial. Use terms like 'Capital Resilience', 'Opportunity Cost', "
+            f"and 'EBITDA impact'. Explain the invisible waste that traditional audits miss.\n\n"
+            f"2. 🛡️ BEST STRATEGIC PATH (LOGIC): Provide a 200-word technical justification for the "
+            f"chosen strategy. Explain the trade-offs. Why this specific path over other options? "
+            f"Analyze the risk mitigation and long-term velocity gains.\n\n"
+            f"3. 🌍 SYSTEMIC OUTCOME: A final 150-word summary on asset optimization.\n\n"
+            f"FORMATTING: Use ### Headers for each section. DO NOT use bullet points. "
+            f"Write in full, professional, dense paragraphs. Be authoritative and decisive."
         )
 
         full_analysis = generate_vora_analysis(master_prompt)
         
-        # This displays the result in a clean box
-        st.markdown(full_analysis)
+        # Display in a professional container
+        st.info(full_analysis)
