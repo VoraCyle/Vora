@@ -5,7 +5,7 @@ from rdkit.Chem import Descriptors
 from openai import OpenAI  # We only need OpenAI now!
 
 # This connects your app to OpenAI using the secret key you'll put in Streamlit
-client = OpenAI(api_key=st.secrets["openai"]["OPENAI_API_KEY"])
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 def generate_vora_analysis(prompt):
     try:
