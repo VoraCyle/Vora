@@ -113,34 +113,28 @@ if query and query != "Select a problematic item...":
         with t2: st.write("VoraCycle reduces environmental debt from 400+ years to <180 days.")
         with t3: st.write("Ensuring structural integrity without increasing virgin plastic density.")
 
-# --- THE ARBITER: FORENSIC SCORECARD ENGINE ---
-st.divider()
-st.header("📊 VoraCycle Strategic Scorecard")
+master_prompt = (
+    f"Role: Lead Forensic Arbiter (VoraCycle).\n"
+    f"Subject: Strategic Pre-Lifecycle Audit for {query}.\n\n"
+    
+    f"### 🎯 STRATEGIC SCORECARD\n"
+    f"- CONFIDENCE IN PATH: [0-100%]\n"
+    f"- CIRCULARITY POTENTIAL: [High/Med/Low]\n"
+    f"- ECONOMIC RETENTION: [Value preserved vs Value lost]\n\n"
 
-if query: 
-    with st.spinner("Calculating strategic confidence and ROI metrics..."):
-        master_prompt = (
-            f"Act as the VoraCycle Lead Arbiter. Analyze the following audit: {query}.\n\n"
-            f"REQUIRED OUTPUT FORMAT:\n"
-            f"1. 🎯 STRATEGIC CONFIDENCE SCORE: (0-100%)\n"
-            f"2. 💰 BUSINESS VALUE RATING: (High/Medium/Low)\n"
-            f"3. 🌱 ENVIRONMENTAL RECOVERY POTENTIAL: (High/Medium/Low)\n\n"
-            
-            f"### 🧪 FORENSIC JUSTIFICATION (The 'Why')\n"
-            f"Provide a 250-word deep dive into the specific chemical or structural reasons why this path "
-            f"is the best choice for BOTH the business P&L and the ecosystem. Do not use generic terms. "
-            f"Discuss the 'Thermodynamic Cost' of mineralization versus the 'Economic Velocity' of reuse.\n\n"
-            
-            f"### ⚖️ BEST STRATEGIC PATH: COMPETITIVE ANALYSIS\n"
-            f"Provide a 250-word technical comparison. Explain why you REJECTED Mineralization and "
-            f"why this chosen path maximizes capital resilience. Focus on 'Risk Mitigation' and "
-            f"'Supply Chain Sovereignty.'\n\n"
-            
-            f"### 📈 OUTCOME PROJECTION\n"
-            f"A 100-word final summary on the expected 5-year impact of this decision."
-        )
+    f"### 🧪 THE 'WHY': ENVIRONMENTAL & BUSINESS SYNERGY\n"
+    f"Provide a 150-word forensic justification. Explain why this specific path (Recycle or send to waste) "
+    f"is the 'Highest Form of Sustainability.' Discuss how this path protects the company's "
+    f"Bottom Line by avoiding the 'Waste Tax' and Energy Loss associated with recycling or mineralization. "
+    f"Be technical about the material's integrity.\n\n"
 
-        full_analysis = generate_vora_analysis(master_prompt)
-        
-        # Displaying the analysis in a professional "Report Card" style
-        st.markdown(full_analysis)
+    f"### ⚖️ BEST PATH JUSTIFICATION (THE SELECTION LOGIC)\n"
+    f"Explain the decision-making process. Why is this better than the alternative? "
+    f"If you are avoiding waste, explain the 'Carbon Avoidance' achieved. If you are picking "
+    f"the company's best path, explain the 'Supply Chain Independence' it creates. "
+    f"Provide 150 words of rigorous analysis.\n\n"
+    
+    f"### 🛡️ ENVIRONMENTAL FAILSAFE\n"
+    f"If this product MUST eventually become waste, how do we ensure it returns to the "
+    f"environment safely? Detail the 'Biological Cycle' or 'Non-Toxic Decomposition' plan (150 words)."
+)
