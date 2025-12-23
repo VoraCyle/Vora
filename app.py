@@ -113,29 +113,34 @@ if query and query != "Select a problematic item...":
         with t2: st.write("VoraCycle reduces environmental debt from 400+ years to <180 days.")
         with t3: st.write("Ensuring structural integrity without increasing virgin plastic density.")
 
-# --- FINAL FORENSIC CONCLUSION (HIGH-DENSITY VERSION) ---
+# --- THE ARBITER: FORENSIC SCORECARD ENGINE ---
 st.divider()
-st.header("📈 Deep Forensic & Strategic Analysis")
+st.header("📊 VoraCycle Strategic Scorecard")
 
 if query: 
-    with st.spinner("VoraCycle Arbiter (GPT-4o) is conducting a deep strategic audit..."):
-        # The Secret Sauce: We give it a 'Persona' and 'Word Count' requirements
+    with st.spinner("Calculating strategic confidence and ROI metrics..."):
         master_prompt = (
-            f"Role: Senior Forensic Resource Strategist.\n"
-            f"Task: Conduct a high-level strategic audit for: {query}.\n\n"
-            f"INSTRUCTIONS FOR DEPTH:\n"
-            f"1. 💰 RESOURCE EFFICIENCY (DEEP DIVE): Provide a 200-word forensic analysis of "
-            f"WHY this path is beneficial. Use terms like 'Capital Resilience', 'Opportunity Cost', "
-            f"and 'EBITDA impact'. Explain the invisible waste that traditional audits miss.\n\n"
-            f"2. 🛡️ BEST STRATEGIC PATH (LOGIC): Provide a 200-word technical justification for the "
-            f"chosen strategy. Explain the trade-offs. Why this specific path over other options? "
-            f"Analyze the risk mitigation and long-term velocity gains.\n\n"
-            f"3. 🌍 SYSTEMIC OUTCOME: A final 150-word summary on asset optimization.\n\n"
-            f"FORMATTING: Use ### Headers for each section. DO NOT use bullet points. "
-            f"Write in full, professional, dense paragraphs. Be authoritative and decisive."
+            f"Act as the VoraCycle Lead Arbiter. Analyze the following audit: {query}.\n\n"
+            f"REQUIRED OUTPUT FORMAT:\n"
+            f"1. 🎯 STRATEGIC CONFIDENCE SCORE: (0-100%)\n"
+            f"2. 💰 BUSINESS VALUE RATING: (High/Medium/Low)\n"
+            f"3. 🌱 ENVIRONMENTAL RECOVERY POTENTIAL: (High/Medium/Low)\n\n"
+            
+            f"### 🧪 FORENSIC JUSTIFICATION (The 'Why')\n"
+            f"Provide a 250-word deep dive into the specific chemical or structural reasons why this path "
+            f"is the best choice for BOTH the business P&L and the ecosystem. Do not use generic terms. "
+            f"Discuss the 'Thermodynamic Cost' of mineralization versus the 'Economic Velocity' of reuse.\n\n"
+            
+            f"### ⚖️ BEST STRATEGIC PATH: COMPETITIVE ANALYSIS\n"
+            f"Provide a 250-word technical comparison. Explain why you REJECTED Mineralization and "
+            f"why this chosen path maximizes capital resilience. Focus on 'Risk Mitigation' and "
+            f"'Supply Chain Sovereignty.'\n\n"
+            
+            f"### 📈 OUTCOME PROJECTION\n"
+            f"A 100-word final summary on the expected 5-year impact of this decision."
         )
 
         full_analysis = generate_vora_analysis(master_prompt)
         
-        # Display in a professional container
-        st.info(full_analysis)
+        # Displaying the analysis in a professional "Report Card" style
+        st.markdown(full_analysis)
