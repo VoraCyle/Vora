@@ -8,13 +8,28 @@ except Exception as e:
     st.error("🚨 API Key Missing: Please add 'OPENAI_API_KEY' to your Streamlit Secrets.")
     st.stop()
 
-# --- 2. THE ARBITER ENGINE ---
+# --- 2. COSTCO-SCALE "HARD" ASSETS ---
+problematic_items = [
+    "-- Select a High-Volume Asset --",
+    "Multi-Layer Pet Food Bags (Mylar/Poly)",
+    "Black Plastic Food Trays (Carbon Black)",
+    "LLDPE Pallet Shrink Wrap",
+    "Expanded Polystyrene (EPS) Coolers",
+    "Lithium-Ion Tool Batteries (Returns)",
+    "Wax-Coated Produce Corrugated Boxes",
+    "PVC Blister Packaging",
+    "Composite Flooring Returns",
+    "Textile Waste (Kirkland Clothing)",
+    "Industrial Pallet Strapping (Nylon/PP)"
+]
+
+# --- 3. THE ARBITER ENGINE ---
 def generate_vora_analysis(prompt):
     try:
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You specialize in Pre-Lifecycle Forensic Design. You analyze product DNA to prevent waste before it begins."},
+                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You provide forensic comparative audits for enterprise retailers like Costco. You focus on design-phase DNA optimization and logistics."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7 
@@ -23,56 +38,58 @@ def generate_vora_analysis(prompt):
     except Exception as e:
         return f"Analysis Error: {str(e)}"
 
-# --- 3. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle DNA Arbiter", layout="wide")
-st.title("🛡️ VoraCycle: Pre-Lifecycle DNA Arbiter")
-st.markdown("#### Solving the waste problem at the design stage—before production even starts.")
+# --- 4. USER INTERFACE ---
+st.set_page_config(page_title="VoraCycle: Forensic Command", layout="wide")
+st.title("🛡️ VoraCycle: Strategic Command Center")
+st.markdown("#### Comparative Forensic Audit: Status Quo vs. Vora Optimized")
 
-query = st.text_input("Enter the Asset or Product Concept for DNA Audit:", 
-                     placeholder="e.g., Composite Carbon Fiber Aerospace Panel")
+col1, col2 = st.columns(2)
+with col1:
+    dropdown_choice = st.selectbox("Select problematic Warehouse Stream:", problematic_items)
+with col2:
+    search_query = st.text_input("Custom SKU/Material Audit:")
 
-if query:
+final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a High-Volume Asset --" else None)
+
+if final_query:
     st.divider()
-    
-    with st.spinner("🧬 Mapping Product DNA and simulating environmental outcomes..."):
-        # --- 4. THE DESIGN-PHASE FORENSIC PROMPT ---
-        master_prompt = f"""
-        Act as the VoraCycle Lead Arbiter. Conduct a 'Pre-Production Forensic Audit' for: {query}.
+    with st.spinner("Executing Dual-Path Simulation..."):
         
-        GOAL: Optimize the product DNA before it starts to ensure the highest level of sustainability.
+        master_prompt = f"""
+        Audit the following for an Enterprise Retailer: {final_query}.
 
         ### 📊 DUAL-PATH FORENSIC SCORECARD
-        Compare the 'Status Quo' (how it's usually made) vs. the 'Vora Optimized' version.
-        Include these metrics in a Markdown Table:
-        - Primary Outcome (Waste vs Loop)
+        Compare the 'Status Quo' (Current Disposal/Recycling) vs. 'Vora Optimized' (Highest Circularity).
+        Output this as a Markdown Table with the following rows:
+        - Primary Outcome (e.g. Landfill vs Refurbish)
         - Sustainability Rating (0-10)
-        - Financial Value Retention (%)
-        - Environmental Risk Level
+        - Capital Retention (%)
+        - Environmental Impact Score (0-10)
+        - Risk/Liability Level (High/Low)
 
         ---
 
-        ### 🔍 THE FORENSIC COMPARISON (250+ Words)
-        Provide an in-depth analysis of why the 'Vora Optimized Path' is the best strategic choice for the company. 
-        Discuss how the Status Quo leads to 'Capital Leakage' and environmental liability. 
-        Contrast this with the Optimized Path's ability to maintain high operational velocity and asset recovery. 
-        Explain the 'Why' with rigorous, professional logic.
+        ### ⚖️ THE WINNING VERDICT: BEST STRATEGIC PATH
+        Clearly state the chosen Vora Path. Provide 200 words of forensic logic explaining why this is the best for the ENVIRONMENT and the COMPANY. 
 
-        ### 🧬 THE 'DNA' MODIFICATION (DESIGN FOR ENVIRONMENT)
-        If the current end-result of this product leads to waste, how must we change the 
-        PRODUCT DNA (materials selection, chemical binders, modularity) right now? 
-        Detail exactly how to make it 'Environmentally Safe' so that even if it reaches 
-        end-of-life, it acts as a biological nutrient rather than a toxin. 
-        Provide 250+ words on non-toxic design and circular engineering.
+        ### 🚚 HANDLING & LOGISTICS (SOP)
+        1. **Warehouse Handling:** Precise sorting/prepping instructions.
+        2. **Logistics:** Transport path details and 'Backhauling' opportunities.
+        3. **Facility:** Specify the target Circular Hub or Processing center.
 
-        ### ⚖️ STRATEGIC REASONING & 5-YEAR OUTCOME
-        Provide a 150-word final justification. Why is this path the absolute best for the 
-        company's long-term survival? How does this decision create a 'Circular Moat' 
-        around the business?
+        ### 🧬 DNA MODIFICATION (THE DESIGN FIX)
+        How must we re-engineer the PRODUCT DNA right now? Detail how to make it 'Safe by Design' so it acts as a non-toxic biological nutrient if it ever reaches end-of-life. (250+ Words).
+
+        ---
+
+        ### 🏁 FINAL EXECUTIVE SUMMARY: THE VORA ADVANTAGE
+        Provide a 200-word concluding argument. 
+        1. WHY: Why is the Vora Optimized path the most beneficial for the long-term health of the business? 
+        2. HOW: How does this specific strategy keep sustainability high while eliminating waste before it starts?
+        3. SYNERGY: Explain the 'Zero-Leakage' promise—where profit and planet align perfectly.
         """
 
-        # --- 5. EXECUTION & DISPLAY ---
-        analysis_result = generate_vora_analysis(master_prompt)
-        st.markdown(analysis_result)
+        st.markdown(generate_vora_analysis(master_prompt))
 
-# --- 6. FOOTER ---
-st.sidebar.info("VoraCycle DNA Logic: v3.0.0 (Pre-Production Mode)")
+# --- 5. FOOTER ---
+st.sidebar.info("VoraCycle Enterprise Logic: v4.4.0")
