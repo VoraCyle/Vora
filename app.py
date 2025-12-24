@@ -8,7 +8,7 @@ except:
     st.error("🚨 API Key Missing.")
     st.stop()
 
-# --- 2. THE SOURCE OF TRUTH (The 3-Pillar DNA) ---
+# --- 2. THE SOURCE OF TRUTH (Demo Data) ---
 dna_database = {
     "Multi-Layer Chicken Bags": {
         "bad": ["Nylon-6 Barrier Film", "Polyurethane Adhesives", "Carbon Black Pigment"],
@@ -21,28 +21,44 @@ dna_database = {
     "PVC Clamshells": {
         "bad": ["Polyvinyl Chloride (PVC)", "Phthalate Plasticizers", "Heavy Metal Stabilizers"],
         "fix": ["90% Cellulose-Fiber (THE BODY)", "7% Bio-Polymer Binder (THE BRAIN)", "3% Mineral-Tracer (THE SKELETON)"]
-    },
-    "Kirkland Bath Tissue Case-Wrap": {
-        "bad": ["LDPE Low-Density Film", "High-Slip Chemical Additives", "Mixed Polymer Regrind"],
-        "fix": ["97% High-Strength Vora-PE (THE BODY)", "3% Vora-C1 Catalyst (THE BRAIN)"]
-    },
-    "PFAS Wrappers": {
-        "bad": ["Fluorinated Coatings (PFAS)", "Bleached Kraft Paper", "Synthetic Wax"],
-        "fix": ["94% Natural Fiber (THE BODY)", "4% Aqueous Vora-Barrier (THE BRAIN)", "2% Mineral-Inert (THE SKELETON)"]
     }
 }
 
 # --- 3. UI SETUP ---
-st.set_page_config(page_title="VoraCycle: Executive Command", layout="wide")
+st.set_page_config(page_title="VoraCycle Industrial", layout="wide")
+
+# --- SIDEBAR: THE INDUSTRIAL ENGINE ---
+st.sidebar.title("🏭 Industrial Intelligence")
+st.sidebar.markdown("### Manual Forensic Audit")
+industrial_query = st.sidebar.text_area("Input Chemical String or Raw Material Specs:", 
+                                        placeholder="e.g. 70% LDPE, 20% Nylon-6, 10% Glue")
+analyze_btn = st.sidebar.button("Run Forensic Analysis")
+
+# --- MAIN PAGE ---
 st.title("🛡️ VoraCycle: Strategic DNA Command Center")
 
+if analyze_btn and industrial_query:
+    st.divider()
+    st.subheader("🔬 Live Forensic Analysis: Custom Compound")
+    with st.spinner("Processing Molecular Signature..."):
+        # This prompt forces the AI to act as a chemist, not a demo bot
+        prompt = f"""
+        Act as a Vora Material Scientist. Analyze this raw input: {industrial_query}.
+        1. Identify the 'Monster DNA' (Toxins/Barriers).
+        2. Propose a Vora 3-Pillar Fix (Body, Brain, Skeleton).
+        3. Rate the Path-Agnostic Success (0-100%).
+        Format with bold headers.
+        """
+        response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": prompt}])
+        st.info(response.choices[0].message.content)
+        st.stop() # Stops here if the sidebar is used, keeping it clean
+
+# STANDARD DEMO MODE
 dropdown_items = ["-- Select a Strategic Asset --"] + list(dna_database.keys())
 choice = st.selectbox("Select Asset for Executive Audit:", dropdown_items)
 
 if choice != "-- Select a Strategic Asset --":
     st.divider()
-    
-    # 🧬 DNA COMPARISON SECTION
     st.subheader(f"🧬 DNA Forensic Transformation: {choice}")
     col_a, col_b = st.columns(2)
     
@@ -66,23 +82,8 @@ if choice != "-- Select a Strategic Asset --":
         st.write("✅ **Path B (Recycle):** 100% High-Value Circularity")
 
     st.divider()
-
-    # 📊 THE BUSINESS CASE SUMMARY
     st.subheader("🏁 Executive Verdict & Company Benefits")
-    
     with st.spinner("Finalizing Business Case..."):
-        prompt = f"""
-        Provide a 3-point business summary for the product '{choice}' using Vora DNA. 
-        Focus on:
-        1. FINANCIAL: How this stops EPR taxes and future plastic penalties.
-        2. OPERATIONAL: How it simplifies the supply chain with mono-materials.
-        3. BRAND: How it protects the stock price by removing 'PFAS' and 'Toxin' liabilities.
-        Keep it sharp and executive-toned.
-        """
-        report = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": prompt}])
+        report_prompt = f"Executive summary for {choice} transformation to Vora DNA."
+        report = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": report_prompt}])
         st.info(report.choices[0].message.content)
-
-    st.caption("Strategic ROI: This transition creates an immediate EPR tax exemption and future-proofs the enterprise against 2026 bans.")
-
-else:
-    st.info("👆 Please select an asset to view the Business Case.")
