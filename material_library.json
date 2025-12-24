@@ -1,0 +1,29 @@
+{
+  "FB-01": {
+    "name": "The Shape-Shifter (Multi-layer Bag)",
+    "description": "Composite PET/Foil/PE film used for snacks and coffee.",
+    "tax_penalty": 0.04,
+    "vora_fix": {
+        "material": "Vora-7 Mono-PP",
+        "recipe": "95% Homo-PP, 3% Vora-Catalyst, 2% Oxygen-Barrier Masterbatch"
+    }
+  },
+  "FB-05": {
+    "name": "The Phantom (Black Tray)",
+    "description": "Carbon Black plastic used in frozen meals and meat.",
+    "tax_penalty": 0.02,
+    "vora_fix": {
+        "material": "Vora-NIR Detectable",
+        "recipe": "97% HDPE, 2% NIR-Reflective Black Pigment, 1% Tracer Dye"
+    }
+  },
+  "FB-06": {
+    "name": "The Toxic Skin (PFAS Paper)",
+    "description": "Grease-proof paper clamshells treated with 'Forever Chemicals'.",
+    "tax_penalty": 0.05,
+    "vora_fix": {
+        "material": "Vora-Plant Wax Coat",
+        "recipe": "FSC-Certified Kraft Fiber + 5% Vora-BioSeal (Plant-based wax)"
+    }
+  }
+}
