@@ -9,11 +9,11 @@ except Exception as e:
     st.error("🚨 API Key Missing.")
     st.stop()
 
-# --- 2. THE VORA 100 STRATEGIC REGISTRY ---
+# --- 2. THE VORA 100 REGISTRY ---
 vora_100 = {
     "🥩 POULTRY & FRESH MEATS": ["MAP Poultry Trays", "Absorbent Poultry Pads", "Vacuum Wraps", "Black Meat Trays"],
     "🧻 PAPER & HYGIENE WRAPS": ["Kirkland Bath Tissue Case-Wrap", "Paper Towel Overwrap"],
-    "🚩 HIGH-RISK LIABILITIES": ["PVC Clamshells", "PFAS Wrappers", "Lithium Battery Packs", "LLDPE Stretch Wrap"]
+    "🚩 HIGH-RISK LIABILITIES": ["PVC Clamshells", "PFAS Wrappers", "LLDPE Stretch Wrap"]
 }
 
 # --- 3. THE ARBITER ENGINE ---
@@ -22,7 +22,7 @@ def generate_vora_analysis(prompt):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are the VoraCycle CSO. You specialize in forensic DNA reconstruction of industrial materials."},
+                {"role": "system", "content": "You are the VoraCycle CSO. You create high-impact, visual material audits."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.3 
@@ -49,24 +49,36 @@ final_query = search_query if search_query else (dropdown_choice if dropdown_cho
 
 if final_query:
     st.divider()
-    with st.spinner(f"Reconstructing DNA for {final_query}..."):
+    
+    # --- NEW VISUAL DNA BLOCKS ---
+    st.subheader(f"🧬 DNA Forensic Transformation: {final_query}")
+    
+    # Create the Side-by-Side columns
+    before_col, after_col = st.columns(2)
+    
+    with before_col:
+        st.error("### 🔴 BEFORE: Status Quo DNA")
+        st.markdown("""
+        - **Materials:** Multi-layer Laminates / Composites
+        - **Path:** Linear (Landfill/Incineration)
+        - **Risk:** High EPR Tax Liability
+        - **DNA Markers:** PFAS, Toxic Glues, Mixed Polymers
+        """)
         
-        # This prompt specifically asks for the "Before and After" visuals
-        master_prompt = f"""
-        Execute a Forensic DNA Audit for: {final_query}.
+    with after_col:
+        st.success("### 🟢 AFTER: Vora Resilient DNA")
+        st.markdown("""
+        - **Materials:** Mono-Material / Vora-Infused
+        - **Path:** Circular (Infinite Loop / Safe Soil)
+        - **Risk:** EPR Tax Exempt
+        - **DNA Markers:** Vora-C1 Catalyst, Bio-Mineralized Base
+        """)
 
-        ### 🧬 DNA TRANSFORMATION SCORECARD
-        Provide a side-by-side comparison:
-        - **BEFORE DNA (Status Quo):** List the toxic elements, multi-material layers, and tax liabilities.
-        - **AFTER DNA (Vora Design):** List the mono-material transition, specific Vora additives, and tax exemptions.
+    st.divider()
 
-        ### 📊 EXECUTIVE IMPACT DASHBOARD
-        Compare 'Business as Usual' vs. 'Vora DNA Optimization' in a Markdown table.
-
-        ### 💰 FINANCIAL & ECOLOGICAL VERDICT
-        Explain why this specific change is a 'Financial Fortress' for the brand.
-        """
-
+    # --- FULL DETAILED REPORT BELOW ---
+    with st.spinner(f"Generating Executive Impact Report..."):
+        master_prompt = f"Generate a detailed Strategic Impact Report for: {final_query}. Include a Comparison Table and an Executive Verdict."
         st.markdown(generate_vora_analysis(master_prompt))
 else:
     st.info("👆 Please select an asset to see the DNA Transformation.")
