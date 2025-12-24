@@ -9,76 +9,68 @@ except Exception as e:
     st.error("🚨 API Key Missing.")
     st.stop()
 
-# --- 2. THE VORA 100 REGISTRY ---
+# --- 2. LOAD THE INGREDIENT DATABASE ---
+try:
+    with open('material_library.json', 'r') as f:
+        monster_db = json.load(f)
+except:
+    monster_db = {}
+
+# --- 3. THE VORA 100 REGISTRY ---
 vora_100 = {
     "🥩 POULTRY & FRESH MEATS": ["MAP Poultry Trays", "Absorbent Poultry Pads", "Vacuum Wraps", "Black Meat Trays"],
     "🧻 PAPER & HYGIENE WRAPS": ["Kirkland Bath Tissue Case-Wrap", "Paper Towel Overwrap"],
-    "🚩 HIGH-RISK LIABILITIES": ["PVC Clamshells", "PFAS Wrappers", "LLDPE Stretch Wrap"]
+    "🚩 HIGH-RISK LIABILITIES": ["PVC Clamshells", "PFAS Wrappers", "Lithium Battery Packs", "LLDPE Stretch Wrap"]
 }
-
-# --- 3. THE ARBITER ENGINE ---
-def generate_vora_analysis(prompt):
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are the VoraCycle CSO. You create high-impact, visual material audits."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.3 
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        return f"Analysis Error: {str(e)}"
 
 # --- 4. USER INTERFACE ---
 st.set_page_config(page_title="VoraCycle: Executive Command", layout="wide")
 st.title("🛡️ VoraCycle: Strategic DNA Command Center")
 
-dropdown_items = ["-- Select a Strategic Asset --"]
-for category, items in vora_100.items():
-    dropdown_items.extend(items)
-
 col1, col2 = st.columns(2)
 with col1:
-    dropdown_choice = st.selectbox("Select Asset for Executive Audit:", dropdown_items)
+    dropdown_items = ["-- Select a Strategic Asset --"]
+    for cat, items in vora_100.items(): dropdown_items.extend(items)
+    choice = st.selectbox("Select Asset for Executive Audit:", dropdown_items)
 with col2:
-    search_query = st.text_input("Search Custom SKU:")
+    search = st.text_input("Search Custom SKU:")
 
-final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a Strategic Asset --" else None)
+final_target = search if search else (choice if choice != "-- Select a Strategic Asset --" else None)
 
-if final_query:
+if final_target:
     st.divider()
+    st.subheader(f"🧬 DNA Forensic Transformation: {final_target}")
     
-    # --- NEW VISUAL DNA BLOCKS ---
-    st.subheader(f"🧬 DNA Forensic Transformation: {final_query}")
-    
-    # Create the Side-by-Side columns
     before_col, after_col = st.columns(2)
     
     with before_col:
         st.error("### 🔴 BEFORE: Status Quo DNA")
-        st.markdown("""
-        - **Materials:** Multi-layer Laminates / Composites
-        - **Path:** Linear (Landfill/Incineration)
-        - **Risk:** High EPR Tax Liability
-        - **DNA Markers:** PFAS, Toxic Glues, Mixed Polymers
-        """)
+        st.markdown("**Core Liabilities:**")
+        st.warning("⚠️ Multi-layer Composite Films")
+        st.warning("⚠️ Non-Separable Poly-Glues")
+        st.warning("⚠️ Carbon-Black Pigments")
+        st.warning("⚠️ PFAS Moisture Barriers")
         
     with after_col:
-        st.success("### 🟢 AFTER: Vora Resilient DNA")
-        st.markdown("""
-        - **Materials:** Mono-Material / Vora-Infused
-        - **Path:** Circular (Infinite Loop / Safe Soil)
-        - **Risk:** EPR Tax Exempt
-        - **DNA Markers:** Vora-C1 Catalyst, Bio-Mineralized Base
-        """)
+        st.success("### 🟢 AFTER: Vora DNA Blueprint")
+        st.markdown("**New DNA Ingredients:**")
+        
+        # Pull ingredients from DB or use fallback
+        if final_target in monster_db:
+            ingredients = monster_db[final_target]['vora_fix']['recipe'].split(',')
+        else:
+            ingredients = ["92% Mono-Polymer Base", "5% Vora-C1 Catalyst", "3% Mineral-Anchor Nutrient"]
+        
+        # Display as Technical Cards
+        for ingredient in ingredients:
+            st.info(f"🧬 **{ingredient.strip()}**")
+            
+        st.caption("Industrial Instructions: Standard 'Drop-In' extrusion compatible.")
 
     st.divider()
-
-    # --- FULL DETAILED REPORT BELOW ---
-    with st.spinner(f"Generating Executive Impact Report..."):
-        master_prompt = f"Generate a detailed Strategic Impact Report for: {final_query}. Include a Comparison Table and an Executive Verdict."
-        st.markdown(generate_vora_analysis(master_prompt))
-else:
-    st.info("👆 Please select an asset to see the DNA Transformation.")
+    
+    # Executive report
+    with st.spinner("Analyzing Financial Impact..."):
+        prompt = f"Executive summary for transforming {final_target} to Vora DNA focusing on EPR savings."
+        response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": prompt}])
+        st.markdown(response.choices[0].message.content)
