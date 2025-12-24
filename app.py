@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 from openai import OpenAI
 
@@ -15,20 +13,20 @@ dna_database = {
     "Multi-Layer Chicken Bags": {
         "base_material": "Mono-PE (Polyethylene)",
         "catalyst_type": "Enzymatic/Pro-degradant (Vora-C1)",
-        "bad": ["Nylon-6 Barrier", "Polyurethane Adhesives", "Carbon Black"],
-        "fix": ["92% Mono-PE (BODY)", "5% Vora-C1 Catalyst (BRAIN)", "3% Mineral-Anchor (SKELETON)"]
+        "bad": ["Nylon-6 Barrier Film", "Polyurethane Adhesives", "Carbon Black Pigment"],
+        "fix": ["92% Mono-PE (THE BODY)", "5% Vora-C1 Catalyst (THE BRAIN)", "3% Mineral-Anchor (THE SKELETON)"]
     },
     "MAP Poultry Trays": {
         "base_material": "Mono-PP (Polypropylene)",
         "catalyst_type": "Bio-Mineral Catalyst (Vora-C2)",
-        "bad": ["Rigid Polystyrene (PS)", "EVOH Oxygen Barrier"],
-        "fix": ["95% Mono-PP (BODY)", "3% Vora-C2 Catalyst (BRAIN)", "2% Mineral-Anchor (SKELETON)"]
+        "bad": ["Rigid Polystyrene (PS)", "EVOH Oxygen Barrier", "Chemical Blowing Agents"],
+        "fix": ["95% Mono-PP (THE BODY)", "3% Vora-C2 Catalyst (THE BRAIN)", "2% Mineral-Anchor (THE SKELETON)"]
     },
     "PVC Clamshells": {
         "base_material": "Cellulose / Fiber Base",
         "catalyst_type": "Aqueous Bio-Binder",
-        "bad": ["PVC", "Phthalates", "Lead Stabilizers"],
-        "fix": ["90% Fiber (BODY)", "7% Bio-Binder (BRAIN)", "3% Mineral-Tracer (SKELETON)"]
+        "bad": ["Polyvinyl Chloride (PVC)", "Phthalate Plasticizers", "Heavy Metal Stabilizers"],
+        "fix": ["90% Cellulose-Fiber (THE BODY)", "7% Bio-Polymer Binder (THE BRAIN)", "3% Mineral-Tracer (THE SKELETON)"]
     }
 }
 
@@ -36,7 +34,6 @@ dna_database = {
 st.set_page_config(page_title="VoraCycle Industrial", layout="wide")
 st.title("🛡️ VoraCycle: Strategic DNA Command Center")
 
-# --- SIDEBAR & HOME ---
 st.sidebar.title("🏢 Command Center")
 if st.sidebar.button("🏠 Home / Reset Dashboard"):
     st.rerun()
@@ -48,7 +45,6 @@ choice = st.selectbox("Select Asset for Executive Audit:", dropdown_items)
 if choice != "-- Select a Strategic Asset --":
     item_data = dna_database[choice]
     
-    # 🧬 DNA COMPARISON
     st.divider()
     col_a, col_b = st.columns(2)
     with col_a:
@@ -58,72 +54,38 @@ if choice != "-- Select a Strategic Asset --":
         st.success("### 🟢 AFTER: Vora DNA Blueprint")
         for item in item_data["fix"]: st.info(f"🧬 **{item}**")
 
-    # 🏭 THE SUPPLY CHAIN ENGINE (The "Real Life" Part)
+    # --- 4. PATH-AGNOSTIC SCIENCE SUMMARY ---
     st.divider()
-    st.subheader("🔗 Global Supplier Match (Tier 1 & 2)")
-    
-    if st.button("🔎 FIND CERTIFIED VORA-STYLE SUPPLIERS"):
-        with st.spinner("Scanning Global Material Markets..."):
-            # This prompt forces the AI to find REAL companies for the specific fix
-            supplier_prompt = f"""
-            Identify real-world global suppliers for the following transition:
-            From: {item_data['bad']} 
-            To: {item_data['fix']}
-            
-            List real companies for:
-            1. The Base Mono-Material (e.g., Dow, LyondellBasell, Sabic).
-            2. The 'Vora-style' Catalyst/Masterbatch (e.g., companies like Wells Plastics (Reverte), Symphony Environmental (d2w), or Evonik).
-            3. Specify which ASTM/ISO standards these suppliers help meet.
-            """
-            response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": supplier_prompt}])
-            st.write(response.choices[0].message.content)
-
-    # 📝 WORK ORDER
-    with st.expander("📝 VIEW MANUFACTURER WORK ORDER"):
-        st.markdown(f"""
-        **TO:** Costco Packaging Vendor
-        **ACTION:** Transition {choice} to Path-Agnostic DNA.
-        **RECIPE:** Mix {item_data['base_material']} with {item_data['catalyst_type']} additive at 5% load rate.
+    st.subheader("🛡️ The Path-Agnostic Guarantee")
+    col_s1, col_s2 = st.columns(2)
+    with col_s1:
+        st.markdown("""
+        ### 🔄 Path A: Waste (Landfill)
+        **The Science:** Enzymatic 'Molecular Scissors'
+        - **Speed:** 90% breakdown in <5 years (vs. 450+ years).
+        - **Outcome:** Full bio-mineralization; zero microplastics.
+        - **Standard:** Meets **ASTM D5511**.
+        """)
+    with col_s2:
+        st.markdown("""
+        ### ♻️ Path B: Recycle (Circular)
+        **The Science:** Mono-Material Purity
+        - **Outcome:** High-value pellet for food-grade reuse.
+        - **Benefit:** Zero EPR Plastic Tax liability.
+        - **Standard:** Meets **APR Critical Guidance**.
         """)
 
+    # --- 5. SUPPLIERS & WORK ORDER ---
+    st.divider()
+    st.subheader("🔗 Global Supplier Match")
+    if st.button("🔎 FIND CERTIFIED VORA-STYLE SUPPLIERS"):
+        with st.spinner("Scanning Global Markets..."):
+            prompt = f"Identify real-world suppliers for {item_data['base_material']} and {item_data['catalyst_type']} masterbatch (e.g. Dow, Wells Plastics)."
+            response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": prompt}])
+            st.write(response.choices[0].message.content)
+
+    with st.expander("📝 VIEW MANUFACTURER WORK ORDER"):
+        st.markdown(f"**TO:** Packaging Vendor\n**ACTION:** Transition to {item_data['base_material']} + 5% {item_data['catalyst_type']}.")
+
 else:
-    st.info("👆 Select a product to identify the DNA and the Suppliers.")
-
-st.divider()
-st.caption("Conceptual Guidance • Real production requires lab validation and certified supplier onboarding.")
-
-# --- ADD THIS TO YOUR APP.PY ---
-
-st.divider()
-st.subheader("🛡️ The Path-Agnostic Guarantee")
-
-col_science1, col_science2 = st.columns(2)
-
-with col_science1:
-    st.markdown("""
-    ### 🔄 Path A: Waste (Landfill/Nature)
-    **The Science:** Enzymatic 'Molecular Scissors'
-    - **Activation:** Initiates upon contact with landfill microbes (Anaerobic).
-    - **Outcome:** Full bio-mineralization into soil-safe nutrients.
-    - **Speed:** 90% breakdown in <5 years (vs. 450+ years).
-    - **Standard:** Meets **ASTM D5511**.
-    """)
-
-with col_science2:
-    st.markdown("""
-    ### ♻️ Path B: Recycle (Circular Economy)
-    **The Science:** Mono-Material Purity
-    - **Activation:** Identified by NIR (Near-Infrared) optical sorters.
-    - **Outcome:** High-value pellet for 1:1 food-grade reuse.
-    - **Standard:** Meets **APR Critical Guidance**.
-    - **Value:** Zero EPR Tax / Maximum Rebate Value.
-    """)
-
-# --- TIME COMPARISON CHART ---
-st.info("📊 **Landfill Persistence Comparison (Estimated Years to Mineralization)**")
-chart_data = {
-    "Chicken Bag": [40, 2],
-    "Meat Tray": [450, 4],
-    "Clamshell": [500, 5]
-}
-st.bar_chart(chart_data)
+    st.info("👆 Select a product to begin the DNA audit.")
