@@ -29,7 +29,7 @@ def generate_vora_analysis(prompt):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You specialize in 'Resilient Circularity'—engineering products so they remain sustainable regardless of how the consumer disposes of them."},
+                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You provide technical engineering blueprints and supplier grading for circular retail systems."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7 
@@ -39,9 +39,9 @@ def generate_vora_analysis(prompt):
         return f"Analysis Error: {str(e)}"
 
 # --- 4. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle: Resilient Design", layout="wide")
+st.set_page_config(page_title="VoraCycle: Enterprise DNA", layout="wide")
 st.title("🛡️ VoraCycle: Strategic DNA Command Center")
-st.markdown("### Engineering for 'Universal Sustainability'—Safe in Any Waste Stream.")
+st.markdown("### Solving the End-Game at the Design Stage.")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -53,36 +53,40 @@ final_query = search_query if search_query else (dropdown_choice if dropdown_cho
 
 if final_query:
     st.divider()
-    with st.spinner("Simulating Universal Sustainability Outcomes..."):
+    with st.spinner("Engineering Universal Sustainability Blueprint..."):
         
         master_prompt = f"""
         Audit the following for an Enterprise Retailer: {final_query}.
 
         ### 📊 DUAL-PATH FORENSIC SCORECARD
-        Compare 'Status Quo Design' vs. 'Vora Resilient Design'.
-        - Sustainability Rating (0-10)
-        - Outcome if Landfilled (Toxin vs Nutrient)
-        - Outcome if Recycled (Downcycled vs Upcycled)
-        - Financial Risk (High vs Zero)
+        Compare 'Status Quo' vs. 'Vora Resilient Design'.
+        Include: Primary Outcome, Sustainability Rating, Capital Retention %, and Environmental Toxin Risk.
 
         ---
 
-        ### 🧬 DNA TRANSFORMATION: THE "START-AT-THE-END" BLUEPRINT
-        Explain how to change the materials NOW so the item is safe in EVERY scenario:
-        1. **If it goes to Waste:** How we change the chemicals/binders to ensure it safely mineralizes (Biological Nutrient).
-        2. **If it goes to Recycle:** How we simplify the DNA (Mono-materials) to ensure it stays high-value.
-        *Focus on removing 'Material Incompatibility' at the design stage.* (300+ Words).
-
-        ### 🎯 THE BEST PATH & HANDLING
-        Clearly identify the #1 most profitable path. Provide step-by-step handling and backhauling logistics for a company like Costco.
+        ### 🧬 DNA ENGINEERING PROTOCOL: THE "WHAT & HOW"
+        Provide a technical blueprint for the design team:
+        1. **WHAT TO REMOVE:** List specific toxic binders, mixed-polymers, or non-separable coatings.
+        2. **WHAT TO REPLACE WITH:** Suggest the specific mono-material or bio-mineral alternatives.
+        3. **HOW TO ASSEMBLE:** Describe the 'Design for Disassembly' or 'Molecular Purity' process needed so that no matter where the item goes, it stays at the highest level of sustainability. (300+ Words).
 
         ---
 
-        ### 🏁 EXECUTIVE SUMMARY: THE SUSTAINABILITY LEADERSHIP VERDICT
-        Explain why this design makes the company an industry leader. How does creating a 'consumer-proof' sustainable product eliminate future liability and maximize brand trust? (200 Words).
+        ### 📋 VORA SUPPLIER SCORECARD
+        Evaluate a theoretical supplier providing this item based on the new DNA.
+        Format as a Markdown Checklist/Table:
+        - Material Purity (0-10)
+        - Chemical Transparency (0-10)
+        - Circular Recovery Readiness (0-10)
+        - Overall Vora Grade (A-F)
+
+        ---
+
+        ### 🏁 FINAL EXECUTIVE SUMMARY: THE SUSTAINABILITY LEADERSHIP VERDICT
+        How does this redesign transform a waste liability into a circular asset? Why is this the most beneficial path for the company's 10-year survival? (200 Words).
         """
 
         st.markdown(generate_vora_analysis(master_prompt))
 
 # --- 5. FOOTER ---
-st.sidebar.info("VoraCycle Enterprise Logic: v4.6.0")
+st.sidebar.info("VoraCycle Enterprise Logic: v4.7.0")
