@@ -105,4 +105,4 @@ else:
 
 # --- FOOTER ---
 st.divider()
-st.caption("Strategic ROI: This transition creates an immediate EPR tax exemption and future-proofs the enterprise against 2026 bans.") 
+st.caption("Strategic ROI: This transition creates an immediate EPR tax exemption and future-proofs the enterprise against 2026 bans.")
