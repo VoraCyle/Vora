@@ -2,13 +2,9 @@ import streamlit as st
 from openai import OpenAI
 
 # --- 1. ACCESS & CONNECTION ---
-try:
-    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-except Exception as e:
-    st.error("🚨 API Key Missing: Please add 'OPENAI_API_KEY' to your Streamlit Secrets.")
-    st.stop()
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
-# --- 2. THE VORA 100: STRATEGIC CATEGORIES ---
+# --- 2. STRATEGIC ASSET CATEGORIES ---
 vora_100 = {
     "🚩 TOP LIABILITIES (High EPR Fines)": [
         "Multi-Layer Mylar Snack Pouches", "Black Plastic Rotisserie Trays", 
@@ -27,73 +23,65 @@ vora_100 = {
     ]
 }
 
-# Flatten for dropdown
+# --- 3. THE "REAL-WORLD" ENGINE ---
+def generate_vora_analysis(prompt):
+    # We use 'gpt-4o' for maximum reasoning power to avoid "template" answers
+    response = client.chat.completions.create(
+        model="gpt-4o", 
+        messages=[
+            {"role": "system", "content": """You are the VoraCycle Lead Forensic Engineer. 
+            DO NOT give generic 'mono-material' advice unless it is the only viable path. 
+            For every item, analyze its specific chemical and mechanical makeup. 
+            Provide deep-tech solutions: Molecular recycling for polymers, Pyrolysis for composites, 
+            Hydrometallurgy for batteries, and Bio-polymers for food-contact items. 
+            Your goal is the 'End-Game'—the absolute best path for the planet and P&L."""},
+            {"role": "user", "content": prompt}
+        ],
+        temperature=0.4 # Lower temperature ensures more factual, engineering-heavy results
+    )
+    return response.choices[0].message.content
+
+# --- 4. USER INTERFACE ---
+st.set_page_config(page_title="VoraCycle: Forensic Command", layout="wide")
+st.title("🛡️ VoraCycle: Strategic Liability Command")
+
+# (Dropdown and Search logic remains the same...)
 dropdown_items = ["-- Select a Strategic Asset --"]
 for category, items in vora_100.items():
     dropdown_items.extend(items)
 
-# --- 3. THE ARBITER ENGINE ---
-def generate_vora_analysis(prompt):
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You specialize in Liability Removal and ROI-driven Circular Engineering."},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=0.7 
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        return f"Analysis Error: {str(e)}"
-
-# --- 4. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle: Liability Command", layout="wide")
-st.title("🛡️ VoraCycle: Strategic Liability Command")
-st.markdown("### Converting Environmental Waste Liabilities into Financial Assets.")
-
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("##### 📦 1. Strategic Asset Selection")
-    dropdown_choice = st.selectbox("Select by Category (Liabilities vs. Quick Fixes):", dropdown_items)
-
+    dropdown_choice = st.selectbox("Select Asset Category:", dropdown_items)
 with col2:
-    st.markdown("##### 🔍 2. Custom SKU / DNA Audit")
-    search_query = st.text_input("Search any retail product:")
+    search_query = st.text_input("Search Custom SKU / DNA Audit:")
 
 final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a Strategic Asset --" else None)
 
 if final_query:
     st.divider()
-    with st.spinner(f"Calculating ROI and DNA Shift for {final_query}..."):
+    with st.spinner(f"Performing Deep Forensic Audit on {final_query}..."):
         
         master_prompt = f"""
-        Conduct a Forensic Audit and ROI Estimate for: {final_query}.
+        Execute a 2025 Forensic Audit for: {final_query}.
         
-        ### 📊 DUAL-PATH FORENSIC SCORECARD
-        Compare 'Status Quo' vs. 'Vora Resilient Design'.
-        Table: Primary Outcome, Sustainability Rating, Capital Retention %, and Environmental Toxin Risk.
+        ### 📊 DUAL-PATH COMPARISON
+        Show a Markdown Table comparing 'Status Quo' vs. 'Vora Optimized'.
+        
+        ### ⚙️ THE RECONSTRUCTION BLUEPRINT
+        What is the specific mechanical or chemical reconstruction needed? 
+        If it's a battery, talk about cathode recovery. If it's a textile, talk about fiber-to-fiber recycling. 
+        Provide the 'How'—the exact facility type and process.
 
-        ### 💰 COST-BENEFIT ESTIMATOR (FINANCIAL WIN)
-        1. **EPR Penalty Avoidance:** How much does this save the company in government waste fines?
-        2. **Logistics Efficiency:** How does the DNA change reduce shipping weight or volume?
-        3. **Supply Chain Savings:** How does switching to mono-materials lower raw material costs?
+        ### 💰 FINANCIAL ROI & LIABILITY
+        Estimate savings in EPR fines (e.g., California SB 54 or EU Packaging Directives). 
+        How does this redesign lower the 'Total Cost of Ownership'?
 
-        ### 🧬 DNA ENGINEERING: THE "START-AT-THE-END" BLUEPRINT
-        - **WHAT TO REMOVE:** Identify the specific 'System Spoilers'.
-        - **WHAT TO REPLACE WITH:** Suggest the mono-material/bio-mineral fix.
-        - **UNIVERSAL SAFETY:** Explain how this design stays safe even in a landfill.
+        ### 🧬 DNA TRANSFORMATION (The 'Before' Fix)
+        How do we change the DNA at the start? List specific chemical swaps (e.g., replace PVC with PE, or remove PFAS for Aqueous coatings).
 
-        ### 📋 VORA SUPPLIER SCORECARD
-        Evaluate the manufacturer. Table: Material Purity, Chemical Transparency, Circular Readiness, Vora Grade.
-
-        ---
-
-        ### 🏁 EXECUTIVE SUMMARY: THE LIABILITY REMOVAL VERDICT
-        Focus on the 'Zero-Liability' brand advantage. Why is this rebuild a profit-center, not a cost-center?
+        ### 📋 SUPPLIER SCORECARD
+        Grade a supplier based on their ability to implement this SPECIFIC engineering fix.
         """
 
         st.markdown(generate_vora_analysis(master_prompt))
-
-# --- 5. FOOTER ---
-st.sidebar.info(f"VoraCycle v5.0.0 | Strategic Assets: {sum(len(v) for v in vora_100.values())}")
