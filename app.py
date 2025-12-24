@@ -1,3 +1,4 @@
+
 import streamlit as st
 from openai import OpenAI
 
@@ -8,24 +9,39 @@ except Exception as e:
     st.error("🚨 API Key Missing: Please add 'OPENAI_API_KEY' to your Streamlit Secrets.")
     st.stop()
 
-# --- 2. THE VORA 100 CATEGORIES ---
+# --- 2. EXPANDED STRATEGIC ASSET REGISTRY ---
 vora_100 = {
-    "🚩 TOP LIABILITIES (High EPR Fines)": [
-        "Multi-Layer Mylar Snack Pouches", "Black Plastic Rotisserie Trays", 
-        "PVC Clamshell Electronics Packs", "PFAS-Coated Fast Food Wraps",
-        "Aseptic Juice Cartons (Tetra Pak)", "BOPP Non-Recyclable Pet Food Bags"
+    "🥩 POULTRY & FRESH MEATS": [
+        "MAP (Modified Atmosphere) Poultry Trays", "Absorbent Poultry Pads (Composite)", 
+        "Vacuum-Sealed Poly-Vinyl Wraps", "Black Plastic Meat Trays", 
+        "Soaker Pads (Chemical-Bound Fiber)"
     ],
-    "⚡ QUICKEST FIXES (Immediate ROI)": [
-        "LLDPE Warehouse Stretch Wrap", "BPA-Free Thermal Receipts", 
-        "Mono-material Polyethylene Mailers", "Uncoated Corrugated Cardboard",
-        "Natural Fiber Pallet Strapping", "Detectable Pigment Black Plastics"
+    "🥬 FRESH PRODUCE & GOODS": [
+        "Cellulose Berry Clamshells", "Breathable Mixed-Poly Produce Bags", 
+        "Waxed Fruit Corrugated Boxes", "Plastic Mesh Citrus Bags",
+        "Herbal Sachet Laminates"
     ],
-    "🧬 LONG-TERM DNA SHIFTS (High Impact)": [
-        "Lithium-Ion Battery Slurry", "Mixed-Textile Kirkland Apparel",
-        "Integrated LED Appliance Panels", "Multi-Material Athletic Footwear",
-        "EPS (Styrofoam) Cold-Chain Coolers", "Composite Construction Returns"
+    "❄️ FROZEN & REFRIGERATED": [
+        "Aqueous-Coated Frozen Vegetable Bags", "Multi-Layer Frozen Meal Pouches", 
+        "High-Barrier Mono-PE Trays", "Poly-Lined Ice Cream Cartons",
+        "Chilled Liquid Cartons (Aluminum-Poly)"
+    ],
+    "📦 DRY GOODS & PANTRY": [
+        "Metallized PP Snack Liners", "Composite Cardboard Canisters", 
+        "BOPP Cereal Liners", "Multi-Wall Pet Food Bags",
+        "Plastic-Spout Pour Bags"
+    ],
+    "🚩 HIGH-RISK LIABILITIES": [
+        "PVC Clamshell Packs", "PFAS-Coated Fast Food Wrappers", 
+        "Lithium-Ion Tool Battery Packs", "Industrial LLDPE Stretch Wrap",
+        "Thermal BPA Receipt Paper"
     ]
 }
+
+# Flatten for dropdown
+dropdown_items = ["-- Select a Strategic Asset --"]
+for category, items in vora_100.items():
+    dropdown_items.extend(items)
 
 # --- 3. THE ARBITER ENGINE ---
 def generate_vora_analysis(prompt):
@@ -33,7 +49,11 @@ def generate_vora_analysis(prompt):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You specialize in 'Path-Agnostic' DNA engineering."},
+                {"role": "system", "content": """You are the VoraCycle Lead Forensic Engineer. 
+                Focus: Path-Agnostic DNA Engineering. 
+                Critical Requirement: All DNA transformations for food-contact items MUST 
+                be certified Bio-Inert and Food-Safe. Ensure the reconstruction eliminates 
+                the risk of toxin migration or chemical leaching into food products."""},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.4 
@@ -43,67 +63,51 @@ def generate_vora_analysis(prompt):
         return f"Analysis Error: {str(e)}"
 
 # --- 4. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle: Resilient Design", layout="wide")
+st.set_page_config(page_title="VoraCycle: Food-Safe DNA", layout="wide")
 st.title("🛡️ VoraCycle: Strategic DNA Command Center")
-st.markdown("#### Engineering for 'Universal Sustainability'—Safe in Any Waste Stream.")
-
-# Category Dropdown Logic
-dropdown_items = ["-- Select a Strategic Asset --"]
-for category, items in vora_100.items():
-    dropdown_items.extend(items)
+st.markdown("#### Engineering for 'Universal Sustainability' & Food-Contact Safety.")
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("##### 📦 1. Strategic Liability Selection")
-    dropdown_choice = st.selectbox("Choose a known vulnerability:", dropdown_items)
+    st.markdown("##### 📦 1. Strategic Asset Selection")
+    dropdown_choice = st.selectbox("Choose a known retail vulnerability:", dropdown_items)
 
 with col2:
     st.markdown("##### 🔍 2. Custom SKU / Material Audit")
-    search_query = st.text_input("Or type a custom material (e.g. 'Styrofoam'):")
+    search_query = st.text_input("Search custom food packaging or SKU:")
 
-# --- 5. THE LOGIC GATE (The Fix) ---
-final_query = None
+final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a Strategic Asset --" else None)
 
-# If user typed something, that takes priority
-if search_query.strip():
-    final_query = search_query
-# If user selected a REAL item from the dropdown, use that
-elif dropdown_choice != "-- Select a Strategic Asset --":
-    final_query = dropdown_choice
-
-# ONLY run if final_query has a real value
 if final_query:
     st.divider()
-    with st.spinner(f"Simulating Forensic Path for {final_query}..."):
+    with st.spinner(f"Engineering Food-Safe DNA for {final_query}..."):
         
         master_prompt = f"""
-        Audit the following for an Enterprise Retailer: {final_query}.
+        Conduct a Path-Agnostic Forensic Audit for: {final_query}.
 
         ### 📊 DUAL-PATH FORENSIC SCORECARD
-        Compare 'Status Quo Design' vs. 'Vora Resilient Design'.
+        Compare 'Status Quo' vs. 'Vora Resilient Design'.
 
-        ### 🧬 DNA TRANSFORMATION: THE "PATH-AGNOSTIC" FAILSAFE
-        Explain how to change the materials NOW so the item is safe in EVERY scenario:
-        1. **PATH A: IF IT GOES TO WASTE (Landfill):** How do we change the DNA so it safely mineralizes?
-        2. **PATH B: IF IT GOES TO RECYCLE:** How do we simplify the DNA for high-value technical recovery?
+        ### 🍎 FOOD SAFETY & DNA PURITY PROTOCOL
+        Explain how this new DNA protects the food:
+        - **Non-Toxic Barrier:** How do we eliminate PFAS, toxic glues, and chemical leaching?
+        - **Bio-Inert Integrity:** Explain why the new material (e.g., Aqueous coatings or PHAs) is safer for food contact than the status quo.
+        - **Temperature Stability:** Confirm safety for frozen, chilled, or ambient storage.
 
-        ### 💰 COST-BENEFIT ESTIMATOR (ROI)
-        - **EPR Savings:** Estimated reduction in government waste penalties.
-        - **Operational ROI:** Savings from mono-material sourcing.
+        ### 🧬 THE DNA FAILSAFE (Path-Agnostic)
+        - **PATH A (Waste/Landfill):** How does the DNA ensure safe mineralization?
+        - **PATH B (Recycle/Technical):** How do we simplify the DNA for 100% recovery?
+
+        ### 💰 FINANCIAL ROI & LIABILITY
+        Estimate EPR fine savings and 'Brand Trust' value for a company like Costco.
 
         ### 📋 VORA SUPPLIER SCORECARD
-        Evaluate the manufacturer. Grade: Material Purity, Chemical Transparency, and Overall Vora Grade.
-
-        ---
-
-        ### 🏁 EXECUTIVE SUMMARY
-        Provide the 'Zero-Liability' brand advantage verdict. (200 Words).
+        Evaluate the manufacturer. Table: Material Purity, Chemical Transparency, Circular Readiness, Vora Grade.
         """
 
         st.markdown(generate_vora_analysis(master_prompt))
 else:
-    # This shows when the home screen is empty
-    st.info("👆 Please select an asset from the list or type a custom material above to begin the Forensic Audit.")
+    st.info("👆 Select a food packaging category or type a custom material to begin.")
 
-# --- 6. FOOTER ---
-st.sidebar.info(f"VoraCycle v5.4.0 | {sum(len(v) for v in vora_100.values())} Liabilities Cataloged")
+# --- 5. FOOTER ---
+st.sidebar.info(f"VoraCycle v5.5.0 | Total Food-Safe DNA Profiles: {sum(len(v) for v in vora_100.values())}")
