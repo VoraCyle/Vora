@@ -2,11 +2,11 @@ import streamlit as st
 from openai import OpenAI
 import json
 
-# --- 1. SETUP & DATABASE ---
+# --- 1. ACCESS & DATABASE ---
 try:
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 except:
-    st.error("🚨 API Key Missing in Streamlit Secrets.")
+    st.error("🚨 API Key Missing.")
 
 # Load the Monster Library
 try:
@@ -15,54 +15,62 @@ try:
 except:
     monster_db = {}
 
-# --- 2. THE DNA ANALYZER ENGINE ---
-def run_dna_analysis(query, volume=1000000):
-    # Check if the query is a known 'Monster' from our Database
-    if query in monster_db:
-        item = monster_db[query]
+# --- 2. THE COSTCO REGISTRY ---
+vora_100 = {
+    "🍗 THE ROTISSERIE CATEGORY": ["Multi-Layer Chicken Bags", "Absorbent Chicken Pad", "Rigid Chicken Trays"],
+    "🧻 PAPER & HYGIENE WRAPS": ["Kirkland Bath Tissue Case-Wrap", "Paper Towel Overwrap"],
+    "🚩 HIGH-RISK LIABILITIES": ["PVC Clamshells", "PFAS Wrappers", "Black Meat Trays"]
+}
+
+# --- 3. THE FORENSIC ENGINE ---
+def run_audit(target, volume):
+    # Check if it's in our HARD DATA library first
+    if target in monster_db:
+        item = monster_db[target]
         savings = item['tax_penalty'] * volume
-        
         st.subheader(f"🧬 DNA Transformation: {item['name']}")
         col1, col2 = st.columns(2)
         with col1:
-            st.error("🔴 **CURRENT DNA (Status Quo)**")
+            st.error("🔴 **CURRENT DNA**")
             st.write(f"**Material:** {item['description']}")
-            st.write(f"**Annual Tax Liability:** ${savings:,.2f}")
+            st.write(f"**Annual Liability:** ${savings:,.2f}")
         with col2:
-            st.success("🟢 **VORA DNA (The Cure)**")
-            st.write(f"**New Solution:** {item['vora_fix']['material']}")
-            st.write(f"**Circular Path:** 100% Recyclable / Mono-material")
+            st.success("🟢 **VORA DNA**")
+            st.write(f"**Fix:** {item['vora_fix']['material']}")
+            st.write(f"**Annual Savings:** ${savings:,.2f}")
         
-        with st.expander("📝 INDUSTRIAL DNA RECIPE (Send to Mixer)"):
+        with st.expander("📝 INDUSTRIAL RECIPE (Send to Mixer)"):
             st.code(item['vora_fix']['recipe'], language="text")
-            st.caption("Standardized instructions for third-party pellet blenders.")
 
-    # Otherwise, use the AI for a Custom Forensic Audit
+    # If it's not in the library, use AI for the full Forensic Analysis
     else:
-        with st.spinner("Executing Forensic DNA Reconstruction..."):
-            prompt = f"Analyze the material DNA for: {query}. Explain how to transform it from a high-tax composite to a Vora-resilient mono-material."
+        with st.spinner(f"Analyzing {target}..."):
+            master_prompt = f"Execute a Forensic DNA Audit for: {target}. Compare 'Status Quo' vs 'Vora Resilient Design'. Explain Path A (Waste) and Path B (Recycle)."
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[{"role": "system", "content": "You are the Vora Lead Forensic Engineer."},
-                          {"role": "user", "content": prompt}]
+                          {"role": "user", "content": master_prompt}]
             )
             st.markdown(response.choices[0].message.content)
 
-# --- 3. THE INTERFACE ---
-st.title("🛡️ Vora: Strategic DNA Command Center")
+# --- 4. THE INTERFACE ---
+st.title("🛡️ VoraCycle: Strategic DNA Command")
 
-# Search and Dropdown logic
-col_a, col_b = st.columns([1, 2])
-with col_a:
-    selected_id = st.selectbox("Pick a known Monster:", ["-- Select --"] + list(monster_db.keys()))
-with col_b:
-    custom_search = st.text_input("OR Type a Custom SKU/Material:")
+# Build Dropdown List
+dropdown_items = ["-- Select --"]
+for cat, items in vora_100.items():
+    dropdown_items.extend(items)
+
+col1, col2 = st.columns(2)
+with col1:
+    choice = st.selectbox("Select Warehouse SKU:", dropdown_items)
+with col2:
+    search = st.text_input("OR Type Custom Material:")
 
 volume = st.sidebar.number_input("Annual Unit Volume:", value=1000000)
 
-# Execute based on user choice
-final_target = custom_search if custom_search else (selected_id if selected_id != "-- Select --" else None)
+final_query = search if search else (choice if choice != "-- Select --" else None)
 
-if final_target:
+if final_query:
     st.divider()
-    run_dna_analysis(final_target, volume)
+    run_audit(final_query, volume)
