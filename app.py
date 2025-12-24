@@ -8,7 +8,7 @@ except Exception as e:
     st.error("🚨 API Key Missing: Please add 'OPENAI_API_KEY' to your Streamlit Secrets.")
     st.stop()
 
-# --- 2. COSTCO-SCALE "HARD" ASSETS ---
+# --- 2. THE ASSET REGISTRY ---
 problematic_items = [
     "-- Select a High-Volume Asset --",
     "Multi-Layer Pet Food Bags (Mylar/Poly)",
@@ -29,7 +29,7 @@ def generate_vora_analysis(prompt):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You specialize in Pre-Lifecycle Forensic Design—solving the end of a product's life before it is even manufactured."},
+                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You specialize in 'Resilient Circularity'—engineering products so they remain sustainable regardless of how the consumer disposes of them."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7 
@@ -39,9 +39,9 @@ def generate_vora_analysis(prompt):
         return f"Analysis Error: {str(e)}"
 
 # --- 4. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle: DNA Forensic Command", layout="wide")
+st.set_page_config(page_title="VoraCycle: Resilient Design", layout="wide")
 st.title("🛡️ VoraCycle: Strategic DNA Command Center")
-st.markdown("#### Engineering the End-Result at the Start: Forensic DNA Optimization")
+st.markdown("### Engineering for 'Universal Sustainability'—Safe in Any Waste Stream.")
 
 col1, col2 = st.columns(2)
 with col1:
@@ -53,44 +53,36 @@ final_query = search_query if search_query else (dropdown_choice if dropdown_cho
 
 if final_query:
     st.divider()
-    with st.spinner("Simulating Pre-Lifecycle DNA Outcomes..."):
+    with st.spinner("Simulating Universal Sustainability Outcomes..."):
         
         master_prompt = f"""
         Audit the following for an Enterprise Retailer: {final_query}.
 
         ### 📊 DUAL-PATH FORENSIC SCORECARD
-        Compare the 'Status Quo' (Default Design) vs. 'Vora Optimized' (Engineered for the End).
-        Output this as a Markdown Table:
-        - Primary Outcome (e.g. Landfill vs Infinite Loop)
+        Compare 'Status Quo Design' vs. 'Vora Resilient Design'.
         - Sustainability Rating (0-10)
-        - Capital Retention (%)
-        - Environmental Impact Score (0-10)
-        - Risk/Liability Level (High/Low)
+        - Outcome if Landfilled (Toxin vs Nutrient)
+        - Outcome if Recycled (Downcycled vs Upcycled)
+        - Financial Risk (High vs Zero)
 
         ---
 
-        ### 🧬 PRE-LIFECYCLE DNA: DESIGNING THE END AT THE START
-        **The "Before" DNA (Current State):** Describe the toxic or non-circular elements currently in this product.
-        **The "After" DNA (Vora Optimized):** Describe exactly how to re-engineer this product NOW (materials, assembly, chemicals) to ensure the best end-result. 
-        
-        *Focus on how changing the DNA at the start makes the final route (Refurbish or Mineralize) 100% efficient and safe.* (250+ Words).
+        ### 🧬 DNA TRANSFORMATION: THE "START-AT-THE-END" BLUEPRINT
+        Explain how to change the materials NOW so the item is safe in EVERY scenario:
+        1. **If it goes to Waste:** How we change the chemicals/binders to ensure it safely mineralizes (Biological Nutrient).
+        2. **If it goes to Recycle:** How we simplify the DNA (Mono-materials) to ensure it stays high-value.
+        *Focus on removing 'Material Incompatibility' at the design stage.* (300+ Words).
 
-        ### ⚖️ THE WINNING VERDICT: BEST STRATEGIC PATH
-        Identify the best end-route. Provide 200 words of forensic logic explaining why this path is the most beneficial for the environment and the business P&L.
-
-        ### 🚚 HANDLING & LOGISTICS (SOP)
-        1. **Warehouse Handling:** Precise sorting/prepping instructions.
-        2. **Logistics:** Transport path details and 'Backhauling' opportunities.
-        3. **Facility:** Specify the target Circular Hub or Processing center.
+        ### 🎯 THE BEST PATH & HANDLING
+        Clearly identify the #1 most profitable path. Provide step-by-step handling and backhauling logistics for a company like Costco.
 
         ---
 
-        ### 🏁 FINAL EXECUTIVE SUMMARY: THE VORA ADVANTAGE
-        Provide a 200-word concluding argument. 
-        Explain how this "Start-at-the-End" strategy keeps sustainability high and eliminates the concept of waste entirely by fixing the product DNA before it starts.
+        ### 🏁 EXECUTIVE SUMMARY: THE SUSTAINABILITY LEADERSHIP VERDICT
+        Explain why this design makes the company an industry leader. How does creating a 'consumer-proof' sustainable product eliminate future liability and maximize brand trust? (200 Words).
         """
 
         st.markdown(generate_vora_analysis(master_prompt))
 
 # --- 5. FOOTER ---
-st.sidebar.info("VoraCycle Enterprise Logic: v4.5.0")
+st.sidebar.info("VoraCycle Enterprise Logic: v4.6.0")
