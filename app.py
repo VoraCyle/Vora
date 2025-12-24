@@ -23,11 +23,11 @@ def generate_vora_analysis(prompt):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": """You are the VoraCycle Lead Forensic Engineer. 
-                Your focus is 'Pre-Emptive Circularity'. You prove that fixing the end-game at the start 
-                is the ultimate financial and ecological hedge. 
-                Explain how fixing the DNA creates a 'Universal Success' outcome where the company 
-                can never lose, regardless of what the consumer does with the item."""},
+                {"role": "system", "content": """You are the VoraCycle Chief Sustainability Officer. 
+                Your specialty is 'Pre-Emptive Circularity'. You translate complex DNA engineering 
+                into massive financial and ecological wins for Fortune 500 retailers. 
+                Show how fixing the 'End Path' at the 'Start Line' creates a zero-waste, 
+                zero-liability future."""},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.4 
@@ -37,9 +37,9 @@ def generate_vora_analysis(prompt):
         return f"Analysis Error: {str(e)}"
 
 # --- 4. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle: Pre-Emptive Circularity", layout="wide")
+st.set_page_config(page_title="VoraCycle: Executive Command", layout="wide")
 st.title("🛡️ VoraCycle: Strategic DNA Command Center")
-st.markdown("### Deleting Waste Before It Starts: The Pre-Emptive Circularity Model.")
+st.markdown("### The Pre-Emptive Circularity Report: Future-Proofing the Enterprise.")
 
 dropdown_items = ["-- Select a Strategic Asset --"]
 for category, items in vora_100.items():
@@ -47,43 +47,44 @@ for category, items in vora_100.items():
 
 col1, col2 = st.columns(2)
 with col1:
-    dropdown_choice = st.selectbox("Select a known retail vulnerability:", dropdown_items)
+    dropdown_choice = st.selectbox("Select Asset for Executive Audit:", dropdown_items)
 with col2:
-    search_query = st.text_input("Search custom food packaging or SKU:")
+    search_query = st.text_input("Search Custom SKU (e.g. 'Kirkland Salmon'):")
 
 final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a Strategic Asset --" else None)
 
 if final_query:
     st.divider()
-    with st.spinner(f"Simulating Pre-Emptive ROI for {final_query}..."):
+    with st.spinner(f"Generating Executive Impact Report for {final_query}..."):
         
         master_prompt = f"""
-        Execute a Pre-Emptive DNA Audit for: {final_query}.
+        Generate a Pre-Emptive Impact Report for: {final_query}.
 
-        ### 🌍 THE ECOLOGICAL EVOLUTION: DELETING THE LANDFILL
-        - **DNA Fix vs. Status Quo:** How does fixing the DNA at the start prevent microplastics and forever chemicals (PFAS)?
-        - **The 'Universal Safety' Outcome:** Explain how the product becomes 'Earth-Native'. If it ends up in the ocean or soil, how does this new DNA allow it to mineralize safely?
-        - **Carbon Reduction:** How does a simplified DNA reduce the energy required for manufacturing and transport?
+        ### 📊 EXECUTIVE IMPACT DASHBOARD (The 10-Year View)
+        Compare 'Business as Usual' vs. 'Vora DNA Optimization'.
+        Table: Environmental Impact (Toxins vs Nutrients), Financial Risk (High Fees vs Zero Fees), Consumer Trust (Liability vs Leader), and Supply Chain Speed.
 
-        ### 💰 THE FINANCIAL FORTRESS: PROFIT THROUGH PURITY
-        - **EPR Penalty Immunity:** How does this design make the company immune to 'Plastic Taxes' and 'Waste Fines' (California SB 54, etc.)?
-        - **Reverse Logistics Profit:** How does a pure DNA allow the company to buy back its own waste as raw material, lowering future costs?
-        - **Supply Chain Resilience:** How does removing 'Material Monsters' simplify sourcing and protect against price spikes?
+        ### 🌍 THE ECOLOGICAL HEDGE (Healing the Planet)
+        - **Pre-Emptive Deletion:** How does changing the DNA now remove the need for massive cleanup costs later?
+        - **Earth-Native Stability:** Describe the transition from 'Persistent Pollution' to 'Safe Mineralization'.
+        - **Resource Preservation:** How much raw material is saved by making this 100% technical-ready?
 
-        ### 🧬 THE DNA FAILSAFE (Path-Agnostic)
-        - **PATH A (Waste):** Safe mineralization protocol.
-        - **PATH B (Recycle):** 100% technical recovery protocol.
-        
-        ### 🍎 FOOD SAFETY & DNA PURITY
-        - Confirm non-toxic migration and bio-inert integrity.
+        ### 💰 THE FINANCIAL FORTRESS (Winning the Market)
+        - **EPR Immunity:** Quantify the protection against 2025-2030 waste taxes and plastics bans.
+        - **Operational Speed:** How does mono-material DNA simplify warehouse logistics and backhauling?
+        - **The Brand Moat:** How does 'Consumer-Proof' sustainability protect the stock price and brand value?
 
-        ### 🏁 EXECUTIVE VERDICT: THE FUTURE-PROOF COMPANY
-        Explain how this makes the company the #1 sustainability leader by removing the 'burden of choice' from the consumer.
+        ### 🧬 THE DNA FAILSAFE & FOOD SAFETY
+        - **Path-Agnostic Success:** Confirm the item succeeds in Waste or Recycle paths.
+        - **Purity Guarantee:** Confirm the design is 100% bio-inert and safe for food contact.
+
+        ### 🏁 THE CSO VERDICT
+        A 3-sentence summary of why this specific SKU must be re-engineered immediately to lead the industry.
         """
 
         st.markdown(generate_vora_analysis(master_prompt))
 else:
-    st.info("👆 Start by selecting an asset to see the Pre-Emptive Circularity model in action.")
+    st.info("👆 Please select an asset to generate the Strategic Impact Report.")
 
 # --- 5. FOOTER ---
-st.sidebar.info(f"VoraCycle v5.6.0 | Pre-Emptive Circularity Engine")
+st.sidebar.info(f"VoraCycle v5.7.0 | The Future-Proof Enterprise")
