@@ -1,108 +1,93 @@
+
+
 import streamlit as st
 from openai import OpenAI
 
-# --- 1. ACCESS & CONNECTION ---
+# --- 1. ACCESS ---
 try:
     client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
-except Exception as e:
-    st.error("🚨 API Key Missing: Please add 'OPENAI_API_KEY' to your Streamlit Secrets.")
+except:
+    st.error("🚨 API Key Missing.")
     st.stop()
 
-# --- 2. HARD-CODED DNA TRUTH (For 100% Accuracy on Key Items) ---
+# --- 2. THE DNA DATABASE ---
 dna_database = {
     "Multi-Layer Chicken Bags": {
-        "bad": ["Nylon-6 Barrier Film", "Polyurethane Adhesives", "Carbon Black Pigment"],
-        "fix": ["92% Mono-PE (THE BODY)", "5% Vora-C1 Catalyst (THE BRAIN)", "3% Mineral-Anchor (THE SKELETON)"]
+        "base_material": "Mono-PE (Polyethylene)",
+        "catalyst_type": "Enzymatic/Pro-degradant (Vora-C1)",
+        "bad": ["Nylon-6 Barrier", "Polyurethane Adhesives", "Carbon Black"],
+        "fix": ["92% Mono-PE (BODY)", "5% Vora-C1 Catalyst (BRAIN)", "3% Mineral-Anchor (SKELETON)"]
     },
     "MAP Poultry Trays": {
-        "bad": ["Rigid Polystyrene (PS)", "EVOH Oxygen Barrier", "Chemical Blowing Agents"],
-        "fix": ["95% Mono-PP (THE BODY)", "3% Vora-C2 Catalyst (THE BRAIN)", "2% Mineral-Anchor (THE SKELETON)"]
+        "base_material": "Mono-PP (Polypropylene)",
+        "catalyst_type": "Bio-Mineral Catalyst (Vora-C2)",
+        "bad": ["Rigid Polystyrene (PS)", "EVOH Oxygen Barrier"],
+        "fix": ["95% Mono-PP (BODY)", "3% Vora-C2 Catalyst (BRAIN)", "2% Mineral-Anchor (SKELETON)"]
     },
     "PVC Clamshells": {
-        "bad": ["Polyvinyl Chloride (PVC)", "Phthalate Plasticizers", "Heavy Metal Stabilizers"],
-        "fix": ["90% Cellulose-Fiber (THE BODY)", "7% Bio-Polymer Binder (THE BRAIN)", "3% Mineral-Tracer (THE SKELETON)"]
+        "base_material": "Cellulose / Fiber Base",
+        "catalyst_type": "Aqueous Bio-Binder",
+        "bad": ["PVC", "Phthalates", "Lead Stabilizers"],
+        "fix": ["90% Fiber (BODY)", "7% Bio-Binder (BRAIN)", "3% Mineral-Tracer (SKELETON)"]
     }
 }
 
 # --- 3. UI SETUP ---
-st.set_page_config(page_title="VoraCycle: Executive Command", layout="wide")
+st.set_page_config(page_title="VoraCycle Industrial", layout="wide")
+st.title("🛡️ VoraCycle: Strategic DNA Command Center")
 
-# SIDEBAR NAVIGATION
+# --- SIDEBAR & HOME ---
 st.sidebar.title("🏢 Command Center")
 if st.sidebar.button("🏠 Home / Reset Dashboard"):
     st.rerun()
 
-st.sidebar.divider()
-st.sidebar.info("VoraCycle v2025.12\nConceptual Industrial Guidance")
+# --- MAIN SELECTION ---
+dropdown_items = ["-- Select a Strategic Asset --"] + list(dna_database.keys())
+choice = st.selectbox("Select Asset for Executive Audit:", dropdown_items)
 
-# MAIN HEADER
-st.title("🛡️ VoraCycle: Strategic DNA Command Center")
-st.warning("""
-⚠️ **CRITICAL NOTICE** – This engine provides directional guidance. Real manufacturing requires supplier collaboration, lab testing, and regulatory validation.
-""")
-
-# --- 4. MAIN INPUT ENGINE ---
-st.subheader("🧬 Forensic Product Audit")
-current_packaging = st.text_area(
-    "Describe the packaging product or select a strategic asset below:",
-    height=100,
-    placeholder="e.g. Multi-layer PET/PE snack pouch, or type a Costco SKU..."
-)
-
-# Optional Dropdown for quick access to hard-coded wins
-quick_select = st.selectbox("Quick Select Strategic Asset:", ["-- Choose --"] + list(dna_database.keys()))
-final_input = quick_select if quick_select != "-- Choose --" else current_packaging
-
-analyze_btn = st.button("→ Run Vora DNA Analysis", type="primary")
-
-if analyze_btn and final_input:
+if choice != "-- Select a Strategic Asset --":
+    item_data = dna_database[choice]
+    
+    # 🧬 DNA COMPARISON
     st.divider()
-    
-    # --- VISUAL DNA COMPARISON ---
-    st.subheader(f"Analysis Results: {final_input}")
-    
     col_a, col_b = st.columns(2)
-    
-    # Get specific DNA if it exists, otherwise use AI-generated fallback
-    item_data = dna_database.get(final_input, {
-        "bad": ["Multi-Layer Composite Films", "Non-Separable Adhesives", "Mixed Polymers"],
-        "fix": ["92% Mono-Material Base (THE BODY)", "5% Vora-C1 Catalyst (THE BRAIN)", "3% Mineral-Anchor (THE SKELETON)"]
-    })
-
     with col_a:
         st.error("### 🔴 BEFORE: Status Quo DNA")
         for item in item_data["bad"]: st.warning(f"❌ **{item}**")
-        st.write("🛑 **Waste:** Persistent Microplastics")
-        st.write("🛑 **Recycle:** Rejected / Low-Value")
-        
     with col_b:
-        st.success("### 🟢 AFTER: The 3 Pillars of Vora DNA")
+        st.success("### 🟢 AFTER: Vora DNA Blueprint")
         for item in item_data["fix"]: st.info(f"🧬 **{item}**")
-        st.write("✅ **Path A (Waste):** Safe Bio-Mineralization")
-        st.write("✅ **Path B (Recycle):** 100% High-Value Circularity")
 
+    # 🏭 THE SUPPLY CHAIN ENGINE (The "Real Life" Part)
     st.divider()
+    st.subheader("🔗 Global Supplier Match (Tier 1 & 2)")
+    
+    if st.button("🔎 FIND CERTIFIED VORA-STYLE SUPPLIERS"):
+        with st.spinner("Scanning Global Material Markets..."):
+            # This prompt forces the AI to find REAL companies for the specific fix
+            supplier_prompt = f"""
+            Identify real-world global suppliers for the following transition:
+            From: {item_data['bad']} 
+            To: {item_data['fix']}
+            
+            List real companies for:
+            1. The Base Mono-Material (e.g., Dow, LyondellBasell, Sabic).
+            2. The 'Vora-style' Catalyst/Masterbatch (e.g., companies like Wells Plastics (Reverte), Symphony Environmental (d2w), or Evonik).
+            3. Specify which ASTM/ISO standards these suppliers help meet.
+            """
+            response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "user", "content": supplier_prompt}])
+            st.write(response.choices[0].message.content)
 
-    # --- DEEP INDUSTRIAL REPORT ---
-    with st.spinner("Generating Strategic Impact Report..."):
-        prompt = f"""
-        Analyze packaging: {final_input}. 
-        1. Describe current composition. 
-        2. Identify Path-Agnostic failure points. 
-        3. Recommend 1-3 established commercial partners (e.g. SEE, Amcor, Cruz Foam).
-        4. Explain how Vora DNA creates EPR tax immunity.
-        End with the standard disclaimer.
-        """
-        response = client.chat.completions.create(
-            model="gpt-4o",
-            messages=[{"role": "system", "content": "You are the VoraCycle CSO. Speak with financial authority and material science precision."},
-                      {"role": "user", "content": prompt}]
-        )
-        st.markdown(response.choices[0].message.content)
+    # 📝 WORK ORDER
+    with st.expander("📝 VIEW MANUFACTURER WORK ORDER"):
+        st.markdown(f"""
+        **TO:** Costco Packaging Vendor
+        **ACTION:** Transition {choice} to Path-Agnostic DNA.
+        **RECIPE:** Mix {item_data['base_material']} with {item_data['catalyst_type']} additive at 5% load rate.
+        """)
 
 else:
-    st.info("👆 Enter a product description or select a strategic asset to begin.")
+    st.info("👆 Select a product to identify the DNA and the Suppliers.")
 
-# --- FOOTER ---
 st.divider()
-st.caption("Strategic ROI: This transition creates an immediate EPR tax exemption and future-proofs the enterprise against 2026 bans.")
+st.caption("Conceptual Guidance • Real production requires lab validation and certified supplier onboarding.")
