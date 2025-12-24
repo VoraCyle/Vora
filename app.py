@@ -2,9 +2,13 @@ import streamlit as st
 from openai import OpenAI
 
 # --- 1. ACCESS & CONNECTION ---
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+try:
+    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+except Exception as e:
+    st.error("🚨 API Key Missing: Please add 'OPENAI_API_KEY' to your Streamlit Secrets.")
+    st.stop()
 
-# --- 2. STRATEGIC ASSET CATEGORIES ---
+# --- 2. STRATEGIC ASSET REGISTRY (The Hard 100 Categories) ---
 vora_100 = {
     "🚩 TOP LIABILITIES (High EPR Fines)": [
         "Multi-Layer Mylar Snack Pouches", "Black Plastic Rotisserie Trays", 
@@ -23,65 +27,81 @@ vora_100 = {
     ]
 }
 
-# --- 3. THE "REAL-WORLD" ENGINE ---
-def generate_vora_analysis(prompt):
-    # We use 'gpt-4o' for maximum reasoning power to avoid "template" answers
-    response = client.chat.completions.create(
-        model="gpt-4o", 
-        messages=[
-            {"role": "system", "content": """You are the VoraCycle Lead Forensic Engineer. 
-            DO NOT give generic 'mono-material' advice unless it is the only viable path. 
-            For every item, analyze its specific chemical and mechanical makeup. 
-            Provide deep-tech solutions: Molecular recycling for polymers, Pyrolysis for composites, 
-            Hydrometallurgy for batteries, and Bio-polymers for food-contact items. 
-            Your goal is the 'End-Game'—the absolute best path for the planet and P&L."""},
-            {"role": "user", "content": prompt}
-        ],
-        temperature=0.4 # Lower temperature ensures more factual, engineering-heavy results
-    )
-    return response.choices[0].message.content
-
-# --- 4. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle: Forensic Command", layout="wide")
-st.title("🛡️ VoraCycle: Strategic Liability Command")
-
-# (Dropdown and Search logic remains the same...)
+# Flatten for dropdown
 dropdown_items = ["-- Select a Strategic Asset --"]
 for category, items in vora_100.items():
     dropdown_items.extend(items)
 
+# --- 3. THE PATH-AGNOSTIC ENGINE ---
+def generate_vora_analysis(prompt):
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            messages=[
+                {"role": "system", "content": """You are the VoraCycle Lead Arbiter. 
+                You specialize in 'Resilient Circularity'—engineering products so they remain 
+                sustainable regardless of how the consumer disposes of them. 
+                Your mission is to fix the DNA so the 'End-Game' is safe by default.
+                Provide forensic engineering depth: molecular recycling, bio-mineralization, and mono-material purity."""},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.4 
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"Analysis Error: {str(e)}"
+
+# --- 4. USER INTERFACE ---
+st.set_page_config(page_title="VoraCycle: Resilient Design", layout="wide")
+st.title("🛡️ VoraCycle: Strategic DNA Command Center")
+st.markdown("#### Engineering for 'Universal Sustainability'—Safe in Any Waste Stream.")
+
 col1, col2 = st.columns(2)
 with col1:
-    dropdown_choice = st.selectbox("Select Asset Category:", dropdown_items)
+    st.markdown("##### 📦 1. Strategic Liability Selection")
+    dropdown_choice = st.selectbox("Select by Category:", dropdown_items)
 with col2:
-    search_query = st.text_input("Search Custom SKU / DNA Audit:")
+    st.markdown("##### 🔍 2. Custom SKU / Material Audit")
+    search_query = st.text_input("Custom SKU/Material Audit:")
 
-final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a Strategic Asset --" else None)
+final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a High-Impact Vulnerability --" else None)
 
 if final_query:
     st.divider()
-    with st.spinner(f"Performing Deep Forensic Audit on {final_query}..."):
+    with st.spinner("Simulating Universal Sustainability Outcomes..."):
         
         master_prompt = f"""
-        Execute a 2025 Forensic Audit for: {final_query}.
-        
-        ### 📊 DUAL-PATH COMPARISON
-        Show a Markdown Table comparing 'Status Quo' vs. 'Vora Optimized'.
-        
-        ### ⚙️ THE RECONSTRUCTION BLUEPRINT
-        What is the specific mechanical or chemical reconstruction needed? 
-        If it's a battery, talk about cathode recovery. If it's a textile, talk about fiber-to-fiber recycling. 
-        Provide the 'How'—the exact facility type and process.
+        Audit the following for an Enterprise Retailer: {final_query}.
 
-        ### 💰 FINANCIAL ROI & LIABILITY
-        Estimate savings in EPR fines (e.g., California SB 54 or EU Packaging Directives). 
-        How does this redesign lower the 'Total Cost of Ownership'?
+        ### 📊 DUAL-PATH FORENSIC SCORECARD
+        Compare 'Status Quo Design' vs. 'Vora Resilient Design'.
+        - Sustainability Rating (0-10)
+        - Outcome if Landfilled (Toxin vs Nutrient)
+        - Outcome if Recycled (Downcycled vs Upcycled)
+        - Financial Risk (High vs Zero)
 
-        ### 🧬 DNA TRANSFORMATION (The 'Before' Fix)
-        How do we change the DNA at the start? List specific chemical swaps (e.g., replace PVC with PE, or remove PFAS for Aqueous coatings).
+        ---
 
-        ### 📋 SUPPLIER SCORECARD
-        Grade a supplier based on their ability to implement this SPECIFIC engineering fix.
+        ### 🧬 DNA TRANSFORMATION: THE "PATH-AGNOSTIC" FAILSAFE
+        Explain how to change the materials NOW so the item is safe in EVERY scenario:
+        1. **PATH A: IF IT GOES TO WASTE (Landfill):** How do we change the chemicals/binders/DNA so it safely mineralizes as a non-toxic biological nutrient?
+        2. **PATH B: IF IT GOES TO RECYCLE:** How do we simplify the DNA (e.g., Mono-materials, Detectable Pigments) to ensure it stays high-value technical nutrients?
+        *Focus on removing 'Material Incompatibility' so the consumer cannot 'break' the system.* (300+ Words).
+
+        ### 💰 COST-BENEFIT ESTIMATOR (ROI)
+        - **EPR Savings:** Estimated reduction in government waste penalties.
+        - **Operational ROI:** Savings from mono-material sourcing and logistics efficiency.
+
+        ### 📋 VORA SUPPLIER SCORECARD
+        Evaluate the theoretical manufacturer. Grade: Material Purity, Chemical Transparency, and Overall Vora Grade (A-F).
+
+        ---
+
+        ### 🏁 EXECUTIVE SUMMARY: THE SUSTAINABILITY LEADERSHIP VERDICT
+        Explain why this design makes the company an industry leader. How does creating a 'consumer-proof' sustainable product eliminate future liability and maximize brand trust? (200 Words).
         """
 
         st.markdown(generate_vora_analysis(master_prompt))
+
+# --- 5. FOOTER ---
+st.sidebar.info(f"VoraCycle Enterprise Logic: v5.3.0 | Assets Cataloged: {sum(len(v) for v in vora_100.values())}")
