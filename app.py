@@ -8,42 +8,27 @@ except Exception as e:
     st.error("🚨 API Key Missing: Please add 'OPENAI_API_KEY' to your Streamlit Secrets.")
     st.stop()
 
-# --- 2. THE VORA 100: HARD-TO-IMPROVE ASSET LIBRARY ---
-# Categorized for Enterprise Logistics
+# --- 2. THE VORA 100: STRATEGIC CATEGORIES ---
 vora_100 = {
-    "Grocery & Food Service": [
-        "Rotisserie Chicken Trays (CPET/APET)", "Multi-Layer Snack Pouches (Mylar)", 
-        "Black Plastic Meat Trays", "Waxed Produce Boxes", "K-Cups / Coffee Pods",
-        "BOPP Bread Bags", "Frozen Food Poly-bags", "Polystyrene Egg Cartons",
-        "Aseptic Juice Cartons (Tetra Pak)", "Thermal Receipt Paper (BPA/BPS)"
+    "🚩 TOP LIABILITIES (High EPR Fines)": [
+        "Multi-Layer Mylar Snack Pouches", "Black Plastic Rotisserie Trays", 
+        "PVC Clamshell Electronics Packs", "PFAS-Coated Fast Food Wraps",
+        "Aseptic Juice Cartons (Tetra Pak)", "BOPP Non-Recyclable Pet Food Bags"
     ],
-    "Health, Beauty & Pharmacy": [
-        "Multi-Material Blister Packs", "Mixed-Plastic Squeeze Tubes", 
-        "Pump-Action Dispenser Heads", "Non-Recyclable Makeup Compacts",
-        "Vitamins/Supplement Bottles (Colored PET)", "Aerosol Sunscreen Cans",
-        "Sheet Mask Sachet Laminates", "Plastic Cotton Swab Stems"
+    "⚡ QUICKEST FIXES (Immediate ROI)": [
+        "LLDPE Warehouse Stretch Wrap", "BPA-Free Thermal Receipts", 
+        "Mono-material Polyethylene Mailers", "Uncoated Corrugated Cardboard",
+        "Natural Fiber Pallet Strapping", "Detectable Pigment Black Plastics"
     ],
-    "Warehouse & Logistics": [
-        "LLDPE Stretch Wrap (Dirty/Stretched)", "Nylon Strapping Bands", 
-        "EPS (Styrofoam) Packing Peanuts", "Chemically Treated Timber Pallets",
-        "Bubble Mailers (Mixed Paper/Plastic)", "Heavy-Duty Vinyl Tarps",
-        "Adhesive Shipping Labels (Non-Recyclable)", "Polypropylene Shipping Totes"
-    ],
-    "Hardlines & Electronics": [
-        "Lithium-Ion Battery Slurry", "Integrated LED Light Strips",
-        "Mixed-Metal Power Cables", "Non-Removable Battery Tools",
-        "PVC Clamshell Packaging", "Carbon Fiber Composite Scrap",
-        "Small Appliance Plastic Housings", "Remote Control Assemblies"
-    ],
-    "Textiles & Apparel": [
-        "Spandex/Cotton Blend Clothing", "Synthetic Microfiber Fleece",
-        "Multi-Material Athletic Shoes", "Plastic Hanger Waste",
-        "Polybag Clothing Protection", "Treated Waterproof Outerwear"
+    "🧬 LONG-TERM DNA SHIFTS (High Impact)": [
+        "Lithium-Ion Battery Slurry", "Mixed-Textile Kirkland Apparel",
+        "Integrated LED Appliance Panels", "Multi-Material Athletic Footwear",
+        "EPS (Styrofoam) Cold-Chain Coolers", "Composite Construction Returns"
     ]
 }
 
-# Flatten for the dropdown
-dropdown_items = ["-- Select a 'Hard 100' Strategic Asset --"]
+# Flatten for dropdown
+dropdown_items = ["-- Select a Strategic Asset --"]
 for category, items in vora_100.items():
     dropdown_items.extend(items)
 
@@ -53,7 +38,7 @@ def generate_vora_analysis(prompt):
         response = client.chat.completions.create(
             model="gpt-4o",
             messages=[
-                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You provide technical engineering blueprints and supplier grading for circular retail systems. You focus on 'Start-at-the-Beginning' DNA optimization."},
+                {"role": "system", "content": "You are the VoraCycle Lead Arbiter. You specialize in Liability Removal and ROI-driven Circular Engineering."},
                 {"role": "user", "content": prompt}
             ],
             temperature=0.7 
@@ -63,52 +48,52 @@ def generate_vora_analysis(prompt):
         return f"Analysis Error: {str(e)}"
 
 # --- 4. USER INTERFACE ---
-st.set_page_config(page_title="VoraCycle: The Hard 100", layout="wide")
-st.title("🛡️ VoraCycle: Strategic DNA Command Center")
-st.markdown("### Engineering for 'Universal Sustainability'—Safe in Any Waste Stream.")
+st.set_page_config(page_title="VoraCycle: Liability Command", layout="wide")
+st.title("🛡️ VoraCycle: Strategic Liability Command")
+st.markdown("### Converting Environmental Waste Liabilities into Financial Assets.")
 
 col1, col2 = st.columns(2)
 with col1:
-    st.markdown("##### 📦 1. High-Volume 'System Spoilers'")
-    dropdown_choice = st.selectbox("Select a problematic retail asset:", dropdown_items)
+    st.markdown("##### 📦 1. Strategic Asset Selection")
+    dropdown_choice = st.selectbox("Select by Category (Liabilities vs. Quick Fixes):", dropdown_items)
 
 with col2:
-    st.markdown("##### 🔍 2. Custom SKU / Concept Audit")
-    search_query = st.text_input("Type in any specific product or material:")
+    st.markdown("##### 🔍 2. Custom SKU / DNA Audit")
+    search_query = st.text_input("Search any retail product:")
 
-final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a 'Hard 100' Strategic Asset --" else None)
+final_query = search_query if search_query else (dropdown_choice if dropdown_choice != "-- Select a Strategic Asset --" else None)
 
 if final_query:
     st.divider()
-    with st.spinner(f"Simulating Forensic Path for {final_query}..."):
+    with st.spinner(f"Calculating ROI and DNA Shift for {final_query}..."):
         
         master_prompt = f"""
-        Conduct a Forensic DNA Audit for: {final_query}.
+        Conduct a Forensic Audit and ROI Estimate for: {final_query}.
         
         ### 📊 DUAL-PATH FORENSIC SCORECARD
         Compare 'Status Quo' vs. 'Vora Resilient Design'.
-        Include a Table: Primary Outcome, Sustainability Rating, Capital Retention %, and Environmental Toxin Risk.
+        Table: Primary Outcome, Sustainability Rating, Capital Retention %, and Environmental Toxin Risk.
 
-        ### 🧬 DNA ENGINEERING PROTOCOL: THE "WHAT & HOW"
-        Provide a technical blueprint for the design team:
-        1. **WHAT TO REMOVE:** Identify specific toxins or non-separable materials.
-        2. **WHAT TO REPLACE WITH:** Suggest mono-material or bio-mineral alternatives.
-        3. **HOW TO ASSEMBLE:** Describe the 'Design for Disassembly' or 'Molecular Purity' process needed so the item is safe for the planet even if it enters a landfill. (300+ Words).
+        ### 💰 COST-BENEFIT ESTIMATOR (FINANCIAL WIN)
+        1. **EPR Penalty Avoidance:** How much does this save the company in government waste fines?
+        2. **Logistics Efficiency:** How does the DNA change reduce shipping weight or volume?
+        3. **Supply Chain Savings:** How does switching to mono-materials lower raw material costs?
 
-        ### 🎯 THE BEST PATH & HANDLING
-        Clearly identify the #1 most profitable path. Provide step-by-step handling and backhauling logistics for a company like Costco.
+        ### 🧬 DNA ENGINEERING: THE "START-AT-THE-END" BLUEPRINT
+        - **WHAT TO REMOVE:** Identify the specific 'System Spoilers'.
+        - **WHAT TO REPLACE WITH:** Suggest the mono-material/bio-mineral fix.
+        - **UNIVERSAL SAFETY:** Explain how this design stays safe even in a landfill.
 
         ### 📋 VORA SUPPLIER SCORECARD
-        Evaluate a theoretical supplier providing this item based on the new DNA.
-        Format as a Table: Material Purity, Chemical Transparency, Circular Recovery Readiness, and Overall Vora Grade (A-F).
+        Evaluate the manufacturer. Table: Material Purity, Chemical Transparency, Circular Readiness, Vora Grade.
 
         ---
 
-        ### 🏁 FINAL EXECUTIVE SUMMARY: THE SUSTAINABILITY LEADERSHIP VERDICT
-        Why is this redesign the only logical choice for the company's 10-year survival? How does it eliminate consumer liability? (200 Words).
+        ### 🏁 EXECUTIVE SUMMARY: THE LIABILITY REMOVAL VERDICT
+        Focus on the 'Zero-Liability' brand advantage. Why is this rebuild a profit-center, not a cost-center?
         """
 
         st.markdown(generate_vora_analysis(master_prompt))
 
 # --- 5. FOOTER ---
-st.sidebar.info(f"VoraCycle v4.9.0 | {sum(len(v) for v in vora_100.values())} System Spoilers Cataloged") 
+st.sidebar.info(f"VoraCycle v5.0.0 | Strategic Assets: {sum(len(v) for v in vora_100.values())}")
